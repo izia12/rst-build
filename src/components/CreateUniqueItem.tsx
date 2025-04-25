@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import Modal from './custom-components/Modal'
 import { Button } from './custom-components/Button'
 import { useAppDispatch, useAppSelector } from '../store/store'
@@ -14,8 +14,8 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 	const choosedPlains = useAppSelector(state => state.wasm.choosedPlainsFromList);
 	const dispatch = useAppDispatch();
 	const [name, setName] = useState("");
-	const [color, setColor] =useState("")
-  return (
+	const [color, setColor] = useState("")
+	return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose} width={400}>
 				<div className="flex flex-col gap-4 w-full">
@@ -37,7 +37,7 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 							<input
 								type="color"
 								className="w-12 h-12 border rounded-md cursor-pointer bg-white"
-								onChange={(e)=>{
+								onChange={(e) => {
 									setColor(e.currentTarget.value)
 								}}
 							/>
@@ -46,16 +46,16 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 					</div>
 				</div>
 				<Button
-					disabled = {name===""}
+					disabled={name === ""}
 					onClick={() => {
 						console.log(22);
 						dispatch(addToGroupUniqueItem({
 							id: "fff",
-							color:color|| ('#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0..toString())),
+							color: color || ('#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0..toString())),
 							name,
 							planes: choosedPlains
 						}))
-						setTimeout(()=>onClose(),1)
+						setTimeout(() => onClose(), 1)
 					}}
 					buttonName='Добавить унификацию'
 				/>
