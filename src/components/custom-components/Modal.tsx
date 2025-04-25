@@ -6,7 +6,8 @@ interface ModalProps {
   onClose: () => void;
   children: ReactNode;
   closeOnOutsideClick?: boolean;
-  width?:number
+  width?:number,
+  button?:React.ReactNode
 }
 
 const Modal = ({
@@ -14,7 +15,8 @@ const Modal = ({
   onClose,
   children,
   closeOnOutsideClick = true,
-  width=300,
+  width=600,
+  button
 }: ModalProps) => {
   // Обработка закрытия по ESC
   useEffect(() => {
@@ -33,18 +35,19 @@ const Modal = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={closeOnOutsideClick ? onClose : undefined}
     >
       <div
-        // className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl "
-		className={`relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl  w-[${width}px]`}
+        className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-xl transform-gpu will-change-transform flex flex-col"
+        style={{ width: `${width}px` }}
         onClick={(e) => e.stopPropagation()}
-      >
+		>
+
         {/* Кнопка закрытия */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500 transition-colors hover:text-gray-700"
+          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
           aria-label="Close modal"
         >
           <svg
@@ -64,7 +67,8 @@ const Modal = ({
         </button>
 
         {/* Контент модалки */}
-        <div className="pr-4">{children}</div>
+        <div className="flex-grow overflow-y-auto pr-4">{children}</div>
+		{button&&<div>{button}</div>}
       </div>
     </div>,
     document.body

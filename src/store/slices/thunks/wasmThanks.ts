@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import init, { convert_sli_xsl_to_json_string, parse_data } from '../../../assets/pkg/rst_build'
-import { WASMDataType } from "../../../types/data.types"
+import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, parse_data } from '../../../assets/pkg/rst_build'
+import { WasmDataJsType, WASMDataType } from "../../../types/data.types"
 export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:string, xlsxData:Uint8Array}>(
 	'users/fetchByIdStatus',
 	async ({sliData, xlsxData} , thunkAPI) => {
@@ -14,4 +14,17 @@ export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:stri
         }
 	}
 )
+export const fetchWasmJSData = createAsyncThunk<WasmDataJsType, undefined>(
+	'data/fetchWasmJsData',
+	async (_, thunkAPI) => {
+        try {
+            await init();
+            const result = get_horizontal_elements_object_js();
+            if (!result) throw new Error('WASM data not ready'); // Добавляем проверку
+            return result as WasmDataJsType;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
+        }
+    }
+);
 

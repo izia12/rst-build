@@ -8,7 +8,7 @@ export const store = configureStore({
 	},
 	middleware: (getDefaultMiddleware) =>   
 		getDefaultMiddleware({  
-			// serializableCheck: false // Отключает проверку сериализуемости   
+			serializableCheck: false // Отключает проверку сериализуемости   
 		  }).concat(), // Если нужно добавить дополнительные middleware, делайте это здесь  
 	// enhancers: [], 
 	devTools: true,  

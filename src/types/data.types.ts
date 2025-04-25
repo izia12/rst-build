@@ -20,3 +20,10 @@ export type TransformedNames = "3DFACES"|"3DFACE_TRIANGLES"|"LINES"
 export type TransformedData={
 	[key in TransformedNames]:Array<number>
 }
+
+export type WasmDataJsType = {
+	[key:string]:{
+		"plates":WASMDataType[],
+		"rods":WASMDataType[],
+	}
+}

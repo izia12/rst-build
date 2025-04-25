@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react'
 
 import './App.css'
-import { fetchWasmData } from './store/slices/thunks/wasmThanks.ts';
-import { useAppDispatch } from './store/store.ts';
+import { fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
+import { useAppDispatch, useAppSelector } from './store/store.ts';
 import Three from './components/Three.tsx';
 import { startPerfomance } from './store/slices/slice.wasm.ts';
 import Quadrilaterals from './components/SVG.tsx';
-import InteractiveCubes from './components/SimpleThree.tsx';
 import Modal from './components/custom-components/Modal.tsx';
-import { Input } from './components/custom-components/Input.tsx';
-import { Select } from './components/custom-components/Select.tsx';
-import { Checkbox } from './components/custom-components/Checkbox.tsx';
+import { UniqeItems } from './components/UniqeItems.tsx';
+import { Loader } from './components/custom-components/Loader.tsx';
+import { Button } from './components/custom-components/Button.tsx';
 
 function App() {
 	const dispatch = useAppDispatch();
 	const [sliInput, setSliInput] = useState<string | null>(null);
 	const [xlsxInput, setXlsxInput] = useState<Uint8Array<ArrayBufferLike> | null>(null);
 	const [isOpen, setIsOpen] = useState(false);
+	const [openForCreateUI, setOpenForCreateUI] = useState(false);
+	const pending = useAppSelector(state=>state.wasm.loading)
 	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const file = event.target?.files?.[0]
 		if (file) {
@@ -45,28 +46,26 @@ function App() {
 	}
 	async function onTwoInputsChange() {
 		if (sliInput && xlsxInput) {
-			dispatch(fetchWasmData({
+			await dispatch(fetchWasmData({
 				sliData: sliInput,
 				xlsxData: xlsxInput
-			}))
-			const perf = performance.now()
-			dispatch(startPerfomance(perf))
+			})).unwrap(); // Добавляем unwrap() для обработки ошибок
+			
+			const perf = performance.now();
+			dispatch(startPerfomance(perf));
+			await dispatch(fetchWasmJSData());
 		}
 	}
 	useEffect(() => {
 		if (sliInput && xlsxInput) {
-			void onTwoInputsChange()
+			void onTwoInputsChange();
 		}
-	})
-	const countries = [
-		{ value: "ru", label: "Russia" },
-		{ value: "us", label: "USA" },
-		{ value: "fr", label: "France" },
-	  ];
+	}, [sliInput, xlsxInput]); // Добавляем зависимости
 	return (
 		<>
 			<div className="container m-auto w-full" >
 				<div role="form w-full">
+					{pending&&<Loader/>}
 					<div className="form-group flex mb-4">
 						{/* <label htmlFor="exampleInputFile">Choose a DXF file</label> */}
 						<div className="flex items-center mx-2">
@@ -112,14 +111,23 @@ function App() {
 						Выбрать унификацию
 					</button>
 
-					<Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-						<Input/>
-						<Select  options={countries}/>
-						<Checkbox checked={true}/>
+					<Modal 
+						isOpen={isOpen} 
+						onClose={() => setIsOpen(false)} 
+						width={1200}
+						button={
+							<Button
+							onClick={()=>setOpenForCreateUI(!openForCreateUI)}
+							classes="absolute bottom-12 right-4 p-2 bg-blue-500 rounded-md shadow-lg hover:shadow-none transition-shadow"  
+							/>
+						}
+						>
+						<UniqeItems openForCreateUI={openForCreateUI} setOpenForCreateUI={setOpenForCreateUI}/>
+
 					</Modal>
-					{/* <Three/> */}
+					<Three/>
 					<Quadrilaterals />
-					<InteractiveCubes />
+					{/* <InteractiveCubes /> */}
 				</div>
 				{/*<FileUploadAndDocxGenerator/>*/}
 				{/*<DiagramGenerator/>*/}
