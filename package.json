@@ -20,7 +20,8 @@
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
     "react-window": "^1.8.11",
-    "three": "^0.172.0"
+    "three": "^0.172.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

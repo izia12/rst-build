@@ -102,7 +102,8 @@ export const {
 	addChosedItems,
 	deleteChoosedItem,
 	addToGroupUniqueItem,
-	deleteGroupUniqueItem
+	deleteGroupUniqueItem,
+	updateUniqueItem
 } = wasmSlice.actions
 
 export default wasmSlice.reducer

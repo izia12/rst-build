@@ -3,7 +3,7 @@ import Modal from './custom-components/Modal'
 import { Button } from './custom-components/Button'
 import { useAppDispatch, useAppSelector } from '../store/store'
 import { addToGroupUniqueItem } from '../store/slices/slice.wasm'
-
+import { v4 as uuidv4 } from 'uuid';
 
 type propsType = {
 	onClose: () => void,
@@ -50,14 +50,14 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 					onClick={() => {
 						console.log(22);
 						dispatch(addToGroupUniqueItem({
-							id: "fff",
+							id: uuidv4(),
 							color: color || ('#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0..toString())),
 							name,
 							planes: choosedPlains
 						}))
 						setTimeout(() => onClose(), 1)
 					}}
-					buttonName='Добавить унификацию'
+					buttonName='Создать унификацию'
 				/>
 			</Modal>
 		</>
