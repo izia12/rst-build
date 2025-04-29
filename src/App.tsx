@@ -19,6 +19,7 @@ function App() {
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const pending = useAppSelector(state=>state.wasm.loading)
 	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+
 		const file = event.target?.files?.[0]
 		if (file) {
 			const reader = new FileReader();
@@ -42,6 +43,7 @@ function App() {
 				}
 			};
 			reader.readAsArrayBuffer(file);
+			
 		}
 	}
 	async function onTwoInputsChange() {
@@ -90,7 +92,7 @@ function App() {
 								<input
 									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
 									type="file"
-									accept=".xlsx"
+									accept=".xlsx,.xls"
 									id="file-input"
 									name="file"
 									onChange={(e) => {

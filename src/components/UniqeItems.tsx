@@ -34,6 +34,10 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 										const choosedAllPlains = selectedPlainsToUnification.map(el => el.planes).flat()
 										return !choosedAllPlains.includes(+el);
 									})
+									.sort(([el,],[el2])=>{
+										if(+el>+el2)return-1
+										else return 1
+									})
 									?.map(([key, value]) => (
 										<UniqeItem
 											key={key}
