@@ -1,6 +1,7 @@
 
 import React, { useCallback, useEffect, useRef } from 'react'
 import * as THREE from 'three'
+//@ts-ignore
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { useAppDispatch, useAppSelector } from '../store/store.ts'
 import { transformLinesPointsIntoArray } from '../helpers/transformLinesPointsIntoArray.ts'

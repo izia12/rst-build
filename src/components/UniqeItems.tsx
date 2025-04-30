@@ -1,9 +1,10 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { useAppSelector } from "../store/store";
 import { UniqeItem } from "./UniqeItem";
 import Choosedplanes from "./Choosedplanes";
 import CreateUniqueItem from "./CreateUniqueItem";
-
+import toBig from "../assets/sort-numeric-alt-down-svgrepo-com.svg"
+import toSmall from "../assets/sort-numeric-up-svgrepo-com.svg"
 type propsType={
 	setOpenForCreateUI:(val:boolean)=>void
 	openForCreateUI:boolean
@@ -13,6 +14,7 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 	const wasmJsData = useAppSelector(state => state.wasm.wasmJsData);
 	const selectedPlainsToUnification = useAppSelector(state => state.wasm.groupUniqueItems)
 	// const [openForCreateUI, setOpenForCreateUI] = useState(false);
+	const [sortToBig, setSortToBig] = useState(false)
 	return (
 		<div className="p-4 relative">
 			<div className=" flex justify-between">
@@ -21,7 +23,17 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 					<table className=" divide-y divide-gray-200 bg-white " style={{ maxWidth: "550px" }}>
 						<thead className="bg-gray-50">
 							<tr>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500"></th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+									<button 
+										onClick={()=>setSortToBig(!sortToBig)} 
+										className="bg-emerald-400"
+										
+										>
+										<img src={sortToBig?toBig:toSmall} alt="" className="w-8"
+											style={{ filter: 'invert(56%) sepia(74%) saturate(4591%) hue-rotate(191deg) brightness(99%) contrast(92%)' }}
+										/>
+									</button>
+								</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Z Name</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Plate Elements</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Rod Elements</th>
@@ -35,7 +47,7 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 										return !choosedAllPlains.includes(+el);
 									})
 									.sort(([el,],[el2])=>{
-										if(+el>+el2)return-1
+										if((+el>+el2) && sortToBig)return-1
 										else return 1
 									})
 									?.map(([key, value]) => (

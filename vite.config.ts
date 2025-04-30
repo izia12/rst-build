@@ -1,7 +1,18 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+          react: ['react', 'react-dom'],
+          controls: ['three/examples/jsm/controls/OrbitControls']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1500
+  }
 })

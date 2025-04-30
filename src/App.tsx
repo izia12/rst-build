@@ -14,7 +14,7 @@ import { Button } from './components/custom-components/Button.tsx';
 function App() {
 	const dispatch = useAppDispatch();
 	const [sliInput, setSliInput] = useState<string | null>(null);
-	const [xlsxInput, setXlsxInput] = useState<Uint8Array<ArrayBufferLike> | null>(null);
+	const [xlsxInput, setXlsxInput] = useState<Uint8Array | null>(null);
 	const [isOpen, setIsOpen] = useState(false);
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const pending = useAppSelector(state=>state.wasm.loading)

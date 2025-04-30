@@ -73,7 +73,7 @@ const FileUploadAndDocxGenerator = () => {
                                             width: 400,
                                             height: 400,
                                         },
-                                        type: 'image/png',
+                                        type: 'png',
                                     }),
                                 ],
                             }),
