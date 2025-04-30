@@ -1,0 +1,27 @@
+[package]
+name = "rst-build"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+image = "0.24"
+wasm-bindgen = "0.2"
+docx-rs = "0.4.17"
+web-sys = { version = "0.3.77", features = ["Blob", "Window", "Document", "console"] }
+js-sys = "0.3.77"
+imageproc = "0.23"
+rusttype = "0.9"
+ordered-float = "2.2"
+#from parse
+dxf = "0.6"
+serde_json = "1.0.133"
+serde = { version = "1.0.215", features = ["derive"] }
+uuid = { version = "1.14", features = ["js"] }
+quick-xml = { version = "0.37.2", features = ["serialize"] }
+# getrandom = { version = "0.3.1", features = ["js"] }
+calamine = "0.26.1"
+xml = "0.8.20"
+[lib]
+crate-type = ["cdylib", "rlib"]
+[package.metadata.wasm-pack]
+wasm-opt = false

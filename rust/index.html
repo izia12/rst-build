@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	
+<head>
+    <script type="module">
+        import init, { create_docx, process_files } from './pkg/rst_build.js';
+		import * as wasm from "./pkg/rst_build.js";
+		window.onload = async function() {
+			await init();
+			let sli_file=null;
+			let xlsx_file=null;
+			document.getElementById("xlsx").addEventListener("change", function (event) {
+				const file = event.target.files[0];
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload = function() {
+					const uint8Array = new Uint8Array(reader.result);
+					xlsx_file = uint8Array
+				};
+				reader.readAsArrayBuffer(file);
+			},)
+			document.getElementById("sli").addEventListener("change", function (event) {
+				const file = event.target.files[0];
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload =  function() {
+					// const uint8Array = file.text().catch(e=>console.log(e));
+					file.text().then(res=>{
+						sli_file = res
+					})
+				};
+				reader.readAsArrayBuffer(file);
+			})
+			document.getElementById('generate').addEventListener('click', async function(event) {
+				// console.log( sli_file, xlsx_file);
+				if(!sli_file || !xlsx_file) {
+					console.log(sli_file, xlsx_file);
+					alert("Add files");
+					return;
+				}else{
+					const docxData = create_docx(sli_file, xlsx_file );
+					const blob = new Blob([docxData], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+					const link = document.createElement('a');
+					link.href = URL.createObjectURL(blob);
+					// link.download = 'processed.dxf';
+					link.download = 'processed.docx';
+					link.click();
+				}
+
+		// 	const jsonString = process_files(sli_file, xlsx_file);
+		//   const data = JSON.parse(jsonString);
+		// 		console.log(data);
+				
+		//   data.forEach(entity => {
+		//     entity.vertices.forEach(vertex => {
+		//       console.log(`Координаты: x = ${vertex.x}, y = ${vertex.y}`);
+		//     });
+		//   });
+			
+		if (window.outerWidth - window.innerWidth > 100) {
+			alert("Developer tools detected!");
+			// Disable the application or take other actions
+		}
+    });
+};
+	window.addEventListener('keydown', e=>{
+		if (e.key=="F12" ||( e.ctrlKey&&e.shiftKey&&e.key==="I".toLowerCase())){
+			e.preventDefault()
+		}
+	})
+	document.addEventListener('keydown', e=>{
+		if (e.key=="F12" ||( e.ctrlKey&&e.shiftKey&&(e.key==="I"||e.key==="i"))){
+			e.stopPropagation();
+			e.preventDefault()
+		}
+	})
+	document.addEventListener("contextmenu", t=>{
+		t.preventDefault()
+		return false;
+	})
+    </script>
+</head>
+<body>
+	<input type="file" name="sli" id="sli" accept=".sli">
+	<input type="file" name="xlsx" id="xlsx" accept=".xlsx">
+<button id="generate">Generate DOCX</button>
+</body>
+</html>
