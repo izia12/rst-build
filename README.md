@@ -30,6 +30,7 @@ export default tseslint.config({
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
 ```js
+
 // eslint.config.js
 import react from 'eslint-plugin-react'
 
@@ -48,3 +49,10 @@ export default tseslint.config({
   },
 })
 ```
+# Компиляция из папки rust в папку assets
+## Необходимо запустить команду 
+```
+npm run build:wasm
+```
+таким образом нет необходимости удалять вручную старый результат компиляции rust кода (pkg) и добавлять новый
+система автоматически заменит старый на новый

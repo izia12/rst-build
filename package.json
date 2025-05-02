@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:wasm": "cd rust && wasm-pack build --target web --out-dir ../src/assets/pkg"
+
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
