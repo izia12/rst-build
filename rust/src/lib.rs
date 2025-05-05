@@ -1,4 +1,3 @@
-
 use std::{cell::RefCell, collections::HashMap, ops::Deref};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut, draw_polygon, draw_polygon_mut, Canvas};
@@ -18,6 +17,7 @@ pub mod libs{
 	pub mod drawItem;
 	pub mod createDxf;
 	pub mod getTransformedObject;
+	pub mod unification_data;
 }
 
 #[wasm_bindgen]
@@ -256,5 +256,20 @@ fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Draw_Item
 				.data.push(item); // Здесь теперь item перемещается, а не заимствуется
 		}
 	}
+    map
+}
+
+fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
+    let mut map: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> = HashMap::new();
+
+    for item in data1.into_iter() {
+        let z0 = item.vertices[0].z;
+        if item.vertices.iter().all(|v| v.z == z0) {
+            let z = OrderedFloat(z0 as f32);
+            map.entry(z)
+                .or_insert_with(Vec::new)
+                .push(item);
+        }
+    }
     map
 }
