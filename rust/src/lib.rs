@@ -1,7 +1,7 @@
 use std::{cell::RefCell, collections::HashMap, ops::Deref};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut, draw_polygon, draw_polygon_mut, Canvas};
-use libs::{createDxf::{create_dxf_entity_xlsx, create_dxf_file}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}};
+use libs::{createDxf::{create_dxf_entity_xlsx, create_dxf_file}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
 use web_sys::{console,};
@@ -272,4 +272,24 @@ fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<
         }
     }
     map
+}
+#[wasm_bindgen]
+pub fn get_changed_row_data(planes: JsValue)->String{
+	use serde_wasm_bindgen::{from_value, to_value};
+    // Десериализация JsValue в Vec<f32>
+    let planes_vec: Vec<f32> = from_value(planes)
+        .map_err(|e| JsValue::from_str(&format!("Ошибка десериализации: {}", e))).expect("msg");
+	let data = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+	string_log_two_params(&serde_json::to_string(&data).expect("f"), &String::from("Это из глобал стора данные"));
+
+	let sorted_data = sort_by_same_z(data);
+	string_log_two_params(&serde_json::to_string(&sorted_data).expect("f"), &String::from("Это отсортированные данные"));
+	let changed_row_data = unification_data(planes_vec, sorted_data,"hi");
+	string_log_two_params(&serde_json::to_string(&changed_row_data).expect("f"), &String::from("Это уже измененные данные"));
+	serde_json::to_string(&changed_row_data).expect("f")
 }

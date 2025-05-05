@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::libs::parse::EntityWithXlsx;
+use crate::{libs::parse::EntityWithXlsx, string_log_two_params};
 use ordered_float::OrderedFloat;
 
 pub fn unification_data(
@@ -7,36 +7,43 @@ pub fn unification_data(
     data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>,
     group_name: &str
 ) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
+	string_log_two_params(&serde_json::to_string(&planes.len()).expect("f"), &String::from("Это длина"));
+
     let mut result = HashMap::new();
 
     // Проходим по всем z значениям из planes
     for plane_z in planes {
         let plane_z_ordered = OrderedFloat(plane_z);
-        
+		string_log_two_params(&serde_json::to_string(&plane_z_ordered).expect("f"), &String::from("Это этажи z"));
+
         // Ищем соответствующую группу сущностей
         if let Some(entities) = data.get(&plane_z_ordered) {
+			string_log_two_params(&serde_json::to_string(&entities.len()).expect("f"), &String::from("Это значения хешмапа"));
+			string_log_two_params(&serde_json::to_string(&plane_z_ordered).expect("f"), &String::from("Это это привязанное ключ z к каждому значению"));
             let mut processed_entities = Vec::new();
-            
             // Группируем сущности по совпадающим x,y координатам
             let mut xy_groups: HashMap<(OrderedFloat<f32>, OrderedFloat<f32>), Vec<&EntityWithXlsx>> = HashMap::new();
-            
             for entity in entities {
                 // Проверяем, что все вершины имеют одинаковые x,y
                 if let Some(first_vertex) = entity.vertices.first() {
-                    let xy = (OrderedFloat(first_vertex.x as f32), OrderedFloat(first_vertex.y as f32));
-                    
+					let xy = (OrderedFloat(first_vertex.x as f32), OrderedFloat(first_vertex.y as f32));
+					string_log_two_params(&serde_json::to_string(&first_vertex.x).expect("f"), &String::from("Это первое x"));
+					string_log_two_params(&serde_json::to_string(&first_vertex.y).expect("f"), &String::from("Это первое y"));
                     // Проверяем, что все остальные вершины имеют те же x,y
                     if entity.vertices.iter().all(|v| 
                         OrderedFloat(v.x as f32) == xy.0 && 
                         OrderedFloat(v.y as f32) == xy.1
                     ) {
+						string_log_two_params("", &String::from("Все значения которые соответстуют x y"));
+
                         xy_groups.entry(xy)
                             .or_insert_with(Vec::new)
                             .push(entity);
                     }
                 }
             }
-            
+			string_log_two_params(&serde_json::to_string(&xy_groups.len()).expect("f"), &String::from("Это найденные xy длина"));
+
             // Для каждой группы с одинаковыми x,y находим максимальное as1
             for (_, group) in xy_groups {
                 if group.len() > 1 {
@@ -51,8 +58,9 @@ pub fn unification_data(
                         ))
                         .max_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
                         .unwrap_or(0.0);
-                    
                     // Создаем новые сущности с обновленными значениями as1
+					string_log_two_params(&serde_json::to_string(&max_as1).expect("f"), &String::from("Это максимум as1"));
+
                     let mut new_group = Vec::new();
                     for entity in group {
                         let mut new_entity = entity.clone();
@@ -61,18 +69,20 @@ pub fn unification_data(
                         }
                         new_group.push(new_entity);
                     }
-                    
                     processed_entities.extend(new_group);
                 } else {
+					string_log_two_params("", &String::from(" Если в группе только одна сущность, добавляем её без изменений"));
+
                     // Если в группе только одна сущность, добавляем её без изменений
                     processed_entities.extend(group.into_iter().cloned());
                 }
             }
-            
             result.insert(plane_z_ordered, processed_entities);
-        }
+        }else {
+			string_log_two_params("", &String::from("Никаких сущностей не найдено"));
+
+		}
     }
-    
     result
 }
 

@@ -250,7 +250,7 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
 
     for sheet_name in sheet_names {
         let range = workbook.worksheet_range(&sheet_name).map_err(|e| e.to_string())?;
-        string_log_two_params(&sheet_name, &String::from("Название листа"));
+        // string_log_two_params(&sheet_name, &String::from("Название листа"));
 
         let mut current_row: Option<RowData> = None;
         
@@ -259,7 +259,7 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
             let row_debug: Vec<String> = row.iter().enumerate().map(|(i, cell)| {
                 format!("Col{}: {}", i+1, cell.to_string())
             }).collect();
-            string_log_two_params(&row_debug.join(" | "), &format!("Строка {}", row_idx + 1));
+            // string_log_two_params(&row_debug.join(" | "), &format!("Строка {}", row_idx + 1));
 
             // Обработка ID
             let id = match row.get(0) {
@@ -267,7 +267,7 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
                 Some(Data::Int(i)) => *i as usize,
                 Some(Data::String(s)) => s.parse().unwrap_or(0),
                 _ => {
-                    string_log_two_params("", &String::from("Пропуск строки с невалидным ID"));
+                    // string_log_two_params("", &String::from("Пропуск строки с невалидным ID"));
                     continue;
                 }
             };
