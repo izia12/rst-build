@@ -1,7 +1,7 @@
 
 import React, { useCallback, useEffect, useRef } from 'react'
 import * as THREE from 'three'
-//@ts-ignore
+//@ts-expect-error this library is exists but ts shows an error
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { useAppDispatch, useAppSelector } from '../store/store.ts'
 import { transformLinesPointsIntoArray } from '../helpers/transformLinesPointsIntoArray.ts'
@@ -100,10 +100,8 @@ const ThreeScene = () => {
 	// Обработка данных
 	const processData = useCallback((data: WASMDataType[]) => {
 		if (!sceneRef.current) return
-
 		// Очистка предыдущих объектов
 		sceneRef.current.clear()
-
 		const geometryGroups = {
 			LINES: [] as number[],
 			'3DFACE_TRIANGLES': [] as number[],
