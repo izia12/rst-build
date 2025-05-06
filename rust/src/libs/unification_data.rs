@@ -30,8 +30,8 @@ pub fn unification_data(
 					string_log_two_params(&serde_json::to_string(&first_vertex.x).expect("f"), &String::from("Это первое x"));
 					string_log_two_params(&serde_json::to_string(&first_vertex.y).expect("f"), &String::from("Это первое y"));
                     // Проверяем, что все остальные вершины имеют те же x,y
-                    if entity.vertices.iter().all(|v| 
-                        OrderedFloat(v.x as f32) == xy.0 && 
+                    if entity.vertices.iter().all(|v|
+                        OrderedFloat(v.x as f32) == xy.0 &&
                         OrderedFloat(v.y as f32) == xy.1
                     ) {
 						string_log_two_params("", &String::from("Все значения которые соответстуют x y"));

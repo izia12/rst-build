@@ -286,9 +286,11 @@ pub fn get_changed_row_data(planes: JsValue)->String{
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
 	string_log_two_params(&serde_json::to_string(&data).expect("f"), &String::from("Это из глобал стора данные"));
+	string_log_two_params("-----------", &String::from("Это пробел жду отсортированные данные"));
 
 	let sorted_data = sort_by_same_z(data);
 	string_log_two_params(&serde_json::to_string(&sorted_data).expect("f"), &String::from("Это отсортированные данные"));
+	string_log_two_params("-----------", &String::from("Это пробелы и должны вывестись выше отсортированные данные"));
 	let changed_row_data = unification_data(planes_vec, sorted_data,"hi");
 	string_log_two_params(&serde_json::to_string(&changed_row_data).expect("f"), &String::from("Это уже измененные данные"));
 	serde_json::to_string(&changed_row_data).expect("f")
