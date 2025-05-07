@@ -1,87 +1,96 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, hash_map::DefaultHasher};
+use std::hash::{Hash, Hasher};
 use crate::{libs::parse::EntityWithXlsx, string_log_two_params};
 use ordered_float::OrderedFloat;
+
+impl EntityWithXlsx {
+    fn shape_hash(&self) -> u64 {
+        let mut hasher = DefaultHasher::new();
+        // Сортируем вершины по координатам перед хешированием
+        let mut sorted_vertices: Vec<_> = self.vertices.iter()
+            .map(|v| (OrderedFloat(v.x), OrderedFloat(v.y)))
+            .collect();
+        sorted_vertices.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+        for (x, y) in sorted_vertices {
+            x.hash(&mut hasher);
+            y.hash(&mut hasher);
+        }
+        hasher.finish()
+    }
+}
 
 pub fn unification_data(
     planes: Vec<f32>,
     data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>,
     group_name: &str
 ) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
-	string_log_two_params(&serde_json::to_string(&planes.len()).expect("f"), &String::from("Это длина"));
-
     let mut result = HashMap::new();
-
-    // Проходим по всем z значениям из planes
-    for plane_z in planes {
-        let plane_z_ordered = OrderedFloat(plane_z);
-		string_log_two_params(&serde_json::to_string(&plane_z_ordered).expect("f"), &String::from("Это этажи z"));
-
-        // Ищем соответствующую группу сущностей
-        if let Some(entities) = data.get(&plane_z_ordered) {
-			string_log_two_params(&serde_json::to_string(&entities.len()).expect("f"), &String::from("Это значения хешмапа"));
-			string_log_two_params(&serde_json::to_string(&plane_z_ordered).expect("f"), &String::from("Это это привязанное ключ z к каждому значению"));
-            let mut processed_entities = Vec::new();
-            // Группируем сущности по совпадающим x,y координатам
-            let mut xy_groups: HashMap<(OrderedFloat<f32>, OrderedFloat<f32>), Vec<&EntityWithXlsx>> = HashMap::new();
+    let mut shape_map: HashMap<u64, Vec<&EntityWithXlsx>> = HashMap::new();
+    // Сбор сущностей по z-уровням
+    for z in planes.iter().map(|z| OrderedFloat(*z)) {
+        if let Some(entities) = data.get(&z) {
             for entity in entities {
-                // Проверяем, что все вершины имеют одинаковые x,y
-                if let Some(first_vertex) = entity.vertices.first() {
-					let xy = (OrderedFloat(first_vertex.x as f32), OrderedFloat(first_vertex.y as f32));
-					string_log_two_params(&serde_json::to_string(&first_vertex.x).expect("f"), &String::from("Это первое x"));
-					string_log_two_params(&serde_json::to_string(&first_vertex.y).expect("f"), &String::from("Это первое y"));
-                    // Проверяем, что все остальные вершины имеют те же x,y
-                    if entity.vertices.iter().all(|v|
-                        OrderedFloat(v.x as f32) == xy.0 &&
-                        OrderedFloat(v.y as f32) == xy.1
-                    ) {
-						string_log_two_params("", &String::from("Все значения которые соответстуют x y"));
+                shape_map.entry(entity.shape_hash()).or_default().push(entity);
+            }
+        }
+    }
+    // Обработка групп
+    for (plane_z, entities) in data.iter() {
+        if !planes.contains(plane_z) { continue; }
+        let mut processed = Vec::new();
+        
+        for entity in entities {
+            if let Some(group) = shape_map.get(&entity.shape_hash()) {
+                // Вычисление максимального as1
+                let max_as1 = group.iter()
+                    .filter_map(|e| e.row.as_ref())
+                    .flat_map(|r| r.as1.iter())
+                    .max_by(|a, b| a.partial_cmp(b).unwrap())
+                    .copied()
+                    .unwrap_or(0.0);
 
-                        xy_groups.entry(xy)
-                            .or_insert_with(Vec::new)
-                            .push(entity);
+                // Логирование исходных данных
+                string_log_two_params("----Before Change-----", &String::from(group_name));
+                for e in group {
+                    if let Some(row) = &e.row {
+                        let vertices = e.vertices.iter()
+                            .map(|v| format!("({}, {})", v.x, v.y))
+                            .collect::<Vec<_>>()
+                            .join(" ");
+                        string_log_two_params(
+                            &format!(
+                                "EntityWithXlsx id={} z={} as1={}\ncommon xy = {}",
+                                row.id, e.vertices[0].z, row.as1[0], vertices
+                            ),
+                            &String::from(group_name)
+                        );
+                    }
+                }
+
+                // Обновление сущности
+                let mut new_entity = entity.clone();
+                if let Some(row) = &mut new_entity.row {
+                    row.as1 = vec![max_as1];
+                }
+                processed.push(new_entity);
+
+                // Логирование изменений
+                string_log_two_params("----After Change-----", &String::from(group_name));
+                for e in group {
+                    if let Some(row) = &e.row {
+                        string_log_two_params(
+                            &format!(
+                                "EntityWithXlsx id={} z={} as1={}",
+                                row.id, e.vertices[0].z, max_as1
+                            ),
+                            &String::from(group_name)
+                        );
                     }
                 }
             }
-			string_log_two_params(&serde_json::to_string(&xy_groups.len()).expect("f"), &String::from("Это найденные xy длина"));
-
-            // Для каждой группы с одинаковыми x,y находим максимальное as1
-            for (_, group) in xy_groups {
-                if group.len() > 1 {
-                    // Находим максимальное значение as1 в группе
-                    let max_as1 = group.iter()
-                        .filter_map(|e| e.row.as_ref().map(|r| 
-                            r.as1.iter()
-                                .map(|&x| OrderedFloat(x))
-                                .max()
-                                .map(|x| x.into_inner())
-                                .unwrap_or(0.0)
-                        ))
-                        .max_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
-                        .unwrap_or(0.0);
-                    // Создаем новые сущности с обновленными значениями as1
-					string_log_two_params(&serde_json::to_string(&max_as1).expect("f"), &String::from("Это максимум as1"));
-
-                    let mut new_group = Vec::new();
-                    for entity in group {
-                        let mut new_entity = entity.clone();
-                        if let Some(row) = &mut new_entity.row {
-                            row.as1 = vec![max_as1];
-                        }
-                        new_group.push(new_entity);
-                    }
-                    processed_entities.extend(new_group);
-                } else {
-					string_log_two_params("", &String::from(" Если в группе только одна сущность, добавляем её без изменений"));
-
-                    // Если в группе только одна сущность, добавляем её без изменений
-                    processed_entities.extend(group.into_iter().cloned());
-                }
-            }
-            result.insert(plane_z_ordered, processed_entities);
-        }else {
-			string_log_two_params("", &String::from("Никаких сущностей не найдено"));
-
-		}
+        }
+        result.insert(*plane_z, processed);
     }
     result
 }
@@ -133,7 +142,6 @@ mod tests {
         // Тестируем функцию
         let planes = vec![1.0, 2.0];
         let result = unification_data(planes, data, "test_group");
-
         // Проверяем результаты
         // Для z = 1.0
         if let Some(entities) = result.get(&OrderedFloat(1.0)) {
@@ -141,7 +149,6 @@ mod tests {
             let matching_entities: Vec<_> = entities.iter()
                 .filter(|e| e.vertices[0].x == 1.0 && e.vertices[0].y == 1.0)
                 .collect();
-            
             assert_eq!(matching_entities.len(), 2);
             assert!(matching_entities.iter().all(|e| 
                 e.row.as_ref().unwrap().as1[0] == 20.0
