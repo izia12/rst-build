@@ -27,67 +27,81 @@ pub fn unification_data(
 ) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
     let mut result = HashMap::new();
     let mut shape_map: HashMap<u64, Vec<&EntityWithXlsx>> = HashMap::new();
-    // Сбор сущностей по z-уровням
-    for z in planes.iter().map(|z| OrderedFloat(*z)) {
-        if let Some(entities) = data.get(&z) {
-            for entity in entities {
-                shape_map.entry(entity.shape_hash()).or_default().push(entity);
-            }
+    
+    // Собираем все сущности с одинаковой геометрией, но только для указанных planes
+    for (z, entities) in data.iter() {
+        if !planes.contains(z) { continue; }
+        for entity in entities {
+            shape_map.entry(entity.shape_hash()).or_default().push(entity);
         }
     }
-    // Обработка групп
+
+    // Обработка по z-уровням
     for (plane_z, entities) in data.iter() {
         if !planes.contains(plane_z) { continue; }
-        let mut processed = Vec::new();
         
+        let mut processed = Vec::new();
         for entity in entities {
             if let Some(group) = shape_map.get(&entity.shape_hash()) {
-                // Вычисление максимального as1
-                let max_as1 = group.iter()
+                // Вычисление абсолютных максимумов
+                let (max_as1, max_as2, max_as3, max_as4) = group.iter()
                     .filter_map(|e| e.row.as_ref())
-                    .flat_map(|r| r.as1.iter())
-                    .max_by(|a, b| a.partial_cmp(b).unwrap())
-                    .copied()
-                    .unwrap_or(0.0);
+                    .fold((f64::MIN, f64::MIN, f64::MIN, f64::MIN),
+                        |(a1, a2, a3, a4), row| (
+                            row.as1.first().copied().unwrap_or(f64::MIN).max(a1),
+                            row.as2.first().copied().unwrap_or(f64::MIN).max(a2),
+                            row.as3.first().copied().unwrap_or(f64::MIN).max(a3),
+                            row.as4.first().copied().unwrap_or(f64::MIN).max(a4)
+                        ));
 
-                // Логирование исходных данных
+                // Логирование исходных значений ДО изменений
                 string_log_two_params("----Before Change-----", &String::from(group_name));
                 for e in group {
                     if let Some(row) = &e.row {
-                        let vertices = e.vertices.iter()
-                            .map(|v| format!("({}, {})", v.x, v.y))
-                            .collect::<Vec<_>>()
-                            .join(" ");
                         string_log_two_params(
                             &format!(
-                                "EntityWithXlsx id={} z={} as1={}\ncommon xy = {}",
-                                row.id, e.vertices[0].z, row.as1[0], vertices
+                                "EntityWithXlsx id={} z={} as1={} as2={} as3={} as4={}",
+                                row.id, e.vertices[0].z, row.as1[0], row.as2[0], row.as3[0], row.as4[0]
                             ),
                             &String::from(group_name)
                         );
                     }
                 }
+                let vertices = group[0].vertices.iter()
+                    .map(|v| format!("({}, {})", v.x, v.y))
+                    .collect::<Vec<_>>()
+                    .join(" ");
+                string_log_two_params(
+                    &format!("common xy = {} = hi", vertices),
+                    &String::from(group_name)
+                );
 
-                // Обновление сущности
-                let mut new_entity = entity.clone();
-                if let Some(row) = &mut new_entity.row {
-                    row.as1 = vec![max_as1];
-                }
-                processed.push(new_entity);
-
-                // Логирование изменений
-                string_log_two_params("----After Change-----", &String::from(group_name));
+                // Создаем обновленные сущности для всей группы
+                string_log_two_params("----After Change --------", &String::from(group_name));
                 for e in group {
-                    if let Some(row) = &e.row {
+                    let mut new_entity = (*e).clone();
+                    if let Some(row) = &mut new_entity.row {
+                        row.as1 = vec![max_as1.max(0.0)];
+                        row.as2 = vec![max_as2.max(0.0)];
+                        row.as3 = vec![max_as3.max(0.0)];
+                        row.as4 = vec![max_as4.max(0.0)];
+                    }
+
+                    if let Some(row) = &new_entity.row {
                         string_log_two_params(
                             &format!(
-                                "EntityWithXlsx id={} z={} as1={}",
-                                row.id, e.vertices[0].z, max_as1
+                                "EntityWithXlsx id={} z={} as1={} as2={} as3={} as4={} = hi",
+                                row.id, new_entity.vertices[0].z, row.as1[0], row.as2[0], row.as3[0], row.as4[0]
                             ),
                             &String::from(group_name)
                         );
                     }
+                    processed.push(new_entity);
                 }
+                string_log_two_params(
+                    &format!("common xy = {} = hi", vertices),
+                    &String::from(group_name)
+                );
             }
         }
         result.insert(*plane_z, processed);

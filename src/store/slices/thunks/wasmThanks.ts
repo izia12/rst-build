@@ -8,7 +8,8 @@ export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:stri
 			await init()
 			parse_data(sliData, xlsxData)
 			const changedData = await get_changed_row_data([8.3,11.6,14.9])
-			console.log(changedData);
+			console.log(changedData, "Changed Data");
+
 			return JSON.parse(convert_sli_xsl_to_json_string())
         } catch (error) {
             // Если ошибка не является экземпляром AxiosError или нет ответа, просто возвращаем ошибку как есть
