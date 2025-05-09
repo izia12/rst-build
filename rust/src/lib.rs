@@ -1,7 +1,7 @@
 use std::{cell::RefCell, collections::HashMap, ops::Deref};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut, draw_polygon, draw_polygon_mut, Canvas};
-use libs::{createDxf::{create_dxf_entity_xlsx, create_dxf_file}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
+use libs::{createDxf::{create_dxf_after_change, create_dxf_entity_xlsx, create_dxf_file}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
 use web_sys::{console,};
@@ -273,8 +273,13 @@ fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<
     }
     map
 }
+#[derive(Serialize)]
+struct DxfFiles {
+    original_dxf: Vec<u8>,
+    modified_dxf: Vec<u8>,
+}
 #[wasm_bindgen]
-pub fn get_changed_row_data(planes: JsValue)->String{
+pub fn get_changed_row_data(planes: JsValue)-> Vec<u8>{
 	use serde_wasm_bindgen::{from_value, to_value};
     // Десериализация JsValue в Vec<f32>
     let planes_vec: Vec<f32> = from_value(planes)
@@ -285,13 +290,17 @@ pub fn get_changed_row_data(planes: JsValue)->String{
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-	string_log_two_params(&serde_json::to_string(&data).expect("f"), &String::from("Это из глобал стора данные"));
-	string_log_two_params("-----------", &String::from("Это пробел жду отсортированные данные"));
 
 	let sorted_data = sort_by_same_z(data);
-	string_log_two_params(&serde_json::to_string(&sorted_data).expect("f"), &String::from("Это отсортированные данные"));
-	string_log_two_params("-----------", &String::from("Это пробелы и должны вывестись выше отсортированные данные"));
+	let original_dxf = create_dxf_after_change(sorted_data.clone());
 	let changed_row_data = unification_data(planes_vec, sorted_data,"hi");
-	string_log_two_params(&serde_json::to_string(&changed_row_data).expect("f"), &String::from("Это уже измененные данные"));
-	serde_json::to_string(&changed_row_data).expect("f")
+	let modified_dxf = create_dxf_after_change(changed_row_data);
+
+    // Объединяем файлы в одну структуру
+	let mut combined = Vec::new();
+    combined.extend_from_slice(&(original_dxf.len() as u32).to_le_bytes());
+    combined.extend(original_dxf);
+    combined.extend(modified_dxf);
+    
+    combined
 }
