@@ -19,6 +19,7 @@ function App() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const pending = useAppSelector(state => state.wasm.loading)
+	const choosedPlanesFromList = useAppSelector(state=>state.wasm.choosedPlainsFromList);
 	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>) {
 
 		const file = event.target?.files?.[0]
@@ -49,7 +50,7 @@ function App() {
 	}
 	const handleSaveDxf = async () => {
 		try {
-			const data = await get_changed_row_data([8.3, 11.6, 14.9]);
+			const data = await get_changed_row_data(choosedPlanesFromList);
 			const combinedData = new Uint8Array(data);
 			
 			// Читаем размер оригинального файла
@@ -150,6 +151,7 @@ function App() {
 						Выбрать унификацию
 					</button>
 					<button
+						disabled={choosedPlanesFromList.length===0}
 						onClick={handleSaveDxf}
 						className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ml-2"
 					>

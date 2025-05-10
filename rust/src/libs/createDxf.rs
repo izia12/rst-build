@@ -1,12 +1,14 @@
 use std::collections::HashMap;
 use std::fs::File;
 
+use crate::string_log_two_params;
+
 use super::drawItem::Draw_Item_Z;
 use super::parse::EntityWithXlsx;
 use std::io::{self, Cursor, Read};
 
 use dxf::enums::{HorizontalTextJustification, VerticalTextJustification};
-use dxf::{entities::*, Drawing, Vector};
+use dxf::{entities::*, Color, Drawing, Vector};
 use dxf::Point;
 use ordered_float::OrderedFloat;
 
@@ -105,8 +107,15 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
                         Point::new(entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z),
                         Point::new(entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z),
                     );
-                    drawing.add_entity(Entity::new(EntityType::Face3D(face3d)));
-
+					if entity.changed==true {
+						string_log_two_params(&format!("{}", serde_json::json!(entity)), &String::from("This changed"));
+						let mut face_entity = Entity::new(EntityType::Face3D(face3d.clone()));
+						face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
+						drawing.add_entity(face_entity);
+					}else {
+						drawing.add_entity(Entity::new(EntityType::Face3D(face3d)));
+					}
+					// 1 - красный цвет в DXF
                     // Добавляем текст с значениями as1-as4
                     if let Some(row) = &entity.row {
                         // Вычисляем центр фигуры для размещения текста
@@ -114,47 +123,74 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
                         let center_y = (entity.vertices[0].y + entity.vertices[2].y) / 2.0;
                         let z = entity.vertices[0].z;
 
-                        // Создаем текстовые надписи
-                        let text_content = format!(
-                            "as1:{:.1}\nas2:{:.1}\nas3:{:.1}\nas4:{:.1}",
-                            row.as1[0], row.as2[0], row.as3[0], row.as4[0]
-                        );
-                        // let text = Text::new(
-                        //     Point::new(center_x, center_y, z),
-                        //     1.0, // высота текста
-                        //     text_content
-                        // );
-						// let text = Text::default(point:Point::new(center_x, center_y, z));
-						let normal = Vector::new(
-							(entity.vertices[1].y - entity.vertices[0].y) * (entity.vertices[2].z - entity.vertices[0].z) - 
-							(entity.vertices[1].z - entity.vertices[0].z) * (entity.vertices[2].y - entity.vertices[0].y),
-							(entity.vertices[1].z - entity.vertices[0].z) * (entity.vertices[2].x - entity.vertices[0].x) - 
-							(entity.vertices[1].x - entity.vertices[0].x) * (entity.vertices[2].z - entity.vertices[0].z),
-							(entity.vertices[1].x - entity.vertices[0].x) * (entity.vertices[2].y - entity.vertices[0].y) - 
-							(entity.vertices[1].y - entity.vertices[0].y) * (entity.vertices[2].x - entity.vertices[0].x)
-						);
-						let length = (normal.x.powi(2) + normal.y.powi(2) + normal.z.powi(2)).sqrt();
-							let normal = if length > 0.0 {
-							    Vector::new(normal.x / length, normal.y / length, normal.z / length)
-							} else {
-							    Vector::z_axis()
-							};
-						let text = Text{
-							thickness:0.5,
-							location: Point::new(center_x, center_y , z), // ,
-							text_height:0.05,
-							value: String::from(text_content),
-							rotation: 0.0,
-							relative_x_scale_factor: 1.0,
-							oblique_angle: 0.0,
-							text_style_name: String::from("STANDARD"),
-							text_generation_flags: 0,
-							horizontal_text_justification: HorizontalTextJustification::Center,
-							second_alignment_point: Point::origin(),
-							normal,
-							vertical_text_justification: VerticalTextJustification::Middle,
-						};
-                        drawing.add_entity(Entity::new(EntityType::Text(text)));
+                        // Создаем отдельные текстовые надписи для каждого значения
+                        let as1_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y + 0.15, z),
+                            text_height: 0.05,
+                            value: format!("as1:{:.1}", row.as1[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as1_text)));
+                        
+                        let as2_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y + 0.05, z),
+                            text_height: 0.05,
+                            value: format!("as2:{:.1}", row.as2[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as2_text)));
+                        
+                        let as3_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y - 0.05, z),
+                            text_height: 0.05,
+                            value: format!("as3:{:.1}", row.as3[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as3_text)));
+                        
+                        let as4_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y - 0.15, z),
+                            text_height: 0.05,
+                            value: format!("as4:{:.1}", row.as4[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as4_text)));
                     }
                 },
                 3 => {
@@ -164,7 +200,16 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
                         Point::new(entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z),
                         Point::new(entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z),
                     );
-                    drawing.add_entity(Entity::new(EntityType::Face3D(face3d)));
+					if entity.changed==true {
+						string_log_two_params(&format!("{}", serde_json::json!(entity)), &String::from("This changed"));
+						let mut face_entity = Entity::new(EntityType::Face3D(face3d.clone()));
+						face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
+						drawing.add_entity(face_entity);
+					}
+					else {
+						drawing.add_entity(Entity::new(EntityType::Face3D(face3d)));
+					}
+					// 1 - красный цвет в DXF
 
                     // Добавляем текст с значениями as1-as4 для треугольника
                     if let Some(row) = &entity.row {
@@ -172,40 +217,74 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
                         let center_y = (entity.vertices[0].y + entity.vertices[1].y + entity.vertices[2].y) / 3.0;
                         let z = entity.vertices[0].z;
 
-                        let text_content = format!(
-                            "as1:{:.1}\nas2:{:.1}\nas3:{:.1}\nas4:{:.1}",
-                            row.as1[0], row.as2[0], row.as3[0], row.as4[0]
-                        );
-						let normal = Vector::new(
-							(entity.vertices[1].y - entity.vertices[0].y) * (entity.vertices[2].z - entity.vertices[0].z) - 
-							(entity.vertices[1].z - entity.vertices[0].z) * (entity.vertices[2].y - entity.vertices[0].y),
-							(entity.vertices[1].z - entity.vertices[0].z) * (entity.vertices[2].x - entity.vertices[0].x) - 
-							(entity.vertices[1].x - entity.vertices[0].x) * (entity.vertices[2].z - entity.vertices[0].z),
-							(entity.vertices[1].x - entity.vertices[0].x) * (entity.vertices[2].y - entity.vertices[0].y) - 
-							(entity.vertices[1].y - entity.vertices[0].y) * (entity.vertices[2].x - entity.vertices[0].x)
-						);
-						let length = (normal.x.powi(2) + normal.y.powi(2) + normal.z.powi(2)).sqrt();
-							let normal = if length > 0.0 {
-							    Vector::new(normal.x / length, normal.y / length, normal.z / length)
-							} else {
-							    Vector::z_axis()
-							};
-						let text = Text{
-							thickness:0.5,
-							location: Point::new(center_x , center_y , z), // ,
-							text_height:0.05,
-							value: String::from(text_content),
-							rotation: 0.0,
-							relative_x_scale_factor: 1.0,
-							oblique_angle: 0.0,
-							text_style_name: String::from("STANDARD"),
-							text_generation_flags: 0,
-							horizontal_text_justification: HorizontalTextJustification::Left,
-							second_alignment_point: Point::origin(),
-							normal,
-							vertical_text_justification: VerticalTextJustification::Baseline,
-						};
-                        drawing.add_entity(Entity::new(EntityType::Text(text)));
+                        // Создаем отдельные текстовые надписи для каждого значения
+                        let as1_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y + 0.15, z),
+                            text_height: 0.05,
+                            value: format!("as1:{:.1}", row.as1[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as1_text)));
+                        
+                        let as2_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y + 0.05, z),
+                            text_height: 0.05,
+                            value: format!("as2:{:.1}", row.as2[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as2_text)));
+                        
+                        let as3_text = Text{
+							thickness: 0.0,
+                            location: Point::new(center_x, center_y - 0.05, z),
+                            text_height: 0.05,
+                            value: format!("as3:{:.1}", row.as3[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as3_text)));
+                        
+                        let as4_text = Text{
+                            thickness: 0.0,
+                            location: Point::new(center_x, center_y - 0.15, z),
+                            text_height: 0.05,
+                            value: format!("as4:{:.1}", row.as4[0]),
+                            rotation: 0.0,
+                            relative_x_scale_factor: 1.0,
+                            oblique_angle: 0.0,
+                            text_style_name: String::from("STANDARD"),
+                            text_generation_flags: 0,
+                            horizontal_text_justification: HorizontalTextJustification::Left,
+                            second_alignment_point: Point::origin(),
+                            normal: Vector::z_axis(),
+                            vertical_text_justification: VerticalTextJustification::Baseline,
+                        };
+                        drawing.add_entity(Entity::new(EntityType::Text(as4_text)));
                     }
                 },
                 2 => {

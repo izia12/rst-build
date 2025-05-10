@@ -47,8 +47,13 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 										return !choosedAllPlains.includes(+el);
 									})
 									.sort(([el,],[el2])=>{
-										if((+el>+el2) && sortToBig)return-1
-										else return 1
+										if(sortToBig){
+											if((+el>+el2) )return 1
+											else return -1
+										}else{
+											if((+el>+el2))return -1
+											else return 1
+										}
 									})
 									?.map(([key, value]) => (
 										<UniqeItem

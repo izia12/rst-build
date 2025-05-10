@@ -51,6 +51,7 @@ pub struct EntityWithXlsx {
     pub entity_type: String,
     pub vertices: Vec<Vertex>,
     pub row: Option<RowData >,
+	pub changed:bool
 }
  impl EntityWithXlsx {
     pub fn get_value(&self, field: &str) -> Option<Vec<f64>> {
@@ -629,6 +630,7 @@ pub fn convert_sli_xsl_to_json(sli_data: &str, data: &[u8]) -> Vec<EntityWithXls
 				entity_type: entity.entity_type.clone(),
 				vertices: entity.vertices.clone(),
 				row: Some(row.clone()),
+				changed:false
 			})
 		}else{
 			entities_with_xlsx.push(
@@ -636,6 +638,7 @@ pub fn convert_sli_xsl_to_json(sli_data: &str, data: &[u8]) -> Vec<EntityWithXls
 					entity_type:"hello".to_string(),
 					vertices:entity.vertices.clone(),
 					row:Some(RowData { id: (4294967295), as1: vec!(0.0,0.0), as2: vec!(0.0,0.0), as3: vec!(0.0,0.0), as4: vec!(0.0,0.0) }),
+					changed:false
 				}
 			);
 		};
