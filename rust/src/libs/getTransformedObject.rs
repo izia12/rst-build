@@ -1,6 +1,6 @@
-use std::{cmp::Ordering, collections::HashMap};
+use std:: collections::HashMap;
 
-use js_sys::{Array, Error, Map, Object, Reflect};
+use js_sys::{Array, Object, Reflect};
 use ordered_float::OrderedFloat;
 use wasm_bindgen::{ prelude::wasm_bindgen, JsValue};
 use crate::GLOBAL_ENTITIES;

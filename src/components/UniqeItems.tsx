@@ -27,9 +27,8 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 									<button 
 										onClick={()=>setSortToBig(!sortToBig)} 
 										className="bg-emerald-400"
-										
 										>
-										<img src={sortToBig?toBig:toSmall} alt="" className="w-8"
+										<img src={sortToBig?toSmall:toBig} alt="" className="w-8"
 											style={{ filter: 'invert(56%) sepia(74%) saturate(4591%) hue-rotate(191deg) brightness(99%) contrast(92%)' }}
 										/>
 									</button>

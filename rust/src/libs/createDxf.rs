@@ -1,11 +1,10 @@
 use std::collections::HashMap;
-use std::fs::File;
 
 use crate::string_log_two_params;
 
-use super::drawItem::Draw_Item_Z;
+use super::drawItem::DrawItemZ;
 use super::parse::EntityWithXlsx;
-use std::io::{self, Cursor, Read};
+use std::io:: Cursor;
 
 use dxf::enums::{HorizontalTextJustification, VerticalTextJustification};
 use dxf::{entities::*, Color, Drawing, Vector};
@@ -55,9 +54,9 @@ for item in data{
     // Сохраняем файл
 
 }
-pub fn create_dxf_entity_xlsx(data:HashMap<OrderedFloat<f32>, Draw_Item_Z>)->Vec<u8>{
+pub fn create_dxf_entity_xlsx(data:HashMap<OrderedFloat<f32>, DrawItemZ>)->Vec<u8>{
 	let mut drawing = Drawing::new();
-	for (key, item_z) in data{
+	for (_, item_z) in data{
 		for v in item_z.data{
 			if v.vertices.len()==4{
 				let face3d = Face3D::new(

@@ -1,15 +1,15 @@
-use std::{cell::RefCell, collections::HashMap, ops::Deref};
+use std::{cell::RefCell, collections::HashMap};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
-use imageproc::drawing::{draw_line_segment_mut, draw_text_mut, draw_polygon, draw_polygon_mut, Canvas};
-use libs::{createDxf::{create_dxf_after_change, create_dxf_entity_xlsx, create_dxf_file}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
+use imageproc::drawing::{draw_line_segment_mut, draw_text_mut};
+use libs::{createDxf::create_dxf_after_change, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
-use web_sys::{console,};
+use web_sys::console;
 use imageproc::point::Point;
 use wasm_bindgen::prelude::*;
 use docx_rs::{Docx, Paragraph, Pic, Run};
 use serde::{Serialize, Deserialize};
-use libs::drawItem::Draw_Item_Z;
+use libs::drawItem::DrawItemZ;
 use ordered_float::OrderedFloat;
 
 pub mod libs{
@@ -45,7 +45,6 @@ thread_local! {
 #[wasm_bindgen]//ТОчка входа в и вызызова с JS
 pub fn parse_data(sli_data: &str, xlsx_data: &[u8]) {
     let parsed = convert_sli_xsl_to_json(sli_data, xlsx_data);
-	
     GLOBAL_ENTITIES.with(|cell| *cell.borrow_mut() = Some(parsed));
 }
 
@@ -100,7 +99,6 @@ pub fn create_docx(sli_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
 					)
 			);
 		}
-
 	}
 	let mut buffer = Cursor::new(Vec::new());
 	match doc.build().pack( &mut buffer) {
@@ -244,15 +242,15 @@ pub fn new_draw_polygon(data: Vec<EntityWithXlsx>) -> Vec<u8> {
 //     map
 // }
 
-fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Draw_Item_Z> {
-    let mut map: HashMap<OrderedFloat<f32>, Draw_Item_Z> = HashMap::new();
+fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
+    let mut map: HashMap<OrderedFloat<f32>, DrawItemZ> = HashMap::new();
 
     for item in data1.into_iter() {
 		let z0 = item.vertices[0].z;
 		if item.vertices.iter().all(|v| v.z == z0) {
 			let z = OrderedFloat(z0 as f32);
 			map.entry(z)
-				.or_insert_with(|| Draw_Item_Z { data: Vec::new() })
+				.or_insert_with(|| DrawItemZ { data: Vec::new() })
 				.data.push(item); // Здесь теперь item перемещается, а не заимствуется
 		}
 	}
@@ -273,14 +271,9 @@ fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<
     }
     map
 }
-#[derive(Serialize)]
-struct DxfFiles {
-    original_dxf: Vec<u8>,
-    modified_dxf: Vec<u8>,
-}
 #[wasm_bindgen]
 pub fn get_changed_row_data(planes: JsValue)-> Vec<u8>{
-	use serde_wasm_bindgen::{from_value, to_value};
+	use serde_wasm_bindgen::from_value;
     // Десериализация JsValue в Vec<f32>
     let planes_vec: Vec<f32> = from_value(planes)
         .map_err(|e| JsValue::from_str(&format!("Ошибка десериализации: {}", e))).expect("msg");
@@ -301,6 +294,5 @@ pub fn get_changed_row_data(planes: JsValue)-> Vec<u8>{
     combined.extend_from_slice(&(original_dxf.len() as u32).to_le_bytes());
     combined.extend(original_dxf);
     combined.extend(modified_dxf);
-    
     combined
 }

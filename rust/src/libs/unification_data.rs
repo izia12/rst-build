@@ -1,6 +1,6 @@
 use std::collections::{HashMap, hash_map::DefaultHasher};
 use std::hash::{Hash, Hasher};
-use crate::{libs::parse::EntityWithXlsx, string_log_two_params};
+use crate::libs::parse::EntityWithXlsx;
 use ordered_float::OrderedFloat;
 
 impl EntityWithXlsx {
@@ -53,12 +53,6 @@ pub fn unification_data(
                                 row.as3.first().copied().unwrap_or(f64::MIN).max(a3),
                                 row.as4.first().copied().unwrap_or(f64::MIN).max(a4)
                             ));
-
-                    // Логирование исходных значений ДО изменений
-                   
-
-                    // Создаем обновленные сущности для всей группы
-                    // string_log_two_params("----After Change --------", &String::from(group_name));
                     for e in group {
                         let mut new_entity = (*e).clone();
                         new_entity.changed = true;
@@ -70,7 +64,6 @@ pub fn unification_data(
                         }
                         processed.push(new_entity);
                     }
-                    
                 }
             }
             result.insert(*plane_z, processed);
