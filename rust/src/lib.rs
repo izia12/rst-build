@@ -1,7 +1,7 @@
 use std::{cell::RefCell, collections::HashMap};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut};
-use libs::{createDxf::create_dxf_after_change, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
+use libs::{createDxf::{create_dxf_after_change, create_simple_dxf_with_block,}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
 use web_sys::console;
@@ -18,6 +18,7 @@ pub mod libs{
 	pub mod createDxf;
 	pub mod getTransformedObject;
 	pub mod unification_data;
+	// pub mod create_simple_dxf_with_block;
 }
 
 #[wasm_bindgen]
@@ -283,16 +284,16 @@ pub fn get_changed_row_data(planes: JsValue)-> Vec<u8>{
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-
+	
 	let sorted_data = sort_by_same_z(data);
 	let original_dxf = create_dxf_after_change(sorted_data.clone());
 	let changed_row_data = unification_data(planes_vec, sorted_data,"hi");
 	let modified_dxf = create_dxf_after_change(changed_row_data);
-
     // Объединяем файлы в одну структуру
 	let mut combined = Vec::new();
     combined.extend_from_slice(&(original_dxf.len() as u32).to_le_bytes());
     combined.extend(original_dxf);
     combined.extend(modified_dxf);
     combined
+
 }

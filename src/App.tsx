@@ -12,6 +12,7 @@ import { Loader } from './components/custom-components/Loader.tsx';
 import { Button } from './components/custom-components/Button.tsx';
 import { get_changed_row_data } from './assets/pkg/rst_build';
 
+
 function App() {
 	const dispatch = useAppDispatch();
 	const [sliInput, setSliInput] = useState<string | null>(null);
@@ -51,6 +52,7 @@ function App() {
 	const handleSaveDxf = async () => {
 		try {
 			const data = await get_changed_row_data(choosedPlanesFromList);
+			
 			const combinedData = new Uint8Array(data);
 			
 			// Читаем размер оригинального файла
@@ -151,7 +153,7 @@ function App() {
 						Выбрать унификацию
 					</button>
 					<button
-						disabled={choosedPlanesFromList.length===0}
+						// disabled={choosedPlanesFromList.length===0}
 						onClick={handleSaveDxf}
 						className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ml-2"
 					>
