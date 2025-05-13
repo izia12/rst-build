@@ -54,22 +54,22 @@ function App() {
 			const data = await get_changed_row_data(choosedPlanesFromList);
 			
 			const combinedData = new Uint8Array(data);
+			let offset = 0;
 			
-			// Читаем размер оригинального файла
-			const sizeView = new DataView(combinedData.buffer);
-			const originalSize = sizeView.getUint32(0, true);
-			
-			// Извлекаем оригинальный DXF
-			const originalDxf = combinedData.slice(4, 4 + originalSize);
-			
-			// Извлекаем измененный DXF
-			const modifiedDxf = combinedData.slice(4 + originalSize);
-			
-			// Сохраняем оба файла
-			saveFile(originalDxf, 'original.dxf');
-			await new Promise(resolve => setTimeout(resolve, 50));
-			saveFile(modifiedDxf, 'modified.dxf');
-			
+			for (let i = 0; i < 4; i++) {
+				// Чтение размера файла
+				const sizeView = new DataView(combinedData.buffer, offset, 4);
+				const fileSize = sizeView.getUint32(0, true);
+				offset += 4;
+				
+				// Извлечение DXF файла
+				const dxfFile = combinedData.slice(offset, offset + fileSize);
+				offset += fileSize;
+				
+				// Сохранение файла
+				saveFile(dxfFile, `as${i+1}.dxf`);
+				await new Promise(resolve => setTimeout(resolve, 50));
+			}
 		} catch (error) {
 			console.error('Ошибка сохранения:', error);
 		}
