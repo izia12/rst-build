@@ -1,7 +1,4 @@
 use std::collections::HashMap;
-
-use crate::string_log_two_params;
-
 use super::drawItem::DrawItemZ;
 use super::parse::EntityWithXlsx;
 use std::io:: Cursor;
@@ -10,8 +7,6 @@ use dxf::enums::{HorizontalTextJustification, VerticalTextJustification};
 use dxf::{entities::*, Block, Color, Drawing, Vector};
 use dxf::Point;
 use ordered_float::OrderedFloat;
-use wasm_bindgen::prelude::wasm_bindgen;
-
 
 
 pub fn create_dxf_file (data:Vec<EntityWithXlsx>)->Vec<u8>{
@@ -140,7 +135,6 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
             extension_data_groups: Vec::new(),
             x_data: Vec::new(),
         };
-        
         // Сначала собираем все измененные элементы в блок
         for (_z, entities) in data.iter() {
             for entity in entities {
@@ -153,7 +147,6 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
                                 Point::new(entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z),
                                 Point::new(entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z),
                             );
-                            
                             let mut face_entity = Entity::new(EntityType::Face3D(face3d));
                             face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
                             changed_elements_block.entities.push(face_entity);
@@ -345,7 +338,6 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
 
 pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>, as_index: usize) -> Vec<u8> {
     let mut drawing = Drawing::new();
-    
     // Создаем один общий блок для всех измененных элементов
     let block_name = format!("CHANGED_ELEMENTS_AS{}", as_index + 1);
     let mut changed_elements_block = Block {
@@ -362,7 +354,6 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
         extension_data_groups: Vec::new(),
         x_data: Vec::new(),
     };
-    
     // Сначала собираем все измененные элементы в блок
     for (_z, entities) in data.iter() {
         for entity in entities {
@@ -375,17 +366,14 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z),
                             Point::new(entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z),
                         );
-                        
                         let mut face_entity = Entity::new(EntityType::Face3D(face3d));
                         face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
                         changed_elements_block.entities.push(face_entity);
-                        
                         // Добавляем только один текст с соответствующим значением as
                         if let Some(row) = &entity.row {
                             let center_x = (entity.vertices[0].x + entity.vertices[2].x) / 2.0;
                             let center_y = (entity.vertices[0].y + entity.vertices[2].y) / 2.0;
                             let z = entity.vertices[0].z;
-                            
                             // Выбираем только один параметр в зависимости от индекса файла
                             let as_value = match as_index {
                                 0 => row.as1[0],
@@ -394,7 +382,6 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                                 3 => row.as4[0],
                                 _ => 0.0,
                             };
-                            
                             let as_name = format!("as{}", as_index + 1);
                             changed_elements_block.entities.push(create_text_entity(
                                 center_x, center_y, z, 0.0, 
@@ -409,17 +396,14 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z),
                             Point::new(entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z),
                         );
-                        
                         let mut face_entity = Entity::new(EntityType::Face3D(face3d));
                         face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
                         changed_elements_block.entities.push(face_entity);
-                        
                         // Добавляем только один текст с соответствующим значением as
                         if let Some(row) = &entity.row {
                             let center_x = (entity.vertices[0].x + entity.vertices[1].x + entity.vertices[2].x) / 3.0;
                             let center_y = (entity.vertices[0].y + entity.vertices[1].y + entity.vertices[2].y) / 3.0;
                             let z = entity.vertices[0].z;
-                            
                             // Выбираем только один параметр в зависимости от индекса файла
                             let as_value = match as_index {
                                 0 => row.as1[0],
@@ -428,7 +412,6 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                                 3 => row.as4[0],
                                 _ => 0.0,
                             };
-                            
                             let as_name = format!("as{}", as_index + 1);
                             changed_elements_block.entities.push(create_text_entity(
                                 center_x, center_y, z, 0.0, 
@@ -450,11 +433,9 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
             }
         }
     }
-    
     // Добавляем блок в чертеж, если в нем есть элементы
     if !changed_elements_block.entities.is_empty() {
         drawing.add_block(changed_elements_block);
-        
         // Создаем вставку блока и добавляем ее в чертеж
         let insert = Insert {
             name: String::from(&block_name),
@@ -474,7 +455,6 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
         };
         drawing.add_entity(Entity::new(EntityType::Insert(insert)));
     }
-    
     // Теперь добавляем все неизмененные элементы напрямую в чертеж
     for (_z, entities) in data.iter() {
         for entity in entities {
@@ -488,13 +468,11 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z),
                         );
                         drawing.add_entity(Entity::new(EntityType::Face3D(face3d)));
-                        
                         // Добавляем только один текст с соответствующим значением as
                         if let Some(row) = &entity.row {
                             let center_x = (entity.vertices[0].x + entity.vertices[2].x) / 2.0;
                             let center_y = (entity.vertices[0].y + entity.vertices[2].y) / 2.0;
                             let z = entity.vertices[0].z;
-                            
                             // Выбираем только один параметр в зависимости от индекса файла
                             let as_value = match as_index {
                                 0 => row.as1[0],
@@ -503,7 +481,6 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                                 3 => row.as4[0],
                                 _ => 0.0,
                             };
-                            
                             let as_name = format!("as{}", as_index + 1);
                             drawing.add_entity(create_text_entity(
                                 center_x, center_y, z, 0.0, 
@@ -519,13 +496,11 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z),
                         );
                         drawing.add_entity(Entity::new(EntityType::Face3D(face3d)));
-                        
                         // Добавляем только один текст с соответствующим значением as
                         if let Some(row) = &entity.row {
                             let center_x = (entity.vertices[0].x + entity.vertices[1].x + entity.vertices[2].x) / 3.0;
                             let center_y = (entity.vertices[0].y + entity.vertices[1].y + entity.vertices[2].y) / 3.0;
                             let z = entity.vertices[0].z;
-                            
                             // Выбираем только один параметр в зависимости от индекса файла
                             let as_value = match as_index {
                                 0 => row.as1[0],
@@ -557,13 +532,11 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
 
     let mut buffer = Cursor::new(Vec::new());
     drawing.save(&mut buffer).expect("Ошибка записи DXF");
-    
     buffer.into_inner()
 }
 
 pub fn create_simple_dxf_with_block() -> Vec<u8> {
     let mut drawing = Drawing::new();
-    
     // Создаем блок
     let block_name = "SIMPLE_BLOCK";
     let mut simple_block = Block {
@@ -580,7 +553,6 @@ pub fn create_simple_dxf_with_block() -> Vec<u8> {
         extension_data_groups: Vec::new(),
         x_data: Vec::new(),
     };
-    
     // Добавляем линии в блок
     let line1 = Line::new(
         Point::new(0.0, 0.0, 0.0),
@@ -589,7 +561,6 @@ pub fn create_simple_dxf_with_block() -> Vec<u8> {
     let mut line1_entity = Entity::new(EntityType::Line(line1));
     line1_entity.common.color = Color::from_index(1); // Красный
     simple_block.entities.push(line1_entity);
-    
     let line2 = Line::new(
         Point::new(0.0, 1.0, 0.0),
         Point::new(1.0, 0.0, 0.0),
@@ -597,7 +568,6 @@ pub fn create_simple_dxf_with_block() -> Vec<u8> {
     let mut line2_entity = Entity::new(EntityType::Line(line2));
     line2_entity.common.color = Color::from_index(2); // Желтый
     simple_block.entities.push(line2_entity);
-    
     // Добавляем 3D грани в блок
     let face1 = Face3D::new(
         Point::new(0.0, 0.0, 0.0),

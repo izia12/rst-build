@@ -284,21 +284,16 @@ pub fn get_changed_row_data(planes: JsValue) -> Vec<u8> {
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
     let sorted_data = sort_by_same_z(data);
     let changed_row_data = unification_data(planes_vec, sorted_data, "hi");
-    
     // Создаем 4 DXF файла для as1, as2, as3, as4
     let mut combined = Vec::new();
-    
     for as_index in 0..4 {
         // Создаем DXF файл для конкретного параметра as
         let dxf_file = libs::createDxf::create_dxf_for_specific_as(changed_row_data.clone(), as_index);
-        
         // Добавляем размер файла и сам файл в общий массив
         combined.extend_from_slice(&(dxf_file.len() as u32).to_le_bytes());
         combined.extend(dxf_file);
     }
-    
     combined
 }
