@@ -3,7 +3,8 @@ use super::drawItem::DrawItemZ;
 use super::parse::EntityWithXlsx;
 use std::io:: Cursor;
 
-use dxf::enums::{HorizontalTextJustification, VerticalTextJustification};
+use dxf::enums::{AcadVersion, HorizontalTextJustification, VerticalTextJustification};
+use dxf::tables::Layer;
 use dxf::{entities::*, Block, Color, Drawing, Vector};
 use dxf::Point;
 use ordered_float::OrderedFloat;
@@ -338,6 +339,12 @@ pub fn create_dxf_after_change(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXl
 
 pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>, as_index: usize) -> Vec<u8> {
     let mut drawing = Drawing::new();
+	let mut sum_layers:Vec<String> = Vec::new();
+	// let layer =Layer {
+	// 	name:format!("{}-{}",b_or_d_str, h_or_d_str),
+	// 	color: Color::from_index(2),
+	// 	..Default::default()
+	// };
     // Создаем один общий блок для всех измененных элементов
     let block_name = format!("CHANGED_ELEMENTS_AS{}", as_index + 1);
     let mut changed_elements_block = Block {
@@ -367,6 +374,25 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z),
                         );
                         let mut face_entity = Entity::new(EntityType::Face3D(face3d));
+						if entity.material.as_ref().unwrap().sg_type!=None{
+							let sg_type = entity.material.clone().unwrap().sg_type.unwrap().to_ascii_lowercase();
+							// Исправляем ошибку: используем b_or_d для первой переменной
+							let b_or_d_str = format!("{}", entity.material.clone().unwrap().b_or_d.unwrap_or(0.0));
+						    let h_or_d_str = format!("{}", entity.material.clone().unwrap().h_or_d.unwrap_or(0.0));
+							face_entity.common.layer = format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str);
+							if !sum_layers.contains(&format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str)){
+								sum_layers.push(format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str));
+							}
+							// Используем простой формат без String::from
+						}else{
+							// Исправляем форматирование для второго случая
+							let material_num = entity.material.clone().unwrap().material_num.unwrap_or(0);
+							let h_str =  String::from("14-0.15");
+							face_entity.common.layer = format!("{}-{}",material_num, h_str);
+							if !sum_layers.contains(&format!("{}-{}",material_num, h_str)){
+								sum_layers.push(format!("{}-{}",material_num, h_str));
+							}
+						}
                         face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
                         changed_elements_block.entities.push(face_entity);
                         // Добавляем только один текст с соответствующим значением as
@@ -397,6 +423,25 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z),
                         );
                         let mut face_entity = Entity::new(EntityType::Face3D(face3d));
+						if entity.material.as_ref().unwrap().sg_type!=None{
+							let sg_type = entity.material.clone().unwrap().sg_type.unwrap().to_ascii_lowercase();
+							// Исправляем ошибку: используем b_or_d для первой переменной
+							let b_or_d_str = format!("{}", entity.material.clone().unwrap().b_or_d.unwrap_or(0.0));
+						    let h_or_d_str = format!("{}", entity.material.clone().unwrap().h_or_d.unwrap_or(0.0));
+							face_entity.common.layer = format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str);
+							if !sum_layers.contains(&format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str)){
+								sum_layers.push(format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str));
+							}
+							// Используем простой формат без String::from
+						}else{
+							// Исправляем форматирование для второго случая
+							let material_num = entity.material.clone().unwrap().material_num.unwrap_or(0);
+							let h_str =  String::from("14-0.15");
+							face_entity.common.layer = format!("{}-{}",material_num, h_str);
+							if !sum_layers.contains(&format!("{}-{}",material_num, h_str)){
+								sum_layers.push(format!("{}-{}",material_num, h_str));
+							}
+						}
                         face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
                         changed_elements_block.entities.push(face_entity);
                         // Добавляем только один текст с соответствующим значением as
@@ -424,9 +469,28 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
                             Point::new(entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z),
                             Point::new(entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z),
                         );
-                        let mut line_entity = Entity::new(EntityType::Line(line));
-                        line_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
-                        changed_elements_block.entities.push(line_entity);
+                        let mut face_entity = Entity::new(EntityType::Line(line));
+						if entity.material.as_ref().unwrap().sg_type!=None{
+							let sg_type = entity.material.clone().unwrap().sg_type.unwrap().to_ascii_lowercase();
+							// Исправляем ошибку: используем b_or_d для первой переменной
+							let b_or_d_str = format!("{}", entity.material.clone().unwrap().b_or_d.unwrap_or(0.0));
+						    let h_or_d_str = format!("{}", entity.material.clone().unwrap().h_or_d.unwrap_or(0.0));
+							face_entity.common.layer = format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str);
+							if !sum_layers.contains(&format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str)){
+								sum_layers.push(format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str));
+							}
+							// Используем простой формат без String::from
+						}else{
+							// Исправляем форматирование для второго случая
+							let material_num = entity.material.clone().unwrap().material_num.unwrap_or(0);
+							let h_str =  String::from("14-0.15");
+							face_entity.common.layer = format!("{}-{}",material_num, h_str);
+							if !sum_layers.contains(&format!("{}-{}",material_num, h_str)){
+								sum_layers.push(format!("{}-{}",material_num, h_str));
+							}
+						}
+                        face_entity.common.color = Color::from_index(1); // 1 - красный цвет в DXF
+                        changed_elements_block.entities.push(face_entity);
                     },
                     _ => {}
                 }
@@ -454,6 +518,14 @@ pub fn create_dxf_for_specific_as(data: HashMap<OrderedFloat<f32>, Vec<EntityWit
             __attributes_and_handles: Vec::new(),
         };
         drawing.add_entity(Entity::new(EntityType::Insert(insert)));
+		for layer_item in sum_layers{
+			let layer =Layer {
+					name:layer_item,
+					color: Color::from_index(2),
+					..Default::default()
+				};
+			drawing.add_layer(layer);
+		}
     }
     // Теперь добавляем все неизмененные элементы напрямую в чертеж
     for (_z, entities) in data.iter() {

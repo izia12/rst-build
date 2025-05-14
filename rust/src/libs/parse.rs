@@ -1,5 +1,5 @@
 
-use std::{collections::HashMap, fs, path::Path};
+use std::{collections::HashMap, fs, path::Path, u32};
 use dxf::Drawing;
 // use image::io::Reader;
 use serde::{Serialize, Deserialize};
@@ -25,6 +25,7 @@ pub struct SerializableEntity {
     pub layer: String,
     pub color_id: i32,
     pub node_id: usize,
+    pub material_num: Option<usize>,
 }
 
 
@@ -39,11 +40,21 @@ pub struct RowData {
 
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Material {
+    pub material_num: Option<usize>,
+    pub sg_type: Option<String>,
+    pub b_or_d: Option<f64>,
+    pub h_or_d: Option<f64>,
+    pub h: Option<f64>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EntityWithXlsx {
     pub entity_type: String,
     pub vertices: Vec<Vertex>,
-    pub row: Option<RowData >,
-	pub changed:bool
+    pub row: Option<RowData>,
+    pub changed: bool,
+    pub material: Option<Material>,
 }
  impl EntityWithXlsx {
     pub fn get_value(&self, field: &str) -> Option<Vec<f64>> {
@@ -57,70 +68,70 @@ pub struct EntityWithXlsx {
     }
 }
 // #[wasm_bindgen]
-pub fn dxf_to_json(dxf_data: &str) -> String {
-    let mut cursor = Cursor::new(dxf_data);
-    let drawing = Drawing::load(&mut cursor).expect("Failed to parse DXF data");
+// pub fn dxf_to_json(dxf_data: &str) -> String {
+//     let mut cursor = Cursor::new(dxf_data);
+//     let drawing = Drawing::load(&mut cursor).expect("Failed to parse DXF data");
 
-    // Collecting all entities
-    let entities: Vec<SerializableEntity> = drawing.entities().filter_map(|entity| {
-        match entity.specific {
-            // Handle LINE entities
-            dxf::entities::EntityType::Line(ref line) => Some(SerializableEntity {
-                entity_type: "LINE".to_string(),
-                vertices: vec![
-                    Vertex {
-                        x: line.p1.x,
-                        y: line.p1.y,
-                        z: line.p1.z,
-                    },
-                    Vertex {
-                        x: line.p2.x,
-                        y: line.p2.y,
-                        z: line.p2.z,
-                    },
-                ],
-                handle: entity.common.handle.clone().as_string(),
-                layer: entity.common.layer.clone(),
-                color_id: 0,
-                node_id: 0,
-            }),
-            // Handle 3DFACE entities
-            dxf::entities::EntityType::Face3D(ref face3d) => Some(SerializableEntity {
-                entity_type: "3DFACE".to_string(),
-                vertices: vec![
-                    Vertex {
-                        x: face3d.first_corner.x,
-                        y: face3d.first_corner.y,
-                        z: face3d.first_corner.z,
-                    },
-                    Vertex {
-                        x: face3d.second_corner.x,
-                        y: face3d.second_corner.y,
-                        z: face3d.second_corner.z,
-                    },
-                    Vertex {
-                        x: face3d.third_corner.x,
-                        y: face3d.third_corner.y,
-                        z: face3d.third_corner.z,
-                    },
-                    Vertex {
-                        x: face3d.fourth_corner.x,
-                        y: face3d.fourth_corner.y,
-                        z: face3d.fourth_corner.z,
-                    },
-                ],
-                handle: entity.common.handle.clone().as_string(),
-                layer: entity.common.layer.clone(),
-                color_id: 0,
-                node_id: 0,
-            }),
-            _ => None, // Ignore other types of entities
-        }
-    }).collect();
-    // Convert the entities into a JSON string
-    serde_json::to_string(&entities).expect("Failed to serialize to JSON")
+//     // Collecting all entities
+//     let entities: Vec<SerializableEntity> = drawing.entities().filter_map(|entity| {
+//         match entity.specific {
+//             // Handle LINE entities
+//             dxf::entities::EntityType::Line(ref line) => Some(SerializableEntity {
+//                 entity_type: "LINE".to_string(),
+//                 vertices: vec![
+//                     Vertex {
+//                         x: line.p1.x,
+//                         y: line.p1.y,
+//                         z: line.p1.z,
+//                     },
+//                     Vertex {
+//                         x: line.p2.x,
+//                         y: line.p2.y,
+//                         z: line.p2.z,
+//                     },
+//                 ],
+//                 handle: entity.common.handle.clone().as_string(),
+//                 layer: entity.common.layer.clone(),
+//                 color_id: 0,
+//                 node_id: 0,
+//             }),
+//             // Handle 3DFACE entities
+//             dxf::entities::EntityType::Face3D(ref face3d) => Some(SerializableEntity {
+//                 entity_type: "3DFACE".to_string(),
+//                 vertices: vec![
+//                     Vertex {
+//                         x: face3d.first_corner.x,
+//                         y: face3d.first_corner.y,
+//                         z: face3d.first_corner.z,
+//                     },
+//                     Vertex {
+//                         x: face3d.second_corner.x,
+//                         y: face3d.second_corner.y,
+//                         z: face3d.second_corner.z,
+//                     },
+//                     Vertex {
+//                         x: face3d.third_corner.x,
+//                         y: face3d.third_corner.y,
+//                         z: face3d.third_corner.z,
+//                     },
+//                     Vertex {
+//                         x: face3d.fourth_corner.x,
+//                         y: face3d.fourth_corner.y,
+//                         z: face3d.fourth_corner.z,
+//                     },
+//                 ],
+//                 handle: entity.common.handle.clone().as_string(),
+//                 layer: entity.common.layer.clone(),
+//                 color_id: 0,
+//                 node_id: 0,
+//             }),
+//             _ => None, // Ignore other types of entities
+//         }
+//     }).collect();
+//     // Convert the entities into a JSON string
+//     serde_json::to_string(&entities).expect("Failed to serialize to JSON")
 
-}
+// }
 
 // #[wasm_bindgen]
 pub fn sli_to_json(data: &str, tolerance: Option<f64>) -> String {
@@ -150,6 +161,7 @@ pub fn sli_to_json(data: &str, tolerance: Option<f64>) -> String {
                             "2" => String::from("3DFACE"),
                             _ => String::from("UNKNOWN"),
                         };
+                        let material_num = attributes.iter().find(|attr| attr.name.local_name == "Material").unwrap().value.parse::<usize>().unwrap();
                         let entity = SerializableEntity{
                             entity_type,
                             vertices: vec![],
@@ -157,6 +169,7 @@ pub fn sli_to_json(data: &str, tolerance: Option<f64>) -> String {
                             layer: "".to_string(),
                             color_id: 0,
                             node_id,
+							material_num:Some(material_num),
                         };
                         entities.push(
                             entity
@@ -295,12 +308,15 @@ fn parse_column(row: &[Data], index: usize) -> Vec<f64> {
         }
     )
 }
-pub fn get_indexes(data: &str) -> Vec<SerializableEntity> {
+pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Material>) {
     let cursor = Cursor::new(data);
     let parser = EventReader::new(cursor);
     let mut points: Vec<Vertex> = Vec::new();
     let mut entities: Vec<SerializableEntity> = Vec::new();
+    let mut materials: HashMap<usize, Material> = HashMap::new();
     let mut node_id = 0;
+    let mut in_materials_array = false;
+    let mut current_material_num: Option<usize> = None;
     for e in parser {
         match e {
             Ok(XmlEvent::StartElement { name, attributes,  ..}) => {
@@ -320,6 +336,10 @@ pub fn get_indexes(data: &str) -> Vec<SerializableEntity> {
                             "2" => String::from("3DFACE"),
                             _ => String::from("UNKNOWN"),
                         };
+                        let material_num = attributes.iter()
+                            .find(|attr| attr.name.local_name == "Material")
+                            .and_then(|attr| attr.value.parse::<usize>().ok());
+                        
                         let entity = SerializableEntity{
                             entity_type,
                             vertices: vec![],
@@ -327,12 +347,13 @@ pub fn get_indexes(data: &str) -> Vec<SerializableEntity> {
                             layer: "".to_string(),
                             color_id: 0,
                             node_id,
-
+                            material_num,
                         };
                         entities.push(
                             entity
                         )
                     },
+
                     "Nodes" => {
                         let node_indexes = attributes.iter().map(|attr| attr.value.parse::<usize>().unwrap()).collect::<Vec<usize>>();
                         if let Some(entity) = entities.iter_mut().last() {
@@ -349,40 +370,83 @@ pub fn get_indexes(data: &str) -> Vec<SerializableEntity> {
                             };
                         }
                     }
+					"MaterialsArray" => {
+                        in_materials_array = true;
+                    },
+                    "Material" => {
+                        let num = attributes.iter().find(|attr| attr.name.local_name == "Num").unwrap().value.parse::<usize>().unwrap();
+                        
+                        let h = attributes.iter().find(|attr| attr.name.local_name == "H").unwrap().value.parse::<f64>().unwrap();
+                        
+                        current_material_num = Some(num);
+                        
+                        materials.insert(num, Material {
+                            material_num: Some(num),
+                            sg_type: None,
+                            b_or_d: None,
+                            h_or_d: None,
+                            h:Some(h),
+                        });
+                    },
+                    "SectGeom" if current_material_num.is_some() => {
+                        let sg_type = attributes.iter()
+                            .find(|attr| attr.name.local_name == "SGType")
+                            .map(|attr| attr.value.clone());
+                        
+                        let b_or_d = attributes.iter()
+                            .find(|attr| attr.name.local_name == "b_OR_D")
+                            .and_then(|attr| attr.value.parse::<f64>().ok());
+                        
+                        let h_or_d = attributes.iter()
+                            .find(|attr| attr.name.local_name == "h_OR_d")
+                            .and_then(|attr| attr.value.parse::<f64>().ok());
+                        
+                        if let Some(num) = current_material_num {
+                            if let Some(material) = materials.get_mut(&num) {
+                                material.sg_type = sg_type;
+                                material.b_or_d = b_or_d;
+                                material.h_or_d = h_or_d;
+                            }
+                        }
+                    },
                     _ => {}
                 }
             }
-            Ok(XmlEvent::EndElement {..}) => {}
+			Ok(XmlEvent::EndElement { name }) => {},
             Err(e) => {
                 eprintln!("Error: {e}");
                 break;
-            }
+            },
             _ => {}
         }
     }
-    entities
+	(entities, materials)
 }
 
 // #[wasm_bindgen]
 pub fn convert_sli_xsl_to_json(sli_data: &str, data: &[u8]) -> Vec<EntityWithXlsx>{
-    let entities = get_indexes(sli_data);
+    let (entities, materials) = get_indexes(sli_data);
     let xlsx = parse_xlsx_wasm(data);
     let mut entities_with_xlsx: Vec<EntityWithXlsx> = Vec::new();
 	for (_, entity) in entities.iter().enumerate(){
 		if let Some(row) = xlsx.iter().find(|row_item| row_item.id == entity.node_id) {
+			let material = entity.material_num.and_then(|num| materials.get(&num).cloned());
 			entities_with_xlsx.push(EntityWithXlsx{
 				entity_type: entity.entity_type.clone(),
 				vertices: entity.vertices.clone(),
 				row: Some(row.clone()),
-				changed:false
+				changed:false,
+				material,
 			})
 		}else{
+			let material = entity.material_num.and_then(|num| materials.get(&num).cloned());
 			entities_with_xlsx.push(
 				EntityWithXlsx{
 					entity_type:"hello".to_string(),
 					vertices:entity.vertices.clone(),
 					row:Some(RowData { id: (4294967295), as1: vec!(0.0,0.0), as2: vec!(0.0,0.0), as3: vec!(0.0,0.0), as4: vec!(0.0,0.0) }),
-					changed:false
+					changed: false,
+                    material,
 				}
 			);
 		};
