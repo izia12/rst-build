@@ -290,7 +290,7 @@ pub fn get_changed_row_data(planes: JsValue) -> Vec<u8> {
     let mut combined = Vec::new();
     for as_index in 0..4 {
         // Создаем DXF файл для конкретного параметра as
-        let dxf_file = libs::createDxf::create_dxf_for_specific_as(changed_row_data.clone(), as_index);
+        let dxf_file = libs::createDxf::create_dxf_for_specific_as_manual(changed_row_data.clone(), as_index);
         // Добавляем размер файла и сам файл в общий массив
         combined.extend_from_slice(&(dxf_file.len() as u32).to_le_bytes());
         combined.extend(dxf_file);
