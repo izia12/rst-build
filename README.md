@@ -49,10 +49,51 @@ export default tseslint.config({
   },
 })
 ```
+
 # Компиляция из папки rust в папку assets
-## Необходимо запустить команду 
+
+## Необходимо запустить команду
+
 ```
 npm run build:wasm
 ```
+
 таким образом нет необходимости удалять вручную старый результат компиляции rust кода (pkg) и добавлять новый
 система автоматически заменит старый на новый
+
+
+## Запуск отдельного файла rust
+
+#### 1) Необходимо в корне проекта создать отдельный файл с вложенным уже функции main например:
+
+```
+
+fn main() {
+    let mut drawing = Drawing::new();
+    drawing.header.version = AcadVersion::R2007;
+
+    // Создание слоев
+    drawing.add_layer( Layer::default());
+    drawing.add_layer(Layer::default());
+
+    // Создание блока
+    let mut block = Block::default();
+    block.name = "MyBlock".into();
+
+    // Добавление элементов в блок
+    block.entities.push(Entity {
+        common: Default::default(),
+        specific: EntityType::Line(Line::new(Point { x: (0.0), y: (0.0), z: (0.0) }, Point { x: (0.0), y: (0.0), z: (0.0) })),
+    });
+
+    // Сохранение
+    drawing.save_file("output.dxf").unwrap();
+}
+
+```
+
+#### 2) после этого запустить команду которая возьмет эту фнкцию с указанным путем. Например если ваша фунция лежит в папке 
+
+```
+argo run --example createSimpleDxf
+```

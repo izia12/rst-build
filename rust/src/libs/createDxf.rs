@@ -972,27 +972,24 @@ pub fn create_dxf_for_specific_as_manual1(data: HashMap<OrderedFloat<f32>, Vec<E
     // Возвращаем содержимое как массив байтов
     dxf_content.into_bytes()
 }
+
+
 pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>, as_index: usize) -> Vec<u8> {
     // Создаем буфер для записи DXF-файла
     let mut dxf_content = String::new();
-    
     // Заголовок DXF-файла с версией AC1009
     dxf_content.push_str("0\nSECTION\n2\nHEADER\n");
     dxf_content.push_str("9\n$ACADVER\n1\nAC1009\n"); // Используем AC1009 (AutoCAD R9)
     dxf_content.push_str("0\nENDSEC\n");
-    
     // Секция таблиц
     dxf_content.push_str("0\nSECTION\n2\nTABLES\n");
-    
     // Таблица APPID
     dxf_content.push_str("0\nTABLE\n2\nAPPID\n70\n1\n");
     dxf_content.push_str("0\nAPPID\n2\nACAD\n70\n0\n");
     dxf_content.push_str("0\nENDTAB\n");
-    
     // Таблица слоев
     dxf_content.push_str("0\nTABLE\n2\nLAYER\n70\n1\n");
     dxf_content.push_str("0\nLAYER\n2\n0\n70\n0\n62\n7\n6\nCONTINUOUS\n");
-    
     // Собираем уникальные слои
     let mut unique_layers = HashSet::new();
     for (_z, entities) in data.iter() {
@@ -1002,11 +999,9 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                     let sg_type = sg_type.to_ascii_lowercase();
                     let b_or_d_val = material.b_or_d.unwrap_or(0.0);
                     let h_or_d_val = material.h_or_d.unwrap_or(0.0);
-                    
                     // Заменяем точки на подчеркивания и дефисы на подчеркивания для совместимости с AC1009
                     let b_or_d_str = format!("{}", b_or_d_val).replace(".", "_");
                     let h_or_d_str = format!("{}", h_or_d_val).replace(".", "_");
-                    
                     // Создаем имя слоя, соответствующее правилам DXF AC1009
                     unique_layers.insert(format!("{}_{}_{}",
                         sg_type.replace("-", "_"),
@@ -1031,16 +1026,12 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
     dxf_content.push_str("0\nTABLE\n2\nSTYLE\n70\n1\n");
     dxf_content.push_str("0\nSTYLE\n2\nSTANDARD\n70\n0\n40\n0.0\n41\n1.0\n50\n0.0\n71\n0\n42\n0.2\n3\ntxt\n4\n\n");
     dxf_content.push_str("0\nENDTAB\n");
-    
     dxf_content.push_str("0\nENDSEC\n");
-    
     // Секция блоков
     dxf_content.push_str("0\nSECTION\n2\nBLOCKS\n");
-    
     // Создаем блок для измененных элементов
     let block_name = format!("CHANGED_AS{}", as_index + 1);
     dxf_content.push_str(&format!("0\nBLOCK\n2\n{}\n70\n0\n10\n0.0\n20\n0.0\n30\n0.0\n", block_name));
-    
     // Добавляем измененные элементы в блок
     let mut has_changed_elements = false;
     for (_z, entities) in data.iter() {
@@ -1052,18 +1043,15 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         // Добавляем 3DFACE
                         dxf_content.push_str("0\n3DFACE\n");
                         dxf_content.push_str("62\n1\n"); // Красный цвет
-                        
                         // Устанавливаем слой
                         if let Some(material) = &entity.material {
                             if let Some(sg_type) = &material.sg_type {
                                 let sg_type = sg_type.to_ascii_lowercase();
                                 let b_or_d_val = material.b_or_d.unwrap_or(0.0);
                                 let h_or_d_val = material.h_or_d.unwrap_or(0.0);
-                                
                                 // Заменяем точки и дефисы на подчеркивания для совместимости с AC1009
                                 let b_or_d_str = format!("{}", b_or_d_val).replace(".", "_");
                                 let h_or_d_str = format!("{}", h_or_d_val).replace(".", "_");
-                                
                                 dxf_content.push_str(&format!("8\n{}_{}_{}",
                                     sg_type.replace("-", "_"),
                                     b_or_d_str,
@@ -1077,7 +1065,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         } else {
                             dxf_content.push_str("8\n0\n");
                         }
-                        
                         // Добавляем координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
@@ -1087,13 +1074,11 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                             entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z));
                         dxf_content.push_str(&format!("13\n{}\n23\n{}\n33\n{}\n", 
                             entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z));
-                        
                         // Добавляем текст с значением AS
                         if let Some(row) = &entity.row {
                             let center_x = (entity.vertices[0].x + entity.vertices[2].x) / 2.0;
                             let center_y = (entity.vertices[0].y + entity.vertices[2].y) / 2.0;
                             let z = entity.vertices[0].z;
-                            
                             // Выбираем значение AS в зависимости от индекса
                             let as_value = match as_index {
                                 0 => row.as1[0],
@@ -1102,10 +1087,8 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                                 3 => row.as4[0],
                                 _ => 0.0,
                             };
-                            
                             let as_name = format!("as{}", as_index + 1);
                             let text_value = format!("{}:{:.1}", as_name, as_value);
-                            
                             dxf_content.push_str("0\nTEXT\n");
                             dxf_content.push_str("62\n2\n"); // Желтый цвет для текста
                             dxf_content.push_str("8\n0\n");
@@ -1120,7 +1103,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         dxf_content.push_str("0\n3DFACE\n");
                         dxf_content.push_str("62\n1\n"); // Красный цвет
                         dxf_content.push_str("8\n0\n"); // Слой 0
-                        
                         // Добавляем координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
@@ -1130,13 +1112,11 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                             entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z));
                         dxf_content.push_str(&format!("13\n{}\n23\n{}\n33\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
-                        
                         // Добавляем текст с значением AS
                         if let Some(row) = &entity.row {
                             let center_x = (entity.vertices[0].x + entity.vertices[1].x + entity.vertices[2].x) / 3.0;
                             let center_y = (entity.vertices[0].y + entity.vertices[1].y + entity.vertices[2].y) / 3.0;
                             let z = entity.vertices[0].z;
-                            
                             // Выбираем значение AS в зависимости от индекса
                             let as_value = match as_index {
                                 0 => row.as1[0],
@@ -1145,10 +1125,8 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                                 3 => row.as4[0],
                                 _ => 0.0,
                             };
-                            
                             let as_name = format!("as{}", as_index + 1);
                             let text_value = format!("{}:{:.1}", as_name, as_value);
-                            
                             dxf_content.push_str("0\nTEXT\n");
                             dxf_content.push_str("62\n2\n"); // Желтый цвет для текста
                             dxf_content.push_str("8\n0\n");
@@ -1163,7 +1141,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         dxf_content.push_str("0\nLINE\n");
                         dxf_content.push_str("62\n1\n"); // Красный цвет
                         dxf_content.push_str("8\n0\n"); // Слой 0
-                        
                         // Добавляем координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
@@ -1175,13 +1152,10 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
             }
         }
     }
-    
     dxf_content.push_str("0\nENDBLK\n");
     dxf_content.push_str("0\nENDSEC\n");
-    
     // Секция сущностей
     dxf_content.push_str("0\nSECTION\n2\nENTITIES\n");
-    
     // Добавляем вставку блока, если есть измененные элементы
     if has_changed_elements {
         dxf_content.push_str("0\nINSERT\n");
@@ -1191,7 +1165,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
         dxf_content.push_str("41\n1.0\n42\n1.0\n43\n1.0\n");
         dxf_content.push_str("50\n0.0\n");
     }
-    
     // Добавляем все неизмененные элементы напрямую в секцию сущностей
     for (_z, entities) in data.iter() {
         for entity in entities {
@@ -1200,18 +1173,15 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                     4 => {
                         // Добавляем 3DFACE
                         dxf_content.push_str("0\n3DFACE\n");
-                        
                         // Устанавливаем слой
                         if let Some(material) = &entity.material {
                             if let Some(sg_type) = &material.sg_type {
                                 let sg_type = sg_type.to_ascii_lowercase();
                                 let b_or_d_val = material.b_or_d.unwrap_or(0.0);
                                 let h_or_d_val = material.h_or_d.unwrap_or(0.0);
-                                
                                 // Заменяем точки и дефисы на подчеркивания для совместимости с AC1009
                                 let b_or_d_str = format!("{}", b_or_d_val).replace(".", "_");
                                 let h_or_d_str = format!("{}", h_or_d_val).replace(".", "_");
-                                
                                 dxf_content.push_str(&format!("8\n{}_{}_{}",
                                     sg_type.replace("-", "_"),
                                     b_or_d_str,
@@ -1225,7 +1195,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         } else {
                             dxf_content.push_str("8\n0\n");
                         }
-                        
                         // Добавляем координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
@@ -1240,7 +1209,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         // Добавляем 3DFACE для треугольника
                         dxf_content.push_str("0\n3DFACE\n");
                         dxf_content.push_str("8\n0\n"); // Слой 0
-                        
                         // Добавляем координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
@@ -1255,7 +1223,6 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         // Добавляем LINE
                         dxf_content.push_str("0\nLINE\n");
                         dxf_content.push_str("8\n0\n"); // Слой 0
-                        
                         // Добавляем координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));

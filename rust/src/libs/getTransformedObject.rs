@@ -1,12 +1,9 @@
 use std:: collections::HashMap;
-
 use js_sys::{Array, Object, Reflect};
 use ordered_float::OrderedFloat;
 use wasm_bindgen::{ prelude::wasm_bindgen, JsValue};
 use crate::GLOBAL_ENTITIES;
-
 use super::parse::EntityWithXlsx;
-
 
 #[wasm_bindgen]
 pub fn get_horizontal_elements_object_js() -> JsValue {
@@ -17,7 +14,8 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
             .expect("Данные не загружены!")
             .clone()
     );
-
+    // 4. Собираем результат в JS-объект
+    let result = Object::new();
     // 1. Группируем plates и собираем все z
     let mut plates_map:HashMap<OrderedFloat<f64>, Vec<&EntityWithXlsx>> = HashMap::new();
     let mut all_z = Vec::new();
@@ -36,13 +34,29 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 
     // 3. Группируем rods по ближайшему нижнему z
     let mut rods_map:HashMap<OrderedFloat<f64>, Vec<&EntityWithXlsx>> = HashMap::new();
+	
 
     for item in &entities {
         let z = item.vertices[0].z;
         if plates_map.contains_key(&OrderedFloat(z)) {
             continue; // Пропускаем plates
         }
-
+		let materials = Array::new();
+		   // Проверяем, есть ли материал и его номер
+		if let Some(material) = &item.material {
+			if let Some(material_num) = material.material_num {
+				// Преобразуем номер материала в JsValue
+				let js_material_num = JsValue::from(material_num as i32);
+				
+				// Проверяем, есть ли уже такой материал в массиве
+				// Добавляем второй аргумент - индекс начала поиска (0)
+				if !materials.includes(&js_material_num, 0) {
+					// Если нет, добавляем его
+					materials.push(&js_material_num);
+				}
+			}
+		}
+		Reflect::set(&result, &JsValue::from("materials"), &materials).unwrap();
         // Ищем ближайший нижний z
         let lower_z = all_z.iter()
             .rev() // Идем от большего к меньшему
@@ -53,8 +67,7 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
         }
     }
 
-    // 4. Собираем результат в JS-объект
-    let result = Object::new();
+
 
     for z in all_z {
         let level_obj = Object::new();
@@ -79,8 +92,8 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
         }
 
         Reflect::set(&result, &z_key, &level_obj).unwrap();
+		
     }
-
     result.into()
 }
 

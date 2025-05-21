@@ -245,7 +245,8 @@ pub fn new_draw_polygon(data: Vec<EntityWithXlsx>) -> Vec<u8> {
 
 fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
     let mut map: HashMap<OrderedFloat<f32>, DrawItemZ> = HashMap::new();
-
+	let mut map1:HashMap<String, String> = HashMap::new();
+	// map1.
     for item in data1.into_iter() {
 		let z0 = item.vertices[0].z;
 		if item.vertices.iter().all(|v| v.z == z0) {

@@ -12,7 +12,6 @@ export const store = configureStore({
 		  }).concat(), // Если нужно добавить дополнительные middleware, делайте это здесь  
 	// enhancers: [], 
 	devTools: true,  
-
 })
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

@@ -15,6 +15,8 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 	const selectedPlainsToUnification = useAppSelector(state => state.wasm.groupUniqueItems)
 	// const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const [sortToBig, setSortToBig] = useState(false)
+	console.log(wasmJsData);
+	
 	return (
 		<div className="p-4 relative">
 			<div className=" flex justify-between">
