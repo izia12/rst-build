@@ -41,22 +41,22 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
         if plates_map.contains_key(&OrderedFloat(z)) {
             continue; // Пропускаем plates
         }
-		let materials = Array::new();
-		   // Проверяем, есть ли материал и его номер
-		if let Some(material) = &item.material {
-			if let Some(material_num) = material.material_num {
-				// Преобразуем номер материала в JsValue
-				let js_material_num = JsValue::from(material_num as i32);
+		// let materials = Array::new();
+		//    // Проверяем, есть ли материал и его номер
+		// if let Some(material) = &item.material {
+		// 	if let Some(material_num) = material.material_num {
+		// 		// Преобразуем номер материала в JsValue
+		// 		let js_material_num = JsValue::from(material_num as i32);
 				
-				// Проверяем, есть ли уже такой материал в массиве
-				// Добавляем второй аргумент - индекс начала поиска (0)
-				if !materials.includes(&js_material_num, 0) {
-					// Если нет, добавляем его
-					materials.push(&js_material_num);
-				}
-			}
-		}
-		Reflect::set(&result, &JsValue::from("materials"), &materials).unwrap();
+		// 		// Проверяем, есть ли уже такой материал в массиве
+		// 		// Добавляем второй аргумент - индекс начала поиска (0)
+		// 		if !materials.includes(&js_material_num, 0) {
+		// 			// Если нет, добавляем его
+		// 			materials.push(&js_material_num);
+		// 		}
+		// 	}
+		// }
+		// Reflect::set(&result, &JsValue::from("materials"), &materials).unwrap();
         // Ищем ближайший нижний z
         let lower_z = all_z.iter()
             .rev() // Идем от большего к меньшему
