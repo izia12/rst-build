@@ -1,0 +1,15 @@
+{
+  "name": "rst-build",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "rst_build_bg.wasm",
+    "rst_build.js",
+    "rst_build.d.ts"
+  ],
+  "main": "rst_build.js",
+  "types": "rst_build.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
