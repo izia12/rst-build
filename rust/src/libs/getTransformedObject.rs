@@ -1,4 +1,4 @@
-use std:: collections::HashMap;
+use std:: collections::{HashMap, HashSet};
 use js_sys::{Array, Object, Reflect};
 use ordered_float::OrderedFloat;
 use wasm_bindgen::{ prelude::wasm_bindgen, JsValue};
@@ -41,22 +41,7 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
         if plates_map.contains_key(&OrderedFloat(z)) {
             continue; // Пропускаем plates
         }
-		// let materials = Array::new();
-		//    // Проверяем, есть ли материал и его номер
-		// if let Some(material) = &item.material {
-		// 	if let Some(material_num) = material.material_num {
-		// 		// Преобразуем номер материала в JsValue
-		// 		let js_material_num = JsValue::from(material_num as i32);
-				
-		// 		// Проверяем, есть ли уже такой материал в массиве
-		// 		// Добавляем второй аргумент - индекс начала поиска (0)
-		// 		if !materials.includes(&js_material_num, 0) {
-		// 			// Если нет, добавляем его
-		// 			materials.push(&js_material_num);
-		// 		}
-		// 	}
-		// }
-		// Reflect::set(&result, &JsValue::from("materials"), &materials).unwrap();
+
         // Ищем ближайший нижний z
         let lower_z = all_z.iter()
             .rev() // Идем от большего к меньшему
@@ -72,12 +57,29 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
     for z in all_z {
         let level_obj = Object::new();
         let z_key = JsValue::from(z.to_string());
-
+		let materials = Array::new();
+		//    // Проверяем, есть ли материал и его номер
+		// if let Some(material) = &item.material {
+		// 	if let Some(material_num) = material.material_num {
+		// 		// Преобразуем номер материала в JsValue
+		// 		let js_material_num = JsValue::from(material_num as i32);
+				
+		// 		// Проверяем, есть ли уже такой материал в массиве
+		// 		// Добавляем второй аргумент - индекс начала поиска (0)
+		// 		if !materials.includes(&js_material_num, 0) {
+		// 			// Если нет, добавляем его
+		// 			materials.push(&js_material_num);
+		// 		}
+		// 	}
+		// }
+		// Reflect::set(&result, &JsValue::from("materials"), &materials).unwrap();
+		let mut current_z_material:HashSet<usize> = HashSet::new();
         // Добавляем plates
         if let Some(plates) = plates_map.get(&OrderedFloat(z)) {
             let js_plates = Array::new();
             for plate in plates {
                 js_plates.push(&entity_to_js(plate));
+				current_z_material.insert(plate.material.clone().unwrap().material_num.unwrap());
             }
             Reflect::set(&level_obj, &"plates".into(), &js_plates).unwrap();
         }
@@ -87,10 +89,15 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
             let js_rods = Array::new();
             for rod in rods {
                 js_rods.push(&entity_to_js(rod));
+				current_z_material.insert(rod.material.clone().unwrap().material_num.unwrap());
             }
             Reflect::set(&level_obj, &"rods".into(), &js_rods).unwrap();
         }
-
+		 let materials_arr = Array::new();
+		 for material in current_z_material{
+			materials_arr.push(&JsValue::from(material));
+		 }
+		Reflect::set(&level_obj, &JsValue::from("Materials"), &JsValue::from(materials_arr)).unwrap();
         Reflect::set(&result, &z_key, &level_obj).unwrap();
 		
     }
@@ -111,7 +118,22 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
         vertices.push(&vertex_obj);
     }
     Reflect::set(&obj, &"vertices".into(), &vertices).unwrap();
-
+	// let materials = Array::new();
+	// // Проверяем, есть ли материал и его номер
+	//  if let Some(material) = &entity.material {
+	// 	 if let Some(material_num) = material.material_num {
+	// 		 // Преобразуем номер материала в JsValue
+	// 		 let js_material_num = JsValue::from(material_num as i32);
+			 
+	// 		 // Проверяем, есть ли уже такой материал в массиве
+	// 		 // Добавляем второй аргумент - индекс начала поиска (0)
+	// 		 if !materials.includes(&js_material_num, 0) {
+	// 			 // Если нет, добавляем его
+	// 			 materials.push(&js_material_num);
+	// 		 }
+	// 	 }
+	//  }
+	//  Reflect::set(&obj, &JsValue::from("materials"), &materials).unwrap();
     // RowData (если есть)
     if let Some(row) = &entity.row {
         let row_obj = Object::new();

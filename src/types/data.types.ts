@@ -25,5 +25,6 @@ export type WasmDataJsType = {
 	[key:string]:{
 		"plates":WASMDataType[],
 		"rods":WASMDataType[],
+		"Materials":Array<number>
 	}
 }

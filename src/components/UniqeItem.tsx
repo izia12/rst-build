@@ -4,9 +4,10 @@ import { Checkbox } from "./custom-components/Checkbox";
 type propsType ={
 	platesLength:number,
 	rodsLength:number,
-	checkboxId:string
+	checkboxId:string,
+	materials:number[]
 }
-export const UniqeItem = ({checkboxId, platesLength, rodsLength}:propsType):ReactElement=>{
+export const UniqeItem = ({checkboxId, platesLength, rodsLength, materials}:propsType):ReactElement=>{
 	
 	return(
 		<tr 
@@ -21,6 +22,9 @@ export const UniqeItem = ({checkboxId, platesLength, rodsLength}:propsType):Reac
 			</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">
 				{rodsLength || 0}
+			</td>
+			<td className="px-4">
+				{materials.toString()||0}
 			</td>
 		</tr>
 	)

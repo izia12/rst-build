@@ -38,6 +38,7 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Z Name</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Plate Elements</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Rod Elements</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Materials</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-200">
@@ -62,6 +63,7 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 											checkboxId={key}
 											platesLength={value?.plates?.length}
 											rodsLength={value?.rods?.length}
+											materials={value.Materials}
 										/>
 									))}
 						</tbody>

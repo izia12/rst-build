@@ -974,6 +974,307 @@ pub fn create_dxf_for_specific_as_manual1(data: HashMap<OrderedFloat<f32>, Vec<E
 }
 
 
+// pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>, as_index: usize) -> Vec<u8> {
+//     // Создаем новый DXF файл вручную
+//     let mut dxf_content = String::new();
+    
+//     // Заголовок DXF файла
+//     dxf_content.push_str("0\nSECTION\n2\nHEADER\n");
+//     dxf_content.push_str("9\n$ACADVER\n1\nAC1009\n");
+//     dxf_content.push_str("0\nENDSEC\n");
+    
+//     // Секция таблиц
+//     dxf_content.push_str("0\nSECTION\n2\nTABLES\n");
+    
+//     // Таблица слоев
+//     dxf_content.push_str("0\nTABLE\n2\nLAYER\n");
+//     dxf_content.push_str("0\nLAYER\n2\n0\n70\n0\n62\n7\n6\nCONTINUOUS\n");
+//     dxf_content.push_str("0\nENDTAB\n");
+    
+//     // Конец секции таблиц
+//     dxf_content.push_str("0\nENDSEC\n");
+    
+//     // Секция блоков
+//     dxf_content.push_str("0\nSECTION\n2\nBLOCKS\n");
+    
+//     // Группируем измененные элементы по координатам X,Y
+//     let mut xy_groups: HashMap<String, Vec<&EntityWithXlsx>> = HashMap::new();
+    
+//     for (_z, entities) in data.iter() {
+//         for entity in entities {
+//             if entity.changed && !entity.vertices.is_empty() {
+//                 // Вычисляем центр элемента по X,Y
+//                 let mut center_x = 0.0;
+//                 let mut center_y = 0.0;
+                
+//                 for vertex in &entity.vertices {
+//                     center_x += vertex.x;
+//                     center_y += vertex.y;
+//                 }
+                
+//                 center_x /= entity.vertices.len() as f64;
+//                 center_y /= entity.vertices.len() as f64;
+                
+//                 // Форматируем координаты для имени блока
+//                 // Заменяем точку на подчеркивание для имени блока
+//                 let x_str = format!("{:.1}", center_x).replace(".", "_");
+//                 let y_str = format!("{:.1}", center_y).replace(".", "_");
+//                 let key = format!("x{}_y{}", x_str, y_str);
+                
+//                 // Добавляем элемент в соответствующую группу
+//                 xy_groups.entry(key).or_insert_with(Vec::new).push(entity);
+//             }
+//         }
+//     }
+    
+//     // Создаем блок для каждой группы элементов с одинаковыми X,Y
+//     for (key, entities) in &xy_groups {
+//         // Начало определения блока
+//         dxf_content.push_str(&format!("0\nBLOCK\n2\n{}\n", key));
+//         dxf_content.push_str("70\n0\n10\n0.0\n20\n0.0\n30\n0.0\n");
+        
+//         // Добавляем элементы в блок
+//         for entity in entities {
+//             match entity.vertices.len() {
+//                 4 => {
+//                     // 3DFACE для четырехугольника
+//                     dxf_content.push_str("0\n3DFACE\n");
+//                     dxf_content.push_str("8\n0\n"); // Слой
+//                     dxf_content.push_str("62\n1\n"); // Красный цвет
+                    
+//                     // Координаты вершин
+//                     dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
+//                         entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+//                     dxf_content.push_str(&format!("11\n{}\n21\n{}\n31\n{}\n", 
+//                         entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z));
+//                     dxf_content.push_str(&format!("12\n{}\n22\n{}\n32\n{}\n", 
+//                         entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z));
+//                     dxf_content.push_str(&format!("13\n{}\n23\n{}\n33\n{}\n", 
+//                         entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z));
+                    
+//                     // Добавляем текст с значением as
+//                     if let Some(row) = &entity.row {
+//                         let center_x = (entity.vertices[0].x + entity.vertices[2].x) / 2.0;
+//                         let center_y = (entity.vertices[0].y + entity.vertices[2].y) / 2.0;
+//                         let z = entity.vertices[0].z;
+                        
+//                         // Выбираем параметр в зависимости от индекса
+//                         let as_value = match as_index {
+//                             0 => row.as1[0],
+//                             1 => row.as2[0],
+//                             2 => row.as3[0],
+//                             3 => row.as4[0],
+//                             _ => 0.0,
+//                         };
+                        
+//                         let as_name = format!("as{}", as_index + 1);
+//                         let text = format!("{}:{:.1}", as_name, as_value);
+                        
+//                         // Добавляем текст
+//                         dxf_content.push_str("0\nTEXT\n");
+//                         dxf_content.push_str("8\n0\n"); // Слой
+//                         dxf_content.push_str("62\n2\n"); // Зеленый цвет для текста
+//                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
+//                         dxf_content.push_str("40\n0.05\n"); // Высота текста
+//                         dxf_content.push_str(&format!("1\n{}\n", text));
+//                         dxf_content.push_str("50\n0.0\n"); // Угол поворота
+//                     }
+//                 },
+//                 3 => {
+//                     // 3DFACE для треугольника
+//                     dxf_content.push_str("0\n3DFACE\n");
+//                     dxf_content.push_str("8\n0\n"); // Слой
+//                     dxf_content.push_str("62\n1\n"); // Красный цвет
+                    
+//                     // Координаты вершин
+//                     dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
+//                         entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+//                     dxf_content.push_str(&format!("11\n{}\n21\n{}\n31\n{}\n", 
+//                         entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z));
+//                     dxf_content.push_str(&format!("12\n{}\n22\n{}\n32\n{}\n", 
+//                         entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z));
+//                     dxf_content.push_str(&format!("13\n{}\n23\n{}\n33\n{}\n", 
+//                         entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+                    
+//                     // Добавляем текст с значением as
+//                     if let Some(row) = &entity.row {
+//                         let center_x = (entity.vertices[0].x + entity.vertices[1].x + entity.vertices[2].x) / 3.0;
+//                         let center_y = (entity.vertices[0].y + entity.vertices[1].y + entity.vertices[2].y) / 3.0;
+//                         let z = entity.vertices[0].z;
+                        
+//                         // Выбираем параметр в зависимости от индекса
+//                         let as_value = match as_index {
+//                             0 => row.as1[0],
+//                             1 => row.as2[0],
+//                             2 => row.as3[0],
+//                             3 => row.as4[0],
+//                             _ => 0.0,
+//                         };
+                        
+//                         let as_name = format!("as{}", as_index + 1);
+//                         let text = format!("{}:{:.1}", as_name, as_value);
+                        
+//                         // Добавляем текст
+//                         dxf_content.push_str("0\nTEXT\n");
+//                         dxf_content.push_str("8\n0\n"); // Слой
+//                         dxf_content.push_str("62\n2\n"); // Зеленый цвет для текста
+//                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
+//                         dxf_content.push_str("40\n0.05\n"); // Высота текста
+//                         dxf_content.push_str(&format!("1\n{}\n", text));
+//                         dxf_content.push_str("50\n0.0\n"); // Угол поворота
+//                     }
+//                 },
+//                 2 => {
+//                     // LINE для линии
+//                     dxf_content.push_str("0\nLINE\n");
+//                     dxf_content.push_str("8\n0\n"); // Слой
+//                     dxf_content.push_str("62\n1\n"); // Красный цвет
+                    
+//                     // Координаты начала и конца
+//                     dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
+//                         entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+//                     dxf_content.push_str(&format!("11\n{}\n21\n{}\n31\n{}\n", 
+//                         entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z));
+//                 },
+//                 _ => {}
+//             }
+//         }
+        
+//         // Конец определения блока
+//         dxf_content.push_str("0\nENDBLK\n");
+//     }
+    
+//     // Конец секции блоков
+//     dxf_content.push_str("0\nENDSEC\n");
+    
+//     // Секция сущностей
+//     dxf_content.push_str("0\nSECTION\n2\nENTITIES\n");
+    
+//     // Вставляем блоки
+//     for key in xy_groups.keys() {
+//         dxf_content.push_str("0\nINSERT\n");
+//         dxf_content.push_str(&format!("2\n{}\n", key));
+//         dxf_content.push_str("8\n0\n"); // Слой
+//         dxf_content.push_str("10\n0.0\n20\n0.0\n30\n0.0\n"); // Точка вставки
+//         dxf_content.push_str("41\n1.0\n42\n1.0\n43\n1.0\n"); // Масштаб
+//         dxf_content.push_str("50\n0.0\n"); // Угол поворота
+//     }
+    
+//     // Добавляем неизмененные элементы напрямую
+//     for (_z, entities) in data.iter() {
+//         for entity in entities {
+//             if !entity.changed {
+//                 match entity.vertices.len() {
+//                     4 => {
+//                         // 3DFACE для четырехугольника
+//                         dxf_content.push_str("0\n3DFACE\n");
+//                         dxf_content.push_str("8\n0\n"); // Слой
+                        
+//                         // Координаты вершин
+//                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
+//                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+//                         dxf_content.push_str(&format!("11\n{}\n21\n{}\n31\n{}\n", 
+//                             entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z));
+//                         dxf_content.push_str(&format!("12\n{}\n22\n{}\n32\n{}\n", 
+//                             entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z));
+//                         dxf_content.push_str(&format!("13\n{}\n23\n{}\n33\n{}\n", 
+//                             entity.vertices[3].x, entity.vertices[3].y, entity.vertices[3].z));
+                        
+//                         // Добавляем текст с значением as
+//                         if let Some(row) = &entity.row {
+//                             let center_x = (entity.vertices[0].x + entity.vertices[2].x) / 2.0;
+//                             let center_y = (entity.vertices[0].y + entity.vertices[2].y) / 2.0;
+//                             let z = entity.vertices[0].z;
+                            
+//                             // Выбираем параметр в зависимости от индекса
+//                             let as_value = match as_index {
+//                                 0 => row.as1[0],
+//                                 1 => row.as2[0],
+//                                 2 => row.as3[0],
+//                                 3 => row.as4[0],
+//                                 _ => 0.0,
+//                             };
+                            
+//                             let as_name = format!("as{}", as_index + 1);
+//                             let text = format!("{}:{:.1}", as_name, as_value);
+                            
+//                             // Добавляем текст
+//                             dxf_content.push_str("0\nTEXT\n");
+//                             dxf_content.push_str("8\n0\n"); // Слой
+//                             dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
+//                             dxf_content.push_str("40\n0.05\n"); // Высота текста
+//                             dxf_content.push_str(&format!("1\n{}\n", text));
+//                             dxf_content.push_str("50\n0.0\n"); // Угол поворота
+//                         }
+//                     },
+//                     3 => {
+//                         // 3DFACE для треугольника
+//                         dxf_content.push_str("0\n3DFACE\n");
+//                         dxf_content.push_str("8\n0\n"); // Слой
+                        
+//                         // Координаты вершин
+//                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
+//                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+//                         dxf_content.push_str(&format!("11\n{}\n21\n{}\n31\n{}\n", 
+//                             entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z));
+//                         dxf_content.push_str(&format!("12\n{}\n22\n{}\n32\n{}\n", 
+//                             entity.vertices[2].x, entity.vertices[2].y, entity.vertices[2].z));
+//                         dxf_content.push_str(&format!("13\n{}\n23\n{}\n33\n{}\n", 
+//                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+                        
+//                         // Добавляем текст с значением as
+//                         if let Some(row) = &entity.row {
+//                             let center_x = (entity.vertices[0].x + entity.vertices[1].x + entity.vertices[2].x) / 3.0;
+//                             let center_y = (entity.vertices[0].y + entity.vertices[1].y + entity.vertices[2].y) / 3.0;
+//                             let z = entity.vertices[0].z;
+                            
+//                             // Выбираем параметр в зависимости от индекса
+//                             let as_value = match as_index {
+//                                 0 => row.as1[0],
+//                                 1 => row.as2[0],
+//                                 2 => row.as3[0],
+//                                 3 => row.as4[0],
+//                                 _ => 0.0,
+//                             };
+                            
+//                             let as_name = format!("as{}", as_index + 1);
+//                             let text = format!("{}:{:.1}", as_name, as_value);
+                            
+//                             // Добавляем текст
+//                             dxf_content.push_str("0\nTEXT\n");
+//                             dxf_content.push_str("8\n0\n"); // Слой
+//                             dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
+//                             dxf_content.push_str("40\n0.05\n"); // Высота текста
+//                             dxf_content.push_str(&format!("1\n{}\n", text));
+//                             dxf_content.push_str("50\n0.0\n"); // Угол поворота
+//                         }
+//                     },
+//                     2 => {
+//                         // LINE для линии
+//                         dxf_content.push_str("0\nLINE\n");
+//                         dxf_content.push_str("8\n0\n"); // Слой
+                        
+//                         // Координаты начала и конца
+//                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
+//                             entity.vertices[0].x, entity.vertices[0].y, entity.vertices[0].z));
+//                         dxf_content.push_str(&format!("11\n{}\n21\n{}\n31\n{}\n", 
+//                             entity.vertices[1].x, entity.vertices[1].y, entity.vertices[1].z));
+//                     },
+//                     _ => {}
+//                 }
+//             }
+//         }
+//     }
+    
+//     // Конец секции сущностей
+//     dxf_content.push_str("0\nENDSEC\n");
+    
+//     // Конец файла
+//     dxf_content.push_str("0\nEOF\n");
+    
+//     // Возвращаем байты
+//     dxf_content.into_bytes()
+// }
 pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>, as_index: usize) -> Vec<u8> {
     // Создаем новый DXF файл вручную
     let mut dxf_content = String::new();
@@ -983,15 +1284,55 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
     dxf_content.push_str("9\n$ACADVER\n1\nAC1009\n");
     dxf_content.push_str("0\nENDSEC\n");
     
+    // Собираем все уникальные слои
+    let mut unique_layers = HashSet::new();
+    unique_layers.insert("0".to_string()); // Добавляем слой по умолчанию
+    
+    // Проходим по всем элементам и собираем уникальные слои
+    for (_z, entities) in data.iter() {
+        for entity in entities {
+            if let Some(material) = &entity.material {
+                if let Some(sg_type) = &material.sg_type {
+                    let sg_type = sg_type.to_ascii_lowercase();
+                    let b_or_d_val = material.b_or_d.unwrap_or(0.0);
+                    let h_or_d_val = material.h_or_d.unwrap_or(0.0);
+                    
+                    let b_or_d_str = format!("{}", b_or_d_val).replace(".", "_");
+                    let h_or_d_str = format!("{}", h_or_d_val).replace(".", "_");
+                    
+                    let layer_name = format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str);
+                    unique_layers.insert(layer_name);
+                } else if let Some(material_num) = material.material_num {
+                    let layer_name = format!("material-{}", material_num);
+                    unique_layers.insert(layer_name);
+                }
+            }
+        }
+    }
+    
     // Секция таблиц
     dxf_content.push_str("0\nSECTION\n2\nTABLES\n");
     
     // Таблица слоев
     dxf_content.push_str("0\nTABLE\n2\nLAYER\n");
-    dxf_content.push_str("0\nLAYER\n2\n0\n70\n0\n62\n7\n6\nCONTINUOUS\n");
-    dxf_content.push_str("0\nENDTAB\n");
     
-    // Конец секции таблиц
+    // Добавляем все уникальные слои
+    for layer_name in &unique_layers {
+        dxf_content.push_str("0\nLAYER\n");
+        dxf_content.push_str(&format!("2\n{}\n", layer_name));
+        dxf_content.push_str("70\n0\n"); // Флаги слоя
+        
+        // Разные цвета для разных слоев (можно настроить по своему усмотрению)
+        let color_index = if layer_name == "0" { 7 } else { 
+            // Простой хеш для получения разных цветов
+            ((layer_name.chars().fold(0, |acc, c| acc + c as u32)) % 7 + 1) as u8
+        };
+        
+        dxf_content.push_str(&format!("62\n{}\n", color_index));
+        dxf_content.push_str("6\nCONTINUOUS\n"); // Тип линии
+    }
+    
+    dxf_content.push_str("0\nENDTAB\n");
     dxf_content.push_str("0\nENDSEC\n");
     
     // Секция блоков
@@ -1035,11 +1376,31 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
         
         // Добавляем элементы в блок
         for entity in entities {
+            // Определяем слой для элемента
+            let layer_name = if let Some(material) = &entity.material {
+                if let Some(sg_type) = &material.sg_type {
+                    let sg_type = sg_type.to_ascii_lowercase();
+                    let b_or_d_val = material.b_or_d.unwrap_or(0.0);
+                    let h_or_d_val = material.h_or_d.unwrap_or(0.0);
+                    
+                    let b_or_d_str = format!("{}", b_or_d_val).replace(".", "_");
+                    let h_or_d_str = format!("{}", h_or_d_val).replace(".", "_");
+                    
+                    format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str)
+                } else if let Some(material_num) = material.material_num {
+                    format!("material-{}", material_num)
+                } else {
+                    "0".to_string()
+                }
+            } else {
+                "0".to_string()
+            };
+            
             match entity.vertices.len() {
                 4 => {
                     // 3DFACE для четырехугольника
                     dxf_content.push_str("0\n3DFACE\n");
-                    dxf_content.push_str("8\n0\n"); // Слой
+                    dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Слой
                     dxf_content.push_str("62\n1\n"); // Красный цвет
                     
                     // Координаты вершин
@@ -1072,7 +1433,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         
                         // Добавляем текст
                         dxf_content.push_str("0\nTEXT\n");
-                        dxf_content.push_str("8\n0\n"); // Слой
+                        dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Тот же слой
                         dxf_content.push_str("62\n2\n"); // Зеленый цвет для текста
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
                         dxf_content.push_str("40\n0.05\n"); // Высота текста
@@ -1083,7 +1444,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                 3 => {
                     // 3DFACE для треугольника
                     dxf_content.push_str("0\n3DFACE\n");
-                    dxf_content.push_str("8\n0\n"); // Слой
+                    dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Слой
                     dxf_content.push_str("62\n1\n"); // Красный цвет
                     
                     // Координаты вершин
@@ -1116,7 +1477,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                         
                         // Добавляем текст
                         dxf_content.push_str("0\nTEXT\n");
-                        dxf_content.push_str("8\n0\n"); // Слой
+                        dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Тот же слой
                         dxf_content.push_str("62\n2\n"); // Зеленый цвет для текста
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
                         dxf_content.push_str("40\n0.05\n"); // Высота текста
@@ -1127,7 +1488,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                 2 => {
                     // LINE для линии
                     dxf_content.push_str("0\nLINE\n");
-                    dxf_content.push_str("8\n0\n"); // Слой
+                    dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Слой
                     dxf_content.push_str("62\n1\n"); // Красный цвет
                     
                     // Координаты начала и конца
@@ -1154,7 +1515,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
     for key in xy_groups.keys() {
         dxf_content.push_str("0\nINSERT\n");
         dxf_content.push_str(&format!("2\n{}\n", key));
-        dxf_content.push_str("8\n0\n"); // Слой
+        dxf_content.push_str("8\n0\n"); // Слой для вставки блока
         dxf_content.push_str("10\n0.0\n20\n0.0\n30\n0.0\n"); // Точка вставки
         dxf_content.push_str("41\n1.0\n42\n1.0\n43\n1.0\n"); // Масштаб
         dxf_content.push_str("50\n0.0\n"); // Угол поворота
@@ -1164,11 +1525,29 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
     for (_z, entities) in data.iter() {
         for entity in entities {
             if !entity.changed {
+                // Определяем слой для элемента
+                let layer_name = if let Some(material) = &entity.material {
+                    if let Some(sg_type) = &material.sg_type {
+                        let sg_type = sg_type.to_ascii_lowercase();
+                        let b_or_d_val = material.b_or_d.unwrap_or(0.0);
+                        let h_or_d_val = material.h_or_d.unwrap_or(0.0);
+                        let b_or_d_str = format!("{}", b_or_d_val).replace(".", "_");
+                        let h_or_d_str = format!("{}", h_or_d_val).replace(".", "_");
+                        format!("{}-{}-{}", sg_type, b_or_d_str, h_or_d_str)
+                    } else if let Some(material_num) = material.material_num {
+                        format!("material-{}", material_num)
+                    } else {
+                        "0".to_string()
+                    }
+                } else {
+                    "0".to_string()
+                };
+                
                 match entity.vertices.len() {
                     4 => {
                         // 3DFACE для четырехугольника
                         dxf_content.push_str("0\n3DFACE\n");
-                        dxf_content.push_str("8\n0\n"); // Слой
+                        dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Слой
                         
                         // Координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
@@ -1200,7 +1579,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                             
                             // Добавляем текст
                             dxf_content.push_str("0\nTEXT\n");
-                            dxf_content.push_str("8\n0\n"); // Слой
+                            dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Тот же слой
                             dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
                             dxf_content.push_str("40\n0.05\n"); // Высота текста
                             dxf_content.push_str(&format!("1\n{}\n", text));
@@ -1210,7 +1589,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                     3 => {
                         // 3DFACE для треугольника
                         dxf_content.push_str("0\n3DFACE\n");
-                        dxf_content.push_str("8\n0\n"); // Слой
+                        dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Слой
                         
                         // Координаты вершин
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
@@ -1242,7 +1621,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                             
                             // Добавляем текст
                             dxf_content.push_str("0\nTEXT\n");
-                            dxf_content.push_str("8\n0\n"); // Слой
+                            dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Тот же слой
                             dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", center_x, center_y, z));
                             dxf_content.push_str("40\n0.05\n"); // Высота текста
                             dxf_content.push_str(&format!("1\n{}\n", text));
@@ -1252,7 +1631,7 @@ pub fn create_dxf_for_specific_as_manual(data: HashMap<OrderedFloat<f32>, Vec<En
                     2 => {
                         // LINE для линии
                         dxf_content.push_str("0\nLINE\n");
-                        dxf_content.push_str("8\n0\n"); // Слой
+                        dxf_content.push_str(&format!("8\n{}\n", layer_name)); // Слой
                         
                         // Координаты начала и конца
                         dxf_content.push_str(&format!("10\n{}\n20\n{}\n30\n{}\n", 
