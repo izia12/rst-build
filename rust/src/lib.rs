@@ -1,7 +1,7 @@
 use std::{cell::RefCell, collections::HashMap};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut};
-use libs::{createDxf::{create_dxf_after_change, create_simple_dxf_with_block,}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
+use libs::{ arm_combination::SORTAMENT, createDxf::{create_dxf_after_change, create_simple_dxf_with_block}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
 use web_sys::console;
@@ -11,13 +11,14 @@ use docx_rs::{Docx, Paragraph, Pic, Run};
 use serde::{Serialize, Deserialize};
 use libs::drawItem::DrawItemZ;
 use ordered_float::OrderedFloat;
-
+// use crate::libs::arm_combination::SORTAMENT;
 pub mod libs{
 	pub mod parse;
 	pub mod drawItem;
 	pub mod createDxf;
 	pub mod getTransformedObject;
 	pub mod unification_data;
+	pub mod arm_combination;
 	// pub mod create_simple_dxf_with_block;
 }
 
@@ -79,6 +80,8 @@ pub fn create_docx(sli_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
+	let a = &SORTAMENT;
+	let b =&a;
 	let hash = sort_by_z(entities);
 	let width_cm = 140;
     let height_cm = 105;
@@ -106,6 +109,7 @@ pub fn create_docx(sli_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
 		Ok(_) => (),
 	    Err(e) => println!("Ошибка: {}", e),
 	}
+
 	process_files(sli_data, &xlsx_data);
 	buffer.into_inner()
 }

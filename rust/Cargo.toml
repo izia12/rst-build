@@ -5,6 +5,8 @@ edition = "2021"
 
 [dependencies]
 serde-wasm-bindgen = "0.4"
+lazy_static= "1.5.0"
+map-macro= "0.3.0"
 image = "0.24"
 wasm-bindgen = "0.2"
 docx-rs = "0.4.17"
@@ -26,4 +28,7 @@ xml = "0.8.20"
 crate-type = ["cdylib", "rlib"]
 [package.metadata.wasm-pack]
 wasm-opt = false
+[[bin]]
+name = "arm_combination"
+path = "src/libs/arm_combination.rs"
 
