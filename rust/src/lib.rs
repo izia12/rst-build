@@ -302,3 +302,8 @@ pub fn get_changed_row_data(planes: JsValue) -> Vec<u8> {
     }
     combined
 }
+#[wasm_bindgen]
+pub fn get_sortament_data() -> JsValue {
+    let sortament_array = SORTAMENT.to_array();
+    serde_wasm_bindgen::to_value(&sortament_array).unwrap_or(JsValue::NULL)
+}

@@ -10,6 +10,7 @@ export function create_docx(sli_data: string, xlsx_data: Uint8Array): Uint8Array
 export function create_png_in_memory(): Uint8Array;
 export function process_files(sli_data: string, xlsx_data: Uint8Array): string;
 export function get_changed_row_data(planes: any): Uint8Array;
+export function get_sortament_data(): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -25,6 +26,7 @@ export interface InitOutput {
   readonly create_png_in_memory: () => [number, number];
   readonly process_files: (a: number, b: number, c: number, d: number) => [number, number];
   readonly get_changed_row_data: (a: any) => [number, number];
+  readonly get_sortament_data: () => any;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;

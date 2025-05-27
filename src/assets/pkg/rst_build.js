@@ -304,6 +304,14 @@ export function get_changed_row_data(planes) {
     return v1;
 }
 
+/**
+ * @returns {any}
+ */
+export function get_sortament_data() {
+    const ret = wasm.get_sortament_data();
+    return ret;
+}
+
 async function __wbg_load(module, imports) {
     if (typeof Response === 'function' && module instanceof Response) {
         if (typeof WebAssembly.instantiateStreaming === 'function') {
@@ -427,6 +435,12 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_push_737cfc8c1432c2c6 = function(arg0, arg1) {
         const ret = arg0.push(arg1);
         return ret;
+    };
+    imports.wbg.__wbg_set_37837023f3d740e8 = function(arg0, arg1, arg2) {
+        arg0[arg1 >>> 0] = arg2;
+    };
+    imports.wbg.__wbg_set_3fda3bac07393de4 = function(arg0, arg1, arg2) {
+        arg0[arg1] = arg2;
     };
     imports.wbg.__wbg_set_65595bdd868b3009 = function(arg0, arg1, arg2) {
         arg0.set(arg1, arg2 >>> 0);

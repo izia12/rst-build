@@ -2,9 +2,10 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 	label?: string;
 	error?: string;
 	options: { value: string; label: string }[];
+	onSelect?:(item)=>void
 }
 
-export const Select = ({ label, error, options, ...props }: SelectProps) => {
+export const Select = ({ label,onSelect, error, options, ...props }: SelectProps) => {
 	return (
 		<div className="w-full">
 			{label && (
@@ -15,6 +16,10 @@ export const Select = ({ label, error, options, ...props }: SelectProps) => {
 			<div className="relative">
 				<select
 					{...props}
+					onChange={(e)=>{
+						console.log(e.target.value);
+						 onSelect(+e.target.value)
+					}}
 					className={`
 			  w-full px-4 py-2 pr-8 border rounded-lg appearance-none
 			  focus:outline-none focus:ring-2 transition-all

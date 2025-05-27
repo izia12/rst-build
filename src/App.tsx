@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import './App.css'
-import { fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
+import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
 import { useAppDispatch, useAppSelector } from './store/store.ts';
 import Three from './components/Three.tsx';
 import { startPerfomance } from './store/slices/slice.wasm.ts';
@@ -11,6 +11,7 @@ import { UniqeItems } from './components/UniqeItems.tsx';
 import { Loader } from './components/custom-components/Loader.tsx';
 import { Button } from './components/custom-components/Button.tsx';
 import { get_changed_row_data } from './assets/pkg/rst_build';
+import ArmSettings from './components/Additional information for fittings/ArmSettings.tsx';
 
 
 function App() {
@@ -49,23 +50,20 @@ function App() {
 
 		}
 	}
+
 	const handleSaveDxf = async () => {
 		try {
 			const data = await get_changed_row_data(choosedPlanesFromList);
-			
 			const combinedData = new Uint8Array(data);
 			let offset = 0;
-			
 			for (let i = 0; i < 4; i++) {
 				// Чтение размера файла
 				const sizeView = new DataView(combinedData.buffer, offset, 4);
 				const fileSize = sizeView.getUint32(0, true);
 				offset += 4;
-				
 				// Извлечение DXF файла
 				const dxfFile = combinedData.slice(offset, offset + fileSize);
 				offset += fileSize;
-				
 				// Сохранение файла
 				saveFile(dxfFile, `as${i+1}.dxf`);
 				await new Promise(resolve => setTimeout(resolve, 50));
@@ -102,7 +100,11 @@ function App() {
 		if (sliInput && xlsxInput) {
 			void onTwoInputsChange();
 		}
+
 	}, [sliInput, xlsxInput]); // Добавляем зависимости
+	useEffect(()=>{
+		dispatch( fetchArmDimeters());
+	},[dispatch])
 	return (
 		<>
 			<div className="container m-auto w-full" >
@@ -159,6 +161,8 @@ function App() {
 					>
 						Сохранить DXF
 					</button>
+					<ArmSettings/>
+
 					<Modal
 						isOpen={isOpen}
 						onClose={() => setIsOpen(false)}
@@ -171,12 +175,12 @@ function App() {
 						}
 					>
 						<UniqeItems openForCreateUI={openForCreateUI} setOpenForCreateUI={setOpenForCreateUI} />
-
 					</Modal>
+
 					<Three />
+
 					<Quadrilaterals />
 
-					{/* <InteractiveCubes /> */}
 				</div>
 				{/*<FileUploadAndDocxGenerator/>*/}
 				{/*<DiagramGenerator/>*/}

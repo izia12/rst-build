@@ -28,3 +28,13 @@ export type WasmDataJsType = {
 		"Materials":Array<number>
 	}
 }
+export type ArmDiameters={
+	diameter:number,
+    area:number,
+}
+export type SpecifiedFitParamsType = {
+	diameter:number,
+    area:number,
+	price:number,
+	isSpecified:boolean,
+}

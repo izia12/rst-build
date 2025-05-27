@@ -10,7 +10,11 @@ use std::io::Write;
 
 // Структура для работы с сортаментом арматуры
 use serde::{Deserialize, Serialize};
-
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct DiameterInfo {
+    pub diameter: u32,
+    pub area: f32,
+}
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Sortament {
     data: HashMap<u32, f32>,
@@ -21,6 +25,8 @@ impl Sortament {
     pub fn new() -> Self {
         Self {
             data: hash_map! {
+				3=>0.071,
+				4=>0.126,
                 6 => 0.283,
                 8 => 0.503,
                 10 => 0.785,
@@ -44,7 +50,22 @@ impl Sortament {
             },
         }
     }
-
+    pub fn to_array(&self) -> Vec<DiameterInfo> {
+        let mut result = Vec::new();
+        let mut diameters: Vec<u32> = self.data.keys().copied().collect();
+        diameters.sort(); // Сортируем для предсказуемого порядка
+        
+        for &diameter in &diameters {
+            if let Some(area) = self.get_area(diameter) {
+                result.push(DiameterInfo {
+                    diameter,
+                    area,
+                });
+            }
+        }
+        
+        result
+    }
     // Получение площади по диаметру
     pub fn get_area(&self, diameter: u32) -> Option<f32> {
         self.data.get(&diameter).copied()
@@ -77,9 +98,9 @@ impl Sortament {
                 // Вычисляем общую площадь с учетом шагов
                 let total_area = main_count * area1 + secondary_count * area2;
                 // Проверяем условие: target_area <= total_area < target_area * 1.2
-                if total_area >= target_area && total_area < max_area {
-                    result.push((d1, d2));
-                }
+				result.push((d1, d2));
+                // if total_area >= target_area && total_area < max_area {
+                // }
             }
         }
 
@@ -109,24 +130,70 @@ impl Sortament {
 
         // Тестовые данные - различные комбинации целевой площади и шагов
         let test_cases = [
+
+            (0.1, 0.1, 0.1),
+            (0.2, 0.1, 0.1),
+            (0.3, 0.1, 0.1),
+            (0.4, 0.1, 0.1),
+            (0.5, 0.1, 0.1),
+            (0.6, 0.1, 0.1),
+            (0.7, 0.1, 0.1),
+            (0.8, 0.1, 0.1),
+            (0.9, 0.1, 0.1),
+
+			(1.0, 0.4, 0.2),
+			(1.1, 0.4, 0.2),
+			(1.2, 0.4, 0.2),
+			(1.3, 0.4, 0.2),
+			(1.4, 0.4, 0.2),
+			(1.5, 0.4, 0.2),
+			(1.6, 0.4, 0.2),
+			(1.7, 0.4, 0.2),
+			(1.8, 0.4, 0.2),
+			(1.9, 0.4, 0.2),
+
             (2.0, 0.4, 0.1),
-            (2.5, 0.4, 0.1),
-            (3.0, 0.4, 0.1),
-            (3.1, 0.4, 0.1),
-            (3.5, 0.4, 0.1),
-            (4.0, 0.4, 0.1),
-            (4.5, 0.4, 0.1),
-            (5.0, 0.4, 0.1),
+            (2.2, 0.4, 0.1),
+            (2.4, 0.4, 0.1),
+            (2.6, 0.4, 0.1),
+            (2.8, 0.4, 0.1),
+            
             // Разные шаги при одинаковой площади
             (3.0, 0.2, 0.2),
-            (3.0, 0.2, 0.2),
-            (3.0, 0.2, 0.2),
-            (3.0, 0.2, 0.2),
-            (3.0, 0.2, 0.2),
-            (3.0, 0.2, 0.2),
-            (3.0, 0.2, 0.1),
-            (3.0, 0.2, 0.1),
-            (3.0, 0.2, 0.1),
+            (3.2, 0.2, 0.2),
+            (3.4, 0.2, 0.2),
+            (3.6, 0.2, 0.2),
+            (3.8, 0.2, 0.2),
+
+            (4.0, 0.2, 0.2),
+            (4.2, 0.2, 0.2),
+            (4.4, 0.2, 0.2),
+            (4.6, 0.2, 0.2),
+            (4.8, 0.2, 0.2),
+
+            (5.0, 0.2, 0.2),
+            (5.2, 0.2, 0.2),
+            (5.4, 0.2, 0.2),
+            (5.6, 0.2, 0.2),
+            (5.8, 0.2, 0.2),
+
+            (6.0, 0.2, 0.2),
+            (6.2, 0.2, 0.2),
+            (6.4, 0.2, 0.2),
+            (6.6, 0.2, 0.2),
+            (6.8, 0.2, 0.2),
+
+            (7.0, 0.2, 0.2),
+            (7.2, 0.2, 0.2),
+            (7.4, 0.2, 0.2),
+            (7.6, 0.2, 0.2),
+            (7.8, 0.2, 0.2),
+
+            (8.0, 0.2, 0.2),
+            (8.2, 0.2, 0.2),
+            (8.4, 0.2, 0.2),
+            (8.6, 0.2, 0.2),
+            (8.8, 0.2, 0.2),
 
             (10.0, 0.4, 0.2),
             (20.0, 0.4, 0.2),
@@ -134,9 +201,6 @@ impl Sortament {
             (40.0, 0.4, 0.2),
             (50.0, 0.4, 0.2),
             (60.0, 0.4, 0.2),
-            (3.0, 0.25, 0.5),
-            (3.0, 0.25, 0.5),
-            (3.0, 0.25, 0.5),
 
             (20.0, 0.2, 0.4),
             (40.0, 0.2, 0.4),
@@ -181,7 +245,7 @@ impl Sortament {
                 self.find_combinations_for_area(*target_area, *main_step, *secondary_step);
 
             // Если комбинации найдены, записываем первые 5 (или меньше) в файл
-            let limit = combinations.len().min(5); // Ограничиваем количество выводимых комбинаций
+            let limit = combinations.len().min(20); // Ограничиваем количество выводимых комбинаций
 
             if combinations.is_empty() {
                 writeln!(
@@ -297,7 +361,7 @@ fn main() {
     }
 
     // Генерируем тестовый файл с таблицей результатов
-    match SORTAMENT.generate_test_report("armature_combinations.csv") {
+    match SORTAMENT.generate_test_report("armature_combinations2.csv") {
         Ok(_) => println!("Тестовый файл успешно создан: armature_combinations.csv"),
         Err(e) => println!("Ошибка при создании тестового файла: {}", e),
     }

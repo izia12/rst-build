@@ -11,6 +11,7 @@ export const create_docx: (a: number, b: number, c: number, d: number) => [numbe
 export const create_png_in_memory: () => [number, number];
 export const process_files: (a: number, b: number, c: number, d: number) => [number, number];
 export const get_changed_row_data: (a: any) => [number, number];
+export const get_sortament_data: () => any;
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 export const __wbindgen_exn_store: (a: number) => void;

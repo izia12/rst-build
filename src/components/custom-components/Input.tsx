@@ -1,9 +1,10 @@
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	label?: string;
 	error?: string;
+	type?:string
 }
 
-export const Input = ({ label, error, ...props }: InputProps) => {
+export const Input = ({ label,type, error, ...props }: InputProps) => {
 	return (
 		<div className="w-full">
 			{label && (
@@ -12,6 +13,7 @@ export const Input = ({ label, error, ...props }: InputProps) => {
 				</label>
 			)}
 			<input
+				type={type ==="number"?"number":"" }
 				{...props}
 				className={`
 			w-full px-4 py-2 border rounded-lg transition-all
