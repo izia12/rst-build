@@ -307,3 +307,39 @@ pub fn get_sortament_data() -> JsValue {
     let sortament_array = SORTAMENT.to_array();
     serde_wasm_bindgen::to_value(&sortament_array).unwrap_or(JsValue::NULL)
 }
+
+#[wasm_bindgen]
+pub fn find_combinations_with_custom_diameters(
+    target_area: f32,
+    main_step: f32,
+    secondary_step: f32,
+    available_diameters: JsValue
+) -> JsValue {
+    use serde_wasm_bindgen::from_value;
+    
+    // Десериализация JsValue в Vec<u32>
+    let diameters: Vec<u32> = match from_value(available_diameters) {
+        Ok(d) => d,
+        Err(e) => {
+            console::log_1(&format!("Ошибка десериализации диаметров: {}", e).into());
+            return JsValue::NULL;
+        }
+    };
+    
+    // Получаем комбинации с пользовательскими диаметрами
+    let combinations = SORTAMENT.find_combinations_for_area_with_custom_diameters(
+        target_area,
+        main_step,
+        secondary_step,
+        &diameters
+    );
+    
+    // Сериализуем результат обратно в JsValue
+    match serde_wasm_bindgen::to_value(&combinations) {
+        Ok(js_value) => js_value,
+        Err(e) => {
+            console::log_1(&format!("Ошибка сериализации результата: {}", e).into());
+            JsValue::NULL
+        }
+    }
+}

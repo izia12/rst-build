@@ -2,16 +2,27 @@ import React, { ReactElement, useState } from 'react'
 import Modal from '../custom-components/Modal'
 import { AdditionInfoArm } from './AdditionInfoArm';
 import { Button } from '../custom-components/Button';
+import { useAppSelector } from '../../store/store';
 
 export default function ArmSettings(): ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
+	const specifiedArms = useAppSelector(state=>state.wasm.specifiedFitParams).filter(el=>el.isSpecified)
+	function getSpecifiedArms (){
+		const availableDiameters = specifiedArms.map(el=>el.diameter);
+	}
 	return (
 		<>
 			<Modal
 				isOpen={isOpen}
 				onClose={() => setIsOpen(false)}
 				width={1200}
-				
+				button={
+					<Button
+						// onClick={() => setOpenForCreateUI(!openForCreateUI)}
+						buttonName='получить комбинации'
+						classes="absolute bottom-12 right-4 p-2 bg-blue-500 rounded-md shadow-lg hover:shadow-none transition-shadow"
+					/>
+				}
 			>
 				<AdditionInfoArm/>
 			</Modal>
