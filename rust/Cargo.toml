@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rust_xlsxwriter = "0.42.0"
 serde-wasm-bindgen = "0.4"
 lazy_static= "1.5.0"
 map-macro= "0.3.0"
@@ -31,4 +32,6 @@ wasm-opt = false
 [[bin]]
 name = "arm_combination"
 path = "src/libs/arm_combination.rs"
+# name = "create_test_excell"
+# path = "src/libs/create_test_excell.rs"
 
