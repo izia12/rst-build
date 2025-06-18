@@ -91,8 +91,16 @@ fn main() {
 
 ```
 
+#### 3) В файле Cargo.toml просписать название и путь запускаемой функции
+
+```
+ [[bin]]
+name = "createSimpleDxf"
+path = "src/libs/createSimpleDxf.rs"
+```
+
 #### 2) после этого запустить команду которая возьмет эту фнкцию с указанным путем. Например если ваша фунция лежит в папке
 
 ```
-cargo run --example createSimpleDxf
+cargo run --bin createSimpleDxf
 ```

@@ -12,7 +12,8 @@ pub enum AsFunctions  {
 	As2,
 	As3,
 	As4
-} 
+}
+
 #[derive(Debug, Serialize)]
 pub struct DrawItemZ{
 	pub data:Vec<EntityWithXlsx>,

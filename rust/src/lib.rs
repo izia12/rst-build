@@ -344,3 +344,69 @@ pub fn find_combinations_with_custom_diameters(
         }
     }
 }
+// В начале файла добавьте:
+use std::io::Write;
+
+// ... остальные импорты ...
+
+#[wasm_bindgen]
+pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
+    let data = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    // Создаем буфер для CSV данных
+    let mut csv_content = Vec::new();
+    
+    // Добавляем заголовок CSV
+    writeln!(&mut csv_content, "Номер,Тип,X,Y,Z,Материал,Номер_материала,Тип_SG,B_или_D,H_или_D,H")
+        .expect("Failed to write CSV header");
+    
+    // Перебираем все элементы и добавляем их в CSV
+    for (i, element) in data.iter().enumerate() {
+        // Получаем информацию о материале
+        let material_num = element.material.as_ref().and_then(|m| m.material_num).unwrap_or(0);
+        let sg_type = element.material.as_ref().and_then(|m| m.sg_type.clone()).unwrap_or_else(|| String::from("-"));
+        let b_or_d = element.material.as_ref().and_then(|m| m.b_or_d).unwrap_or(0.0);
+        let h_or_d = element.material.as_ref().and_then(|m| m.h_or_d).unwrap_or(0.0);
+        let h = element.material.as_ref().and_then(|m| m.h).unwrap_or(0.0);
+        
+        if element.vertices.is_empty() {
+            // Если у элемента нет координат, записываем строку с нулевыми координатами
+            writeln!(
+                &mut csv_content,
+                "{},{},0.0,0.0,0.0,{},{},{},{},{}",
+                i,
+                element.entity_type,
+                material_num,
+                sg_type,
+                b_or_d,
+                h_or_d,
+                h
+            ).expect("Failed to write CSV row");
+        } else {
+            // Записываем каждую координату элемента в отдельной строке
+            for vertex in &element.vertices {
+                writeln!(
+                    &mut csv_content,
+                    "{},{},{},{},{},{},{},{},{},{}",
+                    i,
+                    element.entity_type,
+                    vertex.x,
+                    vertex.y,
+                    vertex.z,
+                    material_num,
+                    sg_type,
+                    b_or_d,
+                    h_or_d,
+                    h
+                ).expect("Failed to write CSV row");
+            }
+        }
+    }
+    
+    csv_content
+}

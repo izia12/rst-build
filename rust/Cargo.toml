@@ -30,8 +30,11 @@ crate-type = ["cdylib", "rlib"]
 [package.metadata.wasm-pack]
 wasm-opt = false
 [[bin]]
-name = "arm_combination"
-path = "src/libs/arm_combination.rs"
+# [[bin]]
+name = "lira_parse"
+path = "src/libs/lira_parse.rs"
+# name = "arm_combination"
+# path = "src/libs/arm_combination.rs"
 # name = "create_test_excell"
 # path = "src/libs/create_test_excell.rs"
 
