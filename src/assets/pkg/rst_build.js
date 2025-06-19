@@ -167,14 +167,6 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * @returns {any}
- */
-export function get_horizontal_elements_object_js() {
-    const ret = wasm.get_horizontal_elements_object_js();
-    return ret;
-}
-
-/**
  * @param {number} x
  * @param {number} y
  */
@@ -199,14 +191,17 @@ function passArray8ToWasm0(arg, malloc) {
 }
 /**
  * @param {string} sli_data
+ * @param {string} txt_data
  * @param {Uint8Array} xlsx_data
  */
-export function parse_data(sli_data, xlsx_data) {
+export function parse_data(sli_data, txt_data, xlsx_data) {
     const ptr0 = passStringToWasm0(sli_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
+    const ptr1 = passStringToWasm0(txt_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len1 = WASM_VECTOR_LEN;
-    wasm.parse_data(ptr0, len0, ptr1, len1);
+    const ptr2 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    wasm.parse_data(ptr0, len0, ptr1, len1, ptr2, len2);
 }
 
 /**
@@ -247,18 +242,21 @@ function getArrayU8FromWasm0(ptr, len) {
 }
 /**
  * @param {string} sli_data
+ * @param {string} txt_data
  * @param {Uint8Array} xlsx_data
  * @returns {Uint8Array}
  */
-export function create_docx(sli_data, xlsx_data) {
+export function create_docx(sli_data, txt_data, xlsx_data) {
     const ptr0 = passStringToWasm0(sli_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
+    const ptr1 = passStringToWasm0(txt_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.create_docx(ptr0, len0, ptr1, len1);
-    var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    const ptr2 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ret = wasm.create_docx(ptr0, len0, ptr1, len1, ptr2, len2);
+    var v4 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    return v3;
+    return v4;
 }
 
 /**
@@ -273,23 +271,26 @@ export function create_png_in_memory() {
 
 /**
  * @param {string} sli_data
+ * @param {string} txt_data
  * @param {Uint8Array} xlsx_data
  * @returns {string}
  */
-export function process_files(sli_data, xlsx_data) {
-    let deferred3_0;
-    let deferred3_1;
+export function process_files(sli_data, txt_data, xlsx_data) {
+    let deferred4_0;
+    let deferred4_1;
     try {
         const ptr0 = passStringToWasm0(sli_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ptr1 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
+        const ptr1 = passStringToWasm0(txt_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
-        const ret = wasm.process_files(ptr0, len0, ptr1, len1);
-        deferred3_0 = ret[0];
-        deferred3_1 = ret[1];
+        const ptr2 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ret = wasm.process_files(ptr0, len0, ptr1, len1, ptr2, len2);
+        deferred4_0 = ret[0];
+        deferred4_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
     } finally {
-        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
+        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
     }
 }
 
@@ -309,6 +310,36 @@ export function get_changed_row_data(planes) {
  */
 export function get_sortament_data() {
     const ret = wasm.get_sortament_data();
+    return ret;
+}
+
+/**
+ * @param {number} target_area
+ * @param {number} main_step
+ * @param {number} secondary_step
+ * @param {any} available_diameters
+ * @returns {any}
+ */
+export function find_combinations_with_custom_diameters(target_area, main_step, secondary_step, available_diameters) {
+    const ret = wasm.find_combinations_with_custom_diameters(target_area, main_step, secondary_step, available_diameters);
+    return ret;
+}
+
+/**
+ * @returns {Uint8Array}
+ */
+export function create_csv_from_all_parsed_entities() {
+    const ret = wasm.create_csv_from_all_parsed_entities();
+    var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v1;
+}
+
+/**
+ * @returns {any}
+ */
+export function get_horizontal_elements_object_js() {
+    const ret = wasm.get_horizontal_elements_object_js();
     return ret;
 }
 
@@ -395,6 +426,10 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_isArray_a1eab7e0d067391b = function(arg0) {
         const ret = Array.isArray(arg0);
+        return ret;
+    };
+    imports.wbg.__wbg_isSafeInteger_343e2beeeece1bb0 = function(arg0) {
+        const ret = Number.isSafeInteger(arg0);
         return ret;
     };
     imports.wbg.__wbg_iterator_9a24c88df860dc65 = function() {

@@ -10,13 +10,14 @@ use calamine::{ Data, Reader as clamineReader};
 use serde_json;
 // use web_sys::console;
 
+
+use crate::libs::lira_parse::LiraFile;
 #[derive(Serialize,Deserialize, Debug, Clone)]
 pub struct Vertex {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SerializableEntity {
     pub entity_type: String,
@@ -308,13 +309,39 @@ fn parse_column(row: &[Data], index: usize) -> Vec<f64> {
         }
     )
 }
-pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Material>) {
-    let cursor = Cursor::new(data);
+pub fn get_indexes(sli_data: &str, txt_data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Material>) {
+    // Парсим TXT файл
+    let mut lira_file = LiraFile::new();
+    lira_file.parse_file_from_string(txt_data);
+    let txt_elements = lira_file.get_elements();
+    
+    // Создаем хэш-мапу для TXT элементов для быстрого поиска по координатам
+    let mut txt_elements_map: HashMap<String, usize> = HashMap::new();
+    
+    // Заполняем хэш-мапу для TXT элементов
+    for (i, element) in txt_elements.iter().enumerate() {
+        // Создаем ключ из отсортированных координат
+        let mut coords_set: Vec<(f64, f64, f64)> = element.coordinates.iter()
+            .map(|c| (c.x, c.y, c.z))
+            .collect();
+        coords_set.sort_by(|a, b| {
+            a.0.partial_cmp(&b.0).unwrap()
+                .then(a.1.partial_cmp(&b.1).unwrap())
+                .then(a.2.partial_cmp(&b.2).unwrap())
+        });
+        let key = coords_set.iter()
+            .map(|(x, y, z)| format!("{:.5},{:.5},{:.5}", x, y, z))
+            .collect::<Vec<String>>()
+            .join("|");
+        txt_elements_map.insert(key, i);
+    }
+    
+    // Парсим SLI файл
+    let cursor = Cursor::new(sli_data);
     let parser = EventReader::new(cursor);
     let mut points: Vec<Vertex> = Vec::new();
     let mut entities: Vec<SerializableEntity> = Vec::new();
     let mut materials: HashMap<usize, Material> = HashMap::new();
-    let mut node_id = 0;
     let mut in_materials_array = false;
     let mut current_material_num: Option<usize> = None;
     for e in parser {
@@ -330,7 +357,6 @@ pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Materi
                         points.push(vertices)
                     },
                     "Element" => {
-                        node_id += 1;
                         let entity_type = match attributes.iter().find(|attr| attr.name.local_name == "Type").unwrap().value.as_str() {
                             "1" => String::from("LINE"),
                             "2" => String::from("3DFACE"),
@@ -340,13 +366,14 @@ pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Materi
                             .find(|attr| attr.name.local_name == "Material")
                             .and_then(|attr| attr.value.parse::<usize>().ok());
                         
+                        // Создаем сущность с временным node_id, который будет заменен позже
                         let entity = SerializableEntity{
                             entity_type,
                             vertices: vec![],
                             handle: "".to_string(),
                             layer: "".to_string(),
                             color_id: 0,
-                            node_id,
+                            node_id: 0, // Временное значение, будет заменено на node_id из TXT файла
                             material_num,
                         };
                         entities.push(
@@ -375,11 +402,8 @@ pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Materi
                     },
                     "Material" => {
                         let num = attributes.iter().find(|attr| attr.name.local_name == "Num").unwrap().value.parse::<usize>().unwrap();
-                        
                         let h = attributes.iter().find(|attr| attr.name.local_name == "H").unwrap().value.parse::<f64>().unwrap();
-                        
                         current_material_num = Some(num);
-                        
                         materials.insert(num, Material {
                             material_num: Some(num),
                             sg_type: None,
@@ -392,15 +416,12 @@ pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Materi
                         let sg_type = attributes.iter()
                             .find(|attr| attr.name.local_name == "SGType")
                             .map(|attr| attr.value.clone());
-                        
                         let b_or_d = attributes.iter()
                             .find(|attr| attr.name.local_name == "b_OR_D")
                             .and_then(|attr| attr.value.parse::<f64>().ok());
-                        
                         let h_or_d = attributes.iter()
                             .find(|attr| attr.name.local_name == "h_OR_d")
                             .and_then(|attr| attr.value.parse::<f64>().ok());
-                        
                         if let Some(num) = current_material_num {
                             if let Some(material) = materials.get_mut(&num) {
                                 material.sg_type = sg_type;
@@ -420,13 +441,46 @@ pub fn get_indexes(data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Materi
             _ => {}
         }
     }
+    
+    // Сопоставляем элементы из SLI и TXT файлов по координатам
+    // и устанавливаем node_id из TXT файла
+    let mut sli_elements_map: HashMap<String, usize> = HashMap::new();
+    
+    // Заполняем хэш-мапу для SLI элементов
+    for (i, entity) in entities.iter().enumerate() {
+        // Создаем ключ из отсортированных координат
+        let mut coords_set: Vec<(f64, f64, f64)> = entity.vertices.iter()
+            .map(|v| (v.x, v.y, v.z))
+            .collect();
+        coords_set.sort_by(|a, b| {
+            a.0.partial_cmp(&b.0).unwrap()
+                .then(a.1.partial_cmp(&b.1).unwrap())
+                .then(a.2.partial_cmp(&b.2).unwrap())
+        });
+        
+        let key = coords_set.iter()
+            .map(|(x, y, z)| format!("{:.5},{:.5},{:.5}", x, y, z))
+            .collect::<Vec<String>>()
+            .join("|");
+        
+        sli_elements_map.insert(key, i);
+    }
+    
+    // Устанавливаем node_id из TXT файла для соответствующих элементов SLI
+    for (key, txt_index) in &txt_elements_map {
+        if let Some(&sli_index) = sli_elements_map.get(key) {
+            // Устанавливаем node_id из TXT файла
+            entities[sli_index].node_id = txt_index + 1; // +1 потому что индексы в TXT файле начинаются с 1
+        }
+    }
+    
 	(entities, materials)
 }
 
 // #[wasm_bindgen]
-pub fn convert_sli_xsl_to_json(sli_data: &str, data: &[u8]) -> Vec<EntityWithXlsx>{
-    let (entities, materials) = get_indexes(sli_data);
-    let xlsx = parse_xlsx_wasm(data);
+pub fn convert_sli_xsl_to_json(sli_data: &str, txt_data: &str, xls_data: &[u8]) -> Vec<EntityWithXlsx>{
+    let (entities, materials) = get_indexes(sli_data, txt_data);
+    let xlsx = parse_xlsx_wasm(xls_data);
     let mut entities_with_xlsx: Vec<EntityWithXlsx> = Vec::new();
 	for (_, entity) in entities.iter().enumerate(){
 		if let Some(row) = xlsx.iter().find(|row_item| row_item.id == entity.node_id) {
@@ -454,9 +508,9 @@ pub fn convert_sli_xsl_to_json(sli_data: &str, data: &[u8]) -> Vec<EntityWithXls
     entities_with_xlsx
     // serde_json::to_string(&entities_with_xlsx).expect("Failed to serialize to JSON")
 }
-pub fn get_data_from_xlsx_sli(path_sli:&Path, path_xlsx:&Path)->Vec<EntityWithXlsx>{
-	let vec_sli_data = fs::read(path_sli).unwrap();
-	let sli_data = std::str::from_utf8(&vec_sli_data).unwrap();
-	let xlsx_data = fs::read(path_xlsx).unwrap();
-	convert_sli_xsl_to_json(sli_data, &xlsx_data)
-}
+// pub fn get_data_from_xlsx_sli(path_sli:&Path, path_xlsx:&Path)->Vec<EntityWithXlsx>{
+// 	let vec_sli_data = fs::read(path_sli).unwrap();
+// 	let sli_data = std::str::from_utf8(&vec_sli_data).unwrap();
+// 	let xlsx_data = fs::read(path_xlsx).unwrap();
+// 	convert_sli_xsl_to_json(sli_data, &xlsx_data)
+// }

@@ -14,6 +14,7 @@ use ordered_float::OrderedFloat;
 // use crate::libs::arm_combination::SORTAMENT;
 pub mod libs{
 	pub mod parse;
+	pub mod lira_parse;
 	pub mod drawItem;
 	pub mod createDxf;
 	pub mod getTransformedObject;
@@ -46,8 +47,8 @@ thread_local! {
 }
 
 #[wasm_bindgen]//ТОчка входа в и вызызова с JS
-pub fn parse_data(sli_data: &str, xlsx_data: &[u8]) {
-    let parsed = convert_sli_xsl_to_json(sli_data, xlsx_data);
+pub fn parse_data(sli_data: &str,txt_data:&str, xlsx_data: &[u8]) {
+    let parsed = convert_sli_xsl_to_json(sli_data, txt_data, xlsx_data);
     GLOBAL_ENTITIES.with(|cell| *cell.borrow_mut() = Some(parsed));
 }
 
@@ -73,7 +74,7 @@ pub fn convert_data_to_js_order_byz() -> String {
 }
 
 #[wasm_bindgen]
-pub fn create_docx(sli_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
+pub fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
     let mut doc = Docx::new().add_paragraph(Paragraph::new().add_run(Run::new().add_text("Hello, world!")));
 	let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
@@ -111,7 +112,7 @@ pub fn create_docx(sli_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
 	    Err(e) => println!("Ошибка: {}", e),
 	}
 
-	process_files(sli_data, &xlsx_data);
+	process_files(sli_data, txt_data, &xlsx_data);
 	buffer.into_inner()
 }
 
@@ -201,8 +202,8 @@ struct SerializableEntity {
     vertices: Vec<Vertex>,
 }
 #[wasm_bindgen]
-pub fn process_files(sli_data: &str, xlsx_data: &[u8]) -> String {
-    let parsed_data = convert_sli_xsl_to_json(sli_data, xlsx_data);
+pub fn process_files(sli_data: &str,txt_data:&str,  xlsx_data: &[u8]) -> String {
+    let parsed_data = convert_sli_xsl_to_json(sli_data, txt_data, xlsx_data);
     let serializable: Vec<SerializableEntity> = parsed_data
         .into_iter()
         .map(|e| SerializableEntity { vertices: e.vertices })

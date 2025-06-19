@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import './App.css'
 import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
@@ -17,6 +17,7 @@ import ArmSettings from './components/Additional information for fittings/ArmSet
 function App() {
 	const dispatch = useAppDispatch();
 	const [sliInput, setSliInput] = useState<string | null>(null);
+	const [textInput, setTextInput] = useState<string | null>(null);
 	const [xlsxInput, setXlsxInput] = useState<Uint8Array | null>(null);
 	const [isOpen, setIsOpen] = useState(false);
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
@@ -30,6 +31,20 @@ function App() {
 			reader.onload = (e) => {
 				if (e.target) {
 					setSliInput(e.target.result as string)
+				}
+			}
+			reader.readAsText(file)
+			// setSliInput(file)
+		}
+	}
+	async function onLiraInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+
+		const file = event.target?.files?.[0]
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				if (e.target) {
+					setTextInput(e.target.result as string)
 				}
 			}
 			reader.readAsText(file)
@@ -84,10 +99,11 @@ function App() {
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	}
-	async function onTwoInputsChange() {
-		if (sliInput && xlsxInput) {
+	const onInputsChanged = useCallback(async () => {
+		if (sliInput && xlsxInput && textInput) {
 			await dispatch(fetchWasmData({
 				sliData: sliInput,
+				txtData:textInput,
 				xlsxData: xlsxInput
 			})).unwrap(); // Добавляем unwrap() для обработки ошибок
 
@@ -95,13 +111,14 @@ function App() {
 			dispatch(startPerfomance(perf));
 			await dispatch(fetchWasmJSData());
 		}
-	}
+	},[dispatch, sliInput, textInput, xlsxInput])
 	useEffect(() => {
-		if (sliInput && xlsxInput) {
-			void onTwoInputsChange();
+		if (sliInput && xlsxInput && textInput) {
+			void onInputsChanged();
 		}
 
-	}, [sliInput, xlsxInput]); // Добавляем зависимости
+	}, [onInputsChanged, sliInput, textInput, xlsxInput]); // Добавляем зависимости
+	
 	useEffect(()=>{
 		dispatch( fetchArmDimeters());
 	},[dispatch])
@@ -115,7 +132,7 @@ function App() {
 						<div className="flex items-center mx-2">
 							<label
 								className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-								<span className="text-gray-500">Перетащите файл сюда или нажмите для выбора</span>
+								<span className="text-gray-500">Перетащите файл сюда .sli файл или нажмите для выбора</span>
 								<input
 									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
 									type="file"
@@ -124,13 +141,32 @@ function App() {
 									name="file"
 									onChange={(e) => {
 										onSliInputChange(e);
+										console.log(e);
+										
+										
 									}} />
 							</label>
 						</div>
 						<div className="flex items-center mx-2">
 							<label
 								className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-								<span className="text-gray-500">Перетащите файл сюда или нажмите для выбора</span>
+								<span className="text-gray-500">Перетащите файл сюда .txt файл или нажмите для выбора</span>
+								<input
+									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
+									type="file"
+									accept=".txt"
+									id="file-input"
+									name="txt-file"
+									onChange={(e) => {
+										onLiraInputChange(e);
+										console.log(e);
+									}} />
+							</label>
+						</div>
+						<div className="flex items-center mx-2">
+							<label
+								className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+								<span className="text-gray-500">Перетащите файл сюда .xlsx и .xls файл или нажмите для выбора</span>
 								<input
 									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
 									type="file"

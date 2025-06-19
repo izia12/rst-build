@@ -2,12 +2,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import { ArmDiameters, WasmDataJsType, WASMDataType } from "../../../types/data.types"
 import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, parse_data } from "../../../assets/pkg/rst_build"
-export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:string, xlsxData:Uint8Array}>(
+export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:string, txtData:string, xlsxData:Uint8Array}>(
 	'users/fetchByIdStatus',
-	async ({sliData, xlsxData} , thunkAPI) => {
+	async ({sliData,txtData, xlsxData} , thunkAPI) => {
         try {
 			await init()
-			parse_data(sliData, xlsxData)
+			parse_data(sliData,txtData, xlsxData)
 
 			return JSON.parse(convert_sli_xsl_to_json_string())
         } catch (error) {

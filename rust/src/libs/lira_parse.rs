@@ -3,10 +3,12 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::Path;
 use std::collections::HashSet;
-use parse::{get_indexes, SerializableEntity};
+
 use std::fs;
 
-pub mod parse;
+use crate::libs::parse::{get_indexes, SerializableEntity};
+
+
 
 // Структура для хранения координат
 #[derive(Debug, Clone)]
@@ -66,16 +68,46 @@ pub fn parse_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
     for line in reader.lines() {
         let line = line?;
         let trimmed_line = line.trim();
+        
+        self.process_line(trimmed_line, &mut current_document, &mut current_content, &mut is_first_line_in_document);
+    }
+    
+    // Обрабатываем документы
+    self.process_documents();
+    
+    Ok(())
+}
 
+// Парсинг данных из строки
+pub fn parse_file_from_string(&mut self, content: &str) -> io::Result<()> {
+    let mut current_document: Option<String> = None;
+    let mut current_content = String::new();
+    let mut is_first_line_in_document = true;
+    
+    // Читаем строки из переданного содержимого
+    for line in content.lines() {
+        let trimmed_line = line.trim();
+        
+        self.process_line(trimmed_line, &mut current_document, &mut current_content, &mut is_first_line_in_document);
+    }
+    
+    // Обрабатываем документы
+    self.process_documents();
+    
+    Ok(())
+}
+
+// Обработка одной строки при парсинге
+fn process_line(&mut self, trimmed_line: &str, current_document: &mut Option<String>, current_content: &mut String, is_first_line_in_document: &mut bool) {
         // Проверяем, начинается ли строка с открывающей скобки
         if trimmed_line.starts_with("(") && trimmed_line.contains("/") {
             // Извлекаем ID документа
             let parts: Vec<&str> = trimmed_line.split('/').collect();
             if parts.len() > 0 {
                 let doc_id = parts[0].trim().trim_start_matches('(').trim();
-                current_document = Some(doc_id.to_string());
+                *current_document = Some(doc_id.to_string());
                 current_content.clear();
-                is_first_line_in_document = true;
+                *is_first_line_in_document = true;
                 
                 // Добавляем оставшуюся часть строки после "/" в содержимое
                 if parts.len() > 1 {
@@ -89,7 +121,7 @@ pub fn parse_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
 					let content_part = content_part.trim();
 					if !content_part.is_empty() {
 						current_content.push_str(content_part);
-						is_first_line_in_document = false;
+						*is_first_line_in_document = false;
 					}
 				}
             }
@@ -105,18 +137,30 @@ pub fn parse_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
                 // Не обрабатываем документы здесь, только сохраняем их
             }
             current_content.clear();
-            is_first_line_in_document = true;
+            *is_first_line_in_document = true;
         } 
         // Добавляем строку к содержимому текущего документа
         else if current_document.is_some() {
-            if !is_first_line_in_document {
+            if !*is_first_line_in_document {
                 // Добавляем разделитель между элементами
                 current_content.push('/');
             }
             current_content.push_str(trimmed_line);
-            is_first_line_in_document = false;
+            *is_first_line_in_document = false;
         }
     }
+    
+    // Обработка документов после парсинга
+    fn process_documents(&mut self) {
+        // Обрабатываем документы
+        if let Some(doc4) = self.documents.get("4") {
+            self.parse_coordinates(&doc4.content.clone());
+        }
+    
+        if let Some(doc1) = self.documents.get("1") {
+            self.parse_elements(&doc1.content.clone());
+        }
+    
 
     // После того как все документы прочитаны, обрабатываем их в нужном порядке
     // Сначала обрабатываем координаты (документ 4)
@@ -131,7 +175,7 @@ pub fn parse_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         println!("Прочитано элементов: {}", self.elements.len());
     }
 
-    Ok(())
+    // Ok(())
 }
 
 // ... existing code ...
@@ -299,7 +343,8 @@ pub fn verify_element_indices(txt_file_path: &str, sli_file_path: &str) -> io::R
     
     // Парсим SLI файл
     let sli_content = fs::read_to_string(sli_file_path)?;
-    let (sli_entities, _) = get_indexes(&sli_content);
+    let txt_content = fs::read_to_string(txt_file_path)?;
+    let (sli_entities, _) = get_indexes(&sli_content, &txt_content);
     
     println!("Количество элементов в TXT: {}", txt_elements.len());
     println!("Количество элементов в SLI: {}", sli_entities.len());
@@ -336,20 +381,18 @@ pub fn verify_element_indices(txt_file_path: &str, sli_file_path: &str) -> io::R
                 .then(a.1.partial_cmp(&b.1).unwrap())
                 .then(a.2.partial_cmp(&b.2).unwrap())
         });
-        
         let key = coords_set.iter()
             .map(|(x, y, z)| format!("{:.5},{:.5},{:.5}", x, y, z))
             .collect::<Vec<String>>()
             .join("|");
-        
         sli_elements_map.insert(key, i);
     }
-    
+
     // Создаем имя CSV файла на основе имен входных файлов
      let txt_filename = Path::new(txt_file_path).file_stem().unwrap().to_str().unwrap();
      let sli_filename = Path::new(sli_file_path).file_stem().unwrap().to_str().unwrap();
      let csv_filename = format!("{}_vs_{}_mismatches.csv", txt_filename, sli_filename);
-     
+
      // Создаем CSV файл
      let mut csv_file = File::create(&csv_filename)?;
      
@@ -396,7 +439,6 @@ pub fn verify_element_indices(txt_file_path: &str, sli_file_path: &str) -> io::R
             writeln!(csv_file, "Только в SLI,N/A,{},,{}", sli_index, sli_coords)?;
         }
     }
-    
     // Записываем статистику в CSV
     writeln!(csv_file, "\nСтатистика:,,")?;
     writeln!(csv_file, "Всего элементов в TXT,{},", txt_elements.len())?;
@@ -405,20 +447,16 @@ pub fn verify_element_indices(txt_file_path: &str, sli_file_path: &str) -> io::R
     writeln!(csv_file, "Несоответствий индексов,{},", mismatches)?;
     writeln!(csv_file, "Только в TXT,{},", txt_only)?;
     writeln!(csv_file, "Только в SLI,{},", sli_only)?;
-    
     println!("Проверка завершена. Проверено элементов: {}", total_checked);
     println!("Найдено несоответствий индексов: {}", mismatches);
     println!("Элементов только в TXT: {}", txt_only);
     println!("Элементов только в SLI: {}", sli_only);
-    
     if mismatches == 0 && txt_only == 0 && sli_only == 0 {
         println!("Все элементы имеют одинаковые индексы в обоих файлах!");
     } else {
         println!("Обнаружены проблемы с индексами элементов!");
     }
-    
     println!("CSV файл с результатами создан: {}", csv_filename);
-    
     Ok(())
 }
 

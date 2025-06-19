@@ -1,17 +1,19 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export const get_horizontal_elements_object_js: () => any;
 export const log_data: (a: number, b: number) => void;
 export const str_log_data: (a: number, b: number) => void;
-export const parse_data: (a: number, b: number, c: number, d: number) => void;
+export const parse_data: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
 export const convert_sli_xsl_to_json_string: () => [number, number];
 export const convert_data_to_js_order_byz: () => [number, number];
-export const create_docx: (a: number, b: number, c: number, d: number) => [number, number];
+export const create_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
 export const create_png_in_memory: () => [number, number];
-export const process_files: (a: number, b: number, c: number, d: number) => [number, number];
+export const process_files: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
 export const get_changed_row_data: (a: any) => [number, number];
 export const get_sortament_data: () => any;
+export const find_combinations_with_custom_diameters: (a: number, b: number, c: number, d: any) => any;
+export const create_csv_from_all_parsed_entities: () => [number, number];
+export const get_horizontal_elements_object_js: () => any;
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 export const __wbindgen_exn_store: (a: number) => void;

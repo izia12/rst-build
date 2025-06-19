@@ -107,7 +107,6 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 // Преобразование EntityWithXlsx в JS-объект без сериализации
 fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
     let obj = Object::new();
-
     // Вершины
     let vertices = Array::new();
     for v in &entity.vertices {
