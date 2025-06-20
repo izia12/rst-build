@@ -136,7 +136,6 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
     // RowData (если есть)
     if let Some(row) = &entity.row {
         let row_obj = Object::new();
-        
         // Для каждого массива as1/as2/as3/as4:
         let convert_to_js_array = |data: &[f64]| {
             let arr = Array::new();
@@ -150,7 +149,6 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
         Reflect::set(&row_obj, &"as2".into(), &convert_to_js_array(&row.as2)).unwrap();
         Reflect::set(&row_obj, &"as3".into(), &convert_to_js_array(&row.as3)).unwrap();
         Reflect::set(&row_obj, &"as4".into(), &convert_to_js_array(&row.as4)).unwrap();
-        
         Reflect::set(&obj, &"rowData".into(), &row_obj).unwrap();
     }
 

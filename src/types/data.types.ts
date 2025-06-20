@@ -2,7 +2,7 @@ export type ShapeNames = "3DFACE"|"3DFACE_TRIANGLE"|"LINE"
 export type WASMDataType={
 	entity_type:ShapeNames,
 	vertices:Array<Vertex>,
-	row:Array<RowData>,
+	row:RowData,
 }
 export type Vertex={
 	x:number,

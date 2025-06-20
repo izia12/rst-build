@@ -45,8 +45,9 @@ export default function Quadrilaterals() {
     });
 
     // Сортируем слои по z (от меньшего к большему)
-    return Array.from(layersMap.values())
-      .sort((a, b) => a.z - b.z);
+    return Array
+		.from(layersMap.values())
+      	.sort((a, b) => a.z - b.z);
   }, [data]);
 
   return (
@@ -78,8 +79,8 @@ const Layer = memo(({ layer }: { layer: ProcessedLayer }) => {
     svg.selectAll("*").remove();
 
     const margin = 20;
-    const width = 500;
-    const height = 500;
+    const width = 600;
+    const height = 600;
 
     const xScale = d3.scaleLinear()
       .domain([xExtent[0], xExtent[1]])
@@ -121,7 +122,7 @@ const Layer = memo(({ layer }: { layer: ProcessedLayer }) => {
           .attr("dominant-baseline", "central")
           .attr("font-size", "8px")
           .attr("fill", "#e74c3c")
-          .text(`${maxAs1.toFixed(2)}`);
+          .text(`1`);
       }
     });
 
@@ -132,9 +133,9 @@ const Layer = memo(({ layer }: { layer: ProcessedLayer }) => {
       <h3>Z-Level: {layer.z.toFixed(1)}</h3>
       <svg
         ref={svgRef}
-        width={500}
-        height={500}
-        viewBox={`0 0 500 500`}
+        width={700}
+        height={700}
+        viewBox={`0 0 700 700`}
         preserveAspectRatio="xMidYMid meet"
       />
     </div>

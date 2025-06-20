@@ -12,6 +12,7 @@ import { Loader } from './components/custom-components/Loader.tsx';
 import { Button } from './components/custom-components/Button.tsx';
 import { get_changed_row_data } from './assets/pkg/rst_build';
 import ArmSettings from './components/Additional information for fittings/ArmSettings.tsx';
+import Canvas from './components/Canvas.tsx';
 
 
 function App() {
@@ -215,7 +216,8 @@ function App() {
 
 					<Three />
 
-					<Quadrilaterals />
+					{/* <Quadrilaterals /> */}
+					<Canvas />
 
 				</div>
 				{/*<FileUploadAndDocxGenerator/>*/}
