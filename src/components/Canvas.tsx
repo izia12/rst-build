@@ -1,20 +1,22 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAppSelector } from "../store/store";
 import { Layer, Stage, Shape, Text } from "react-konva";
 
 export default function Canvas() {
   const data = useAppSelector((state) => state.wasm.wasmData);
   const [scale, setScale] = useState(1);
-  
+  const [asFn, setAsFn]=useState<"as1"|"as2"|"as3"|"as4">("as1")
   // Палитра цветов
   const colorPalette = [
     '#FFFFCC', '#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C'
   ];
 
+  useEffect(()=>{
+  }, [asFn])
   // Фильтрация и подготовка данных
   const { zMap, minAs1, maxAs1 } = useMemo(() => {
-    const map = new Map<number, Array<{
-      points: number[][];
+	  const map = new Map<number, Array<{
+		  points: number[][];
       as1Value: number;
       center: [number, number];
       area: number; // Добавим площадь для определения размера текста
@@ -22,52 +24,51 @@ export default function Canvas() {
     
     let min = Infinity;
     let max = -Infinity;
-    
-    data.forEach(item => {
-      if (!item.vertices || item.vertices.length === 0) return;
-      
-      const firstZ = item.vertices[0].z;
-      const allSameZ = item.vertices.every(v => v.z === firstZ);
-      if (!allSameZ) return;
-      
-      const as1Value = item.row?.as1?.[0] ?? 0;
-      
-      if (as1Value < min) min = as1Value;
-      if (as1Value > max) max = as1Value;
-      
-      // Вычисляем центр
-      const sumX = item.vertices.reduce((acc, v) => acc + v.x, 0);
-      const sumY = item.vertices.reduce((acc, v) => acc + v.y, 0);
-      const center: [number, number] = [
-        sumX / item.vertices.length,
-        sumY / item.vertices.length
-      ];
-      
-      // Вычисляем площадь для определения размера текста
-      let area = 0;
-      for (let i = 0; i < item.vertices.length; i++) {
-        const j = (i + 1) % item.vertices.length;
-        area += item.vertices[i].x * item.vertices[j].y;
-        area -= item.vertices[j].x * item.vertices[i].y;
-      }
-      area = Math.abs(area / 2);
-      
-      if (!map.has(firstZ)) map.set(firstZ, []);
-      
-      map.get(firstZ)!.push({
-        points: item.vertices.map(v => [v.x, v.y]),
-        as1Value,
-        center,
-        area
-      });
-    });
+	data.forEach(item => {
+	  if (!item.vertices || item.vertices.length === 0) return;
+	  
+	  const firstZ = item.vertices[0].z;
+	  const allSameZ = item.vertices.every(v => v.z === firstZ);
+	  if (!allSameZ) return;
+	  
+	  const as1Value = item.row?.[`${asFn}`]?.[0] ?? 0;
+	  
+	  if (as1Value < min) min = as1Value;
+	  if (as1Value > max) max = as1Value;
+	  
+	  // Вычисляем центр
+	  const sumX = item.vertices.reduce((acc, v) => acc + v.x, 0);
+	  const sumY = item.vertices.reduce((acc, v) => acc + v.y, 0);
+	  const center: [number, number] = [
+		sumX / item.vertices.length,
+		sumY / item.vertices.length
+	  ];
+	  
+	  // Вычисляем площадь для определения размера текста
+	  let area = 0;
+	  for (let i = 0; i < item.vertices.length; i++) {
+		const j = (i + 1) % item.vertices.length;
+		area += item.vertices[i].x * item.vertices[j].y;
+		area -= item.vertices[j].x * item.vertices[i].y;
+	  }
+	  area = Math.abs(area / 2);
+	  
+	  if (!map.has(firstZ)) map.set(firstZ, []);
+	  
+	  map.get(firstZ)!.push({
+		points: item.vertices.map(v => [v.x, v.y]),
+		as1Value,
+		center,
+		area
+	  });
+	});
     
     return { 
       zMap: map, 
       minAs1: min === Infinity ? 0 : min, 
       maxAs1: max === -Infinity ? 1 : max 
     };
-  }, [data]);
+  }, [data, asFn]);
 
   // Функция определения цвета
   const getColorByAs1 = (value: number) => {
@@ -152,15 +153,23 @@ export default function Canvas() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="p-4" >
+		<div className="flex justify-between">
+	      <div className="mb-4 flex gap-2" >
+	        <button className="bg-sky-900 rounded px-4 py-2 text-white" onClick={handleZoomIn}>Увеличить (+)</button>
+	        <button className="bg-sky-900 rounded px-4 py-2 text-white" onClick={handleZoomOut}>Уменьшить (-)</button>
+	        <button className="bg-sky-900 rounded px-4 py-2 text-white" onClick={handleResetZoom}>Сбросить масштаб</button>
+	        <span>Масштаб: {Math.round(scale * 100)}%</span>
+	      </div>
+		<div className="flex gap-2">
+			<button onClick={()=>setAsFn("as1")} className={asFn==="as1"? "bg-sky-900 rounded px-4 py-2 text-white":"bg-white text-sky-900 border rounded px-4 py-2"} >as1</button>
+			<button onClick={()=>setAsFn("as2")} className={asFn==="as2"? "bg-sky-900 rounded px-4 py-2 text-white":"bg-white text-sky-900 border rounded px-4 py-2"}>as2</button>
+			<button onClick={()=>setAsFn("as3")} className={asFn==="as3"? "bg-sky-900 rounded px-4 py-2 text-white":"bg-white text-sky-900 border rounded px-4 py-2"}>as3</button>
+			<button onClick={()=>setAsFn("as4")} className={asFn==="as4"? "bg-sky-900 rounded px-4 py-2 text-white":"bg-white text-sky-900 border rounded px-4 py-2"}>as4</button>
+		</div>
+		</div>
       {/* Панель управления масштабом */}
-      <div style={{ marginBottom: "10px", display: "flex", gap: "10px" }}>
-        <button onClick={handleZoomIn}>Увеличить (+)</button>
-        <button onClick={handleZoomOut}>Уменьшить (-)</button>
-        <button onClick={handleResetZoom}>Сбросить масштаб</button>
-        <span>Масштаб: {Math.round(scale * 100)}%</span>
-      </div>
-
+	
       {/* Легенда цветов */}
       <div style={{ marginBottom: "20px" }}>
         <h3>Цветовая палитра (значения as1)</h3>
@@ -235,12 +244,12 @@ export default function Canvas() {
                       }}
                       fill={color}
                       stroke="#333"
-                      strokeWidth={0.5}
+                      strokeWidth={0.2}
                     //   opacity={0.85}
                     />
                     
                     {/* Оптимизированный текст */}
-                    {shape.points.length>2&&<Text
+                    {shape.points.length>2 && <Text
                       x={textX}
                       y={textY}
                       text={displayValue}
