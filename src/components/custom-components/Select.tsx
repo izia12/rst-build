@@ -1,7 +1,7 @@
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 	label?: string;
 	error?: string;
-	options: { value: string; label: string }[];
+	options: { value: string; label: string, disabled?:false }[];
 	onSelect?:(item)=>void
 }
 
@@ -31,7 +31,7 @@ export const Select = ({ label,onSelect, error, options, ...props }: SelectProps
 			`}
 				>
 					{options.map((option) => (
-						<option key={option.value} value={option.value}>
+						<option key={option.value} value={option.value} disabled={option.disabled}>
 							{option.label}
 						</option>
 					))}

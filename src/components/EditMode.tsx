@@ -1,7 +1,7 @@
 import { ReactElement, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/store'
 import { Button } from './custom-components/Button';
-import { updateUniqueItem } from '../store/slices/slice.wasm';
+import { AsValuesType, updateUniqueItem } from '../store/slices/slice.wasm';
 
 type PropsType = {
 	id: string;
@@ -9,9 +9,10 @@ type PropsType = {
 	color:string
 	planes:number[],
 	onClose:()=>void
+	asValues:AsValuesType
 };
 
-export default function EditMode({ id, color, name, planes, onClose }: PropsType): ReactElement {
+export default function EditMode({ id, color, name, planes, onClose, asValues }: PropsType): ReactElement {
 	const wasmJsData = useAppSelector(state => state.wasm.wasmJsData);
 	const selectedPlainsToUnification = useAppSelector(state => state.wasm.groupUniqueItems)
 	const dispatch = useAppDispatch();
@@ -138,7 +139,8 @@ export default function EditMode({ id, color, name, planes, onClose }: PropsType
 							id,
 							color:newColor,
 							planes:newStatePlanes,
-							name:newName
+							name:newName,
+							maxAsValues:[asValues]
 						}
 					})
 				)

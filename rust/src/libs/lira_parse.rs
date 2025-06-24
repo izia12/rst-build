@@ -447,10 +447,10 @@ pub fn verify_element_indices(txt_file_path: &str, sli_file_path: &str) -> io::R
     writeln!(csv_file, "Несоответствий индексов,{},", mismatches)?;
     writeln!(csv_file, "Только в TXT,{},", txt_only)?;
     writeln!(csv_file, "Только в SLI,{},", sli_only)?;
-    println!("Проверка завершена. Проверено элементов: {}", total_checked);
-    println!("Найдено несоответствий индексов: {}", mismatches);
-    println!("Элементов только в TXT: {}", txt_only);
-    println!("Элементов только в SLI: {}", sli_only);
+    // println!("Проверка завершена. Проверено элементов: {}", total_checked);
+    // println!("Найдено несоответствий индексов: {}", mismatches);
+    // println!("Элементов только в TXT: {}", txt_only);
+    // println!("Элементов только в SLI: {}", sli_only);
     if mismatches == 0 && txt_only == 0 && sli_only == 0 {
         println!("Все элементы имеют одинаковые индексы в обоих файлах!");
     } else {

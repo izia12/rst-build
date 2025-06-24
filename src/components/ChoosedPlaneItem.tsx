@@ -2,24 +2,33 @@ import { useState } from 'react';
 import settingsIcon from '../assets/settings-svgrepo-com.svg';
 import EditMode from './EditMode';
 import Modal from './custom-components/Modal';
+import { AsValuesType } from '../store/slices/slice.wasm';
 
 type propsType={
 	id:string,
 	planes:number[],
 	color:string,
 	name:string
+	asValues:AsValuesType
 }
-export default function ChoosedPlaneItem({id, planes, color, name}:propsType) {
+export default function ChoosedPlaneItem({id, planes, color, name, asValues}:propsType) {
 	const [isOpen, setIsOpen] = useState(false);
+	console.log(planes);
+	
   return (
 	<>
 		<tr className="hover:bg-gray-50 even:bg-gray-50 transition-colors">
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{name || "Неизвестный"}</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{planes.join(", ")}</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">
-				<div className='w-8 h-4' style={{background:color}}>
-				</div>
+			<div className='w-8 h-4' style={{background:color}}>
+			</div>
 			</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as1}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as2}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as3}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as4}</td>
+
 			<td>
 				<button
 					onClick={()=>setIsOpen(!isOpen)}
@@ -33,7 +42,7 @@ export default function ChoosedPlaneItem({id, planes, color, name}:propsType) {
 			</td>
 		</tr>
 		<Modal isOpen={isOpen} onClose={()=>setIsOpen(false)}>
-			<EditMode id={id} name={name} color={color} planes={planes} onClose={()=>setIsOpen(false)}/>
+			<EditMode id={id} name={name} color={color} planes={planes} asValues={asValues} onClose={()=>setIsOpen(false)}/>
 		</Modal>
 	</>
   )

@@ -259,9 +259,11 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
         let range = workbook.worksheet_range(&sheet_name).map_err(|e| e.to_string())?;
         // string_log_two_params(&sheet_name, &String::from("Название листа"));
 
+        // Собираем все строки в вектор для доступа к соседним строкам
+        let rows: Vec<&[Data]> = range.rows().collect();
         let mut current_row: Option<RowData> = None;
         
-        for (_, row) in range.rows().enumerate() {
+        for (row_index, row) in rows.iter().enumerate() {
             // Обработка ID
             let id = match row.get(0) {
                 Some(Data::Float(f)) => *f as usize,
@@ -277,13 +279,13 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
                 results.push(prev);
             }
 
-            // Парсим значения столбцов
+            // Парсим значения столбцов с учетом ячейки ниже
             current_row = Some(RowData {
                 id,
-                as1: parse_column(&row, 1),
-                as2: parse_column(&row, 2),
-                as3: parse_column(&row, 3),
-                as4: parse_column(&row, 4),
+                as1: parse_column_with_below(&rows, row_index, 1),
+                as2: parse_column_with_below(&rows, row_index, 2),
+                as3: parse_column_with_below(&rows, row_index, 3),
+                as4: parse_column_with_below(&rows, row_index, 4),
             });
         }
 
@@ -308,6 +310,53 @@ fn parse_column(row: &[Data], index: usize) -> Vec<f64> {
             _ => vec![0.0]
         }
     )
+}
+
+// Функция для парсинга столбцов с учетом ячейки ниже
+fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize) -> Vec<f64> {
+    let mut result = Vec::new();
+    
+    // Получаем значение из текущей ячейки
+    if let Some(row) = rows.get(row_index) {
+        if let Some(cell) = row.get(col_index) {
+            match cell {
+                Data::Float(f) => result.push(*f),
+                Data::Int(i) => result.push(*i as f64),
+                Data::String(s) => {
+                    for part in s.split(',') {
+                        if let Ok(val) = part.trim().parse() {
+                            result.push(val);
+                        }
+                    }
+                },
+                _ => result.push(0.0)
+            }
+        }
+    }
+    
+    // Получаем значение из ячейки ниже
+    if let Some(row) = rows.get(row_index + 1) {
+        if let Some(cell) = row.get(col_index) {
+            match cell {
+                Data::Float(f) => result.push(*f),
+                Data::Int(i) => result.push(*i as f64),
+                Data::String(s) => {
+                    for part in s.split(',') {
+                        if let Ok(val) = part.trim().parse() {
+                            result.push(val);
+                        }
+                    }
+                },
+                _ => result.push(0.0)
+            }
+        }
+    }
+    
+    if result.is_empty() {
+        vec![0.0]
+    } else {
+        result
+    }
 }
 pub fn get_indexes(sli_data: &str, txt_data: &str) ->(Vec<SerializableEntity>, HashMap<usize, Material>) {
     // Парсим TXT файл

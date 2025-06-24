@@ -25,7 +25,11 @@ export type WasmDataJsType = {
 	[key:string]:{
 		"plates":WASMDataType[],
 		"rods":WASMDataType[],
-		"Materials":Array<number>
+		"Materials":Array<number>,
+		"maxAs1":number,
+		"maxAs2":number,
+		"maxAs3":number,
+		"maxAs4":number,
 	}
 }
 export type ArmDiameters={
@@ -37,4 +41,7 @@ export type SpecifiedFitParamsType = {
     area:number,
 	price:number,
 	isSpecified:boolean,
+}
+export type MaxAsFn={
+	[key:string]:number
 }

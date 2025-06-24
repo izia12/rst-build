@@ -5,6 +5,12 @@ import { addChosedItems, deleteChoosedItem } from "../../store/slices/slice.wasm
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	label?: string;
 	id: string,
+	maxValues:{
+		as1:number,
+		as2:number,
+		as3:number,
+		as4:number,
+	}
 }
 export const Checkbox = ({ label, ...props }: CheckboxProps) => {
 	const choosedPlains = useAppSelector(state => state.wasm.choosedPlainsFromList);
@@ -32,15 +38,17 @@ export const Checkbox = ({ label, ...props }: CheckboxProps) => {
 					setChecked(!checked)
 					console.log(choosedPlains, checked);
 					if (!checked) {
-						dispatch(addChosedItems(+props.id))
+						dispatch(addChosedItems({
+							plainNumber:+props.id,
+							asValues:{as1:props.maxValues.as1, as2:props.maxValues.as2, as3:props.maxValues.as3, as4:props.maxValues.as4}
+						}))
 					} else {
-						dispatch(deleteChoosedItem(+props.id))
+						// dispatch(deleteChoosedItem(+props.id))
 					}
 				}}
 				>
 					<svg
-						className={`w-3.5 h-3.5 text-white transition-opacity ${checked ? "opacity-100" : "opacity-0"
-							}`}
+						className={`w-3.5 h-3.5 text-white transition-opacity ${checked ? "opacity-100" : "opacity-0"}`}
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"

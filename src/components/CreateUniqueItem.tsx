@@ -14,10 +14,11 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 	const choosedPlains = useAppSelector(state => state.wasm.choosedPlainsFromList);
 	const dispatch = useAppDispatch();
 	const [name, setName] = useState("");
-	const [color, setColor] = useState("")
+	const [color, setColor] = useState("");
+
 	return (
 		<>
-			<Modal isOpen={isOpen} onClose={onClose} width={400}>
+			<Modal isOpen={isOpen} onClose={onClose} width={600}>
 				<div className="flex flex-col gap-4 w-full">
 					<div className="flex flex-col gap-2">
 						<label className="text-sm font-medium text-gray-700">Название унификации</label>
@@ -53,7 +54,8 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 							id: uuidv4(),
 							color: color || ('#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0..toString())),
 							name,
-							planes: choosedPlains
+							planes: choosedPlains.map(el=>el.plainNumber),
+							maxAsValues:choosedPlains.map(el=>el.asValues)
 						}))
 						setTimeout(() => onClose(), 1)
 					}}

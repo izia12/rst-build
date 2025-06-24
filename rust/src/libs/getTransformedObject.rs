@@ -52,35 +52,75 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
         }
     }
 
-
+	fn max_f64(a: f64, b: f64) -> f64 {
+		// Обрабатываем NaN и другие особые случаи
+		if a.is_nan() {
+			return b;
+		}
+		if b.is_nan() {
+			return a;
+		}
+		if a >= b { a } else { b }
+	}
 
     for z in all_z {
         let level_obj = Object::new();
         let z_key = JsValue::from(z.to_string());
-		let materials = Array::new();
-		//    // Проверяем, есть ли материал и его номер
-		// if let Some(material) = &item.material {
-		// 	if let Some(material_num) = material.material_num {
-		// 		// Преобразуем номер материала в JsValue
-		// 		let js_material_num = JsValue::from(material_num as i32);
-				
-		// 		// Проверяем, есть ли уже такой материал в массиве
-		// 		// Добавляем второй аргумент - индекс начала поиска (0)
-		// 		if !materials.includes(&js_material_num, 0) {
-		// 			// Если нет, добавляем его
-		// 			materials.push(&js_material_num);
-		// 		}
-		// 	}
-		// }
-		// Reflect::set(&result, &JsValue::from("materials"), &materials).unwrap();
 		let mut current_z_material:HashSet<usize> = HashSet::new();
         // Добавляем plates
         if let Some(plates) = plates_map.get(&OrderedFloat(z)) {
+			
             let js_plates = Array::new();
+			let mut max_as1 = f64::NEG_INFINITY;
+			let mut max_as2 = f64::NEG_INFINITY;
+			let mut max_as3 = f64::NEG_INFINITY;
+			let mut max_as4 = f64::NEG_INFINITY;
+
+		for plate in plates.iter() {
+		    if let Some(row) = &plate.row {
+		        // Безопасное получение значений (используем 0.0 если элемента нет)
+		        let as1_0 = *row.as1.get(0).unwrap_or(&0.0);
+		        let as1_1 = *row.as1.get(1).unwrap_or(&0.0);
+		        let as2_0 = *row.as2.get(0).unwrap_or(&0.0);
+		        let as2_1 = *row.as2.get(1).unwrap_or(&0.0);
+		        let as3_0 = *row.as3.get(0).unwrap_or(&0.0);
+		        let as3_1 = *row.as3.get(1).unwrap_or(&0.0);
+		        let as4_0 = *row.as4.get(0).unwrap_or(&0.0);
+		        let as4_1 = *row.as4.get(1).unwrap_or(&0.0);
+		        
+		        // Вычисляем текущие максимумы
+		        let current_as1 = if as1_0 > as1_1 { as1_0 } else { as1_1 };
+		        let current_as2 = if as2_0 > as2_1 { as2_0 } else { as2_1 };
+		        let current_as3 = if as3_0 > as3_1 { as3_0 } else { as3_1 };
+		        let current_as4 = if as4_0 > as4_1 { as4_0 } else { as4_1 };
+		        
+		        // Обновляем общие максимумы
+		        if current_as1 > max_as1 { max_as1 = current_as1; }
+		        if current_as2 > max_as2 { max_as2 = current_as2; }
+		        if current_as3 > max_as3 { max_as3 = current_as3; }
+		        if current_as4 > max_as4 { max_as4 = current_as4; }
+		    }
+		}
+
+			// Заменяем невалидные значения на 0.0
+			if max_as1 == f64::NEG_INFINITY { max_as1 = 0.0; }
+			if max_as2 == f64::NEG_INFINITY { max_as2 = 0.0; }
+			if max_as3 == f64::NEG_INFINITY { max_as3 = 0.0; }
+			if max_as4 == f64::NEG_INFINITY { max_as4 = 0.0; }
+
+				// Устанавливаем значения
+			Reflect::set(&level_obj, &"maxAs1".into(), &JsValue::from_f64(max_as1)).unwrap_or_default();
+			Reflect::set(&level_obj, &"maxAs2".into(), &JsValue::from_f64(max_as2)).unwrap_or_default();
+			Reflect::set(&level_obj, &"maxAs3".into(), &JsValue::from_f64(max_as3)).unwrap_or_default();
+			Reflect::set(&level_obj, &"maxAs4".into(), &JsValue::from_f64(max_as4)).unwrap_or_default();
             for plate in plates {
                 js_plates.push(&entity_to_js(plate));
 				current_z_material.insert(plate.material.clone().unwrap().material_num.unwrap());
             }
+            Reflect::set(&level_obj, &JsValue::from_str("maxAs1"), &JsValue::from_f64(max_as1)).unwrap();
+            Reflect::set(&level_obj, &JsValue::from_str("maxAs2"), &JsValue::from_f64(max_as2)).unwrap();
+            Reflect::set(&level_obj, &JsValue::from_str("maxAs3"), &JsValue::from_f64(max_as3)).unwrap();
+            Reflect::set(&level_obj, &JsValue::from_str("maxAs4"), &JsValue::from_f64(max_as4)).unwrap();
             Reflect::set(&level_obj, &"plates".into(), &js_plates).unwrap();
         }
 
@@ -117,23 +157,6 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
         vertices.push(&vertex_obj);
     }
     Reflect::set(&obj, &"vertices".into(), &vertices).unwrap();
-	// let materials = Array::new();
-	// // Проверяем, есть ли материал и его номер
-	//  if let Some(material) = &entity.material {
-	// 	 if let Some(material_num) = material.material_num {
-	// 		 // Преобразуем номер материала в JsValue
-	// 		 let js_material_num = JsValue::from(material_num as i32);
-			 
-	// 		 // Проверяем, есть ли уже такой материал в массиве
-	// 		 // Добавляем второй аргумент - индекс начала поиска (0)
-	// 		 if !materials.includes(&js_material_num, 0) {
-	// 			 // Если нет, добавляем его
-	// 			 materials.push(&js_material_num);
-	// 		 }
-	// 	 }
-	//  }
-	//  Reflect::set(&obj, &JsValue::from("materials"), &materials).unwrap();
-    // RowData (если есть)
     if let Some(row) = &entity.row {
         let row_obj = Object::new();
         // Для каждого массива as1/as2/as3/as4:
@@ -154,9 +177,3 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
 
     obj.into()
 }
-// fn convert_entity_to_js(entity: &EntityWithXlsx) -> Result<JsValue, JsError> {
-//     let obj = Object::new();
-//     Reflect::set(&obj, &"id".into(), &JsValue::from(&entity.id)).unwrap();
-//     // Добавьте остальные поля...
-//     Ok(obj.into())
-// }

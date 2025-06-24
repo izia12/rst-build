@@ -22,6 +22,8 @@ export const fetchWasmJSData = createAsyncThunk<WasmDataJsType, undefined>(
         try {
             await init();
             const result = get_horizontal_elements_object_js();
+			console.log(result,"HEROROROR");
+			
             if (!result) throw new Error('WASM data not ready'); // Добавляем проверку
             return result as WasmDataJsType;
         } catch (error) {

@@ -13,6 +13,7 @@ import { Button } from './components/custom-components/Button.tsx';
 import { get_changed_row_data } from './assets/pkg/rst_build';
 import ArmSettings from './components/Additional information for fittings/ArmSettings.tsx';
 import Canvas from './components/Canvas.tsx';
+import { ToastProvider } from './components/custom-components/Toast.tsx';
 
 
 function App() {
@@ -142,9 +143,6 @@ function App() {
 									name="file"
 									onChange={(e) => {
 										onSliInputChange(e);
-										console.log(e);
-										
-										
 									}} />
 							</label>
 						</div>
@@ -160,7 +158,6 @@ function App() {
 									name="txt-file"
 									onChange={(e) => {
 										onLiraInputChange(e);
-										console.log(e);
 									}} />
 							</label>
 						</div>
@@ -203,7 +200,7 @@ function App() {
 					<Modal
 						isOpen={isOpen}
 						onClose={() => setIsOpen(false)}
-						width={1200}
+						width={1800}
 						button={
 							<Button
 								onClick={() => setOpenForCreateUI(!openForCreateUI)}
@@ -211,7 +208,9 @@ function App() {
 							/>
 						}
 					>
-						<UniqeItems openForCreateUI={openForCreateUI} setOpenForCreateUI={setOpenForCreateUI} />
+						 <ToastProvider>
+							<UniqeItems openForCreateUI={openForCreateUI} setOpenForCreateUI={setOpenForCreateUI} />
+    					</ToastProvider>
 					</Modal>
 
 					<Three />

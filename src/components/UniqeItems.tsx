@@ -39,6 +39,13 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Plate Elements</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Rod Elements</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Materials</th>
+
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as1</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as2</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as3</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as4</th>
+								<th colSpan={2} className="px-4 py-2 text-center font-medium text-gray-500">Шаги (мм)</th>
+								
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-200">
@@ -64,6 +71,10 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 											platesLength={value?.plates?.length}
 											rodsLength={value?.rods?.length}
 											materials={value.Materials}
+											maxAs1={value.maxAs1}
+											maxAs2={value.maxAs2}
+											maxAs3={value.maxAs3}
+											maxAs4={value.maxAs4}
 										/>
 									))}
 						</tbody>
@@ -83,6 +94,10 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Название унификации</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Этаж</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Цвет</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as1</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as2</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as3</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as4</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-200">

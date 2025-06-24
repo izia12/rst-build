@@ -1,18 +1,34 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ArmDiameters, SpecifiedFitParamsType, WasmDataJsType, WASMDataType } from '../../types/data.types'
+import { ArmDiameters, MaxAsFn, SpecifiedFitParamsType, WasmDataJsType, WASMDataType } from '../../types/data.types'
 import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
+import { string } from 'three/tsl';
 
 type UniqeItem = {
 	id: string,
 	planes: number[],
 	name: string,
-	color:string
+	color:string, 
+	maxAsValues:AsValuesType[],
+	steps?:StepArmType
 }
-
+export type StepArmType ={
+	mainStep:number,
+	secondaryStep:number
+}
+export type AsValuesType={
+	as1:number,
+	as2:number,
+	as3:number,
+	as4:number
+}
+export type PlainItemtype = {
+	plainNumber:number,
+	asValues:AsValuesType
+}
 export interface WasmDataState {
 	wasmData: Array<WASMDataType>
 	loading: boolean,
-	choosedPlainsFromList:number[],
+	choosedPlainsFromList:PlainItemtype[],
 	groupUniqueItems: UniqeItem[],
 	perfomance: {
 		start: number,
@@ -21,7 +37,8 @@ export interface WasmDataState {
 	armDiameters:ArmDiameters[],
 	wasmJsData: WasmDataJsType,
 	error: null | Error
-	specifiedFitParams:SpecifiedFitParamsType[]
+	specifiedFitParams:SpecifiedFitParamsType[],
+	maxAsFns:MaxAsFn[]
 }
 
 const initialState: WasmDataState = {
@@ -34,6 +51,7 @@ const initialState: WasmDataState = {
 		start: 0,
 		end: 0,
 	},
+	maxAsFns:[],
 	armDiameters:[],
 	groupUniqueItems: [],
 	error: null
@@ -66,16 +84,22 @@ export const wasmSlice = createSlice({
 		deleteGroupUniqueItem:(state, action:PayloadAction<string>)=>{
 			state.groupUniqueItems=state.groupUniqueItems.filter(i=>i.id!==action.payload)
 		},
-		addChosedItems:(state, action:PayloadAction<number>)=>{
+		addChosedItems:(state, action:PayloadAction<PlainItemtype>)=>{
 			state.choosedPlainsFromList.push(action.payload);
 		},
-		deleteChoosedItem:(state, action:PayloadAction<number>)=>{
+		deleteChoosedItem:(state, action:PayloadAction<PlainItemtype>)=>{
 			state.choosedPlainsFromList=state.choosedPlainsFromList.filter(el=>el!==action.payload);
 		},
 		setFitParamsItem:(state, action:PayloadAction<{area:number, price:number}>)=>{
 			const item = state.specifiedFitParams.find(el=>el.area === action.payload.area);
 			item.price = action.payload.price;
 			item.isSpecified = true;
+		},
+		setArmStep:(state, action:PayloadAction<{id:string, secondaryStep:number, mainStep:number}>)=>{
+			const foundUniqueItem = state.groupUniqueItems.find(el=>el.id===action.payload.id);
+			if(foundUniqueItem){
+				foundUniqueItem.steps = {mainStep:action.payload.mainStep, secondaryStep:action.payload.secondaryStep}
+			}
 		}
 	},
 	extraReducers: (builder) => {
@@ -94,7 +118,7 @@ export const wasmSlice = createSlice({
 			state.loading = true
 		})
 		builder.addCase(fetchWasmJSData.fulfilled, (state, action) => {
-			state.wasmJsData = action.payload
+			state.wasmJsData = action.payload;
 			state.loading = false
 		})
 		builder.addCase(fetchWasmJSData.rejected, (state, action) => {
@@ -125,7 +149,8 @@ export const {
 	addToGroupUniqueItem,
 	deleteGroupUniqueItem,
 	updateUniqueItem,
-	setFitParamsItem
+	setFitParamsItem,
+	setArmStep
 } = wasmSlice.actions
 
 export default wasmSlice.reducer
