@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { useAppSelector } from "../store/store";
 import { Layer, Stage, Shape, Text } from "react-konva";
 
-export default function Canvas() {
+export  const Canvas=memo(()=> {
 	const data = useAppSelector((state) => state.wasm.wasmData);
 	const [scale, setScale] = useState(1);
 	const [asFn, setAsFn] = useState<"as1" | "as2" | "as3" | "as4">("as1")
@@ -267,4 +267,4 @@ export default function Canvas() {
 			))}
 		</div>
 	);
-};
+});

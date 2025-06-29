@@ -5,15 +5,14 @@ import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './store/slices
 import { useAppDispatch, useAppSelector } from './store/store.ts';
 import Three from './components/Three.tsx';
 import { startPerfomance } from './store/slices/slice.wasm.ts';
-import Quadrilaterals from './components/SVG.tsx';
 import Modal from './components/custom-components/Modal.tsx';
 import { UniqeItems } from './components/UniqeItems.tsx';
 import { Loader } from './components/custom-components/Loader.tsx';
-import { Button } from './components/custom-components/Button.tsx';
 import { get_changed_row_data } from './assets/pkg/rst_build';
 import ArmSettings from './components/Additional information for fittings/ArmSettings.tsx';
-import Canvas from './components/Canvas.tsx';
+import {Canvas} from './components/Canvas.tsx';
 import { ToastProvider } from './components/custom-components/Toast.tsx';
+import CreateNewGroupPlanesButton from './components/CreateNewGroupPlanesButton.tsx';
 
 
 function App() {
@@ -25,6 +24,7 @@ function App() {
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const pending = useAppSelector(state => state.wasm.loading)
 	const choosedPlanesFromList = useAppSelector(state=>state.wasm.choosedPlainsFromList);
+	
 	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>) {
 
 		const file = event.target?.files?.[0]
@@ -200,12 +200,14 @@ function App() {
 					<Modal
 						isOpen={isOpen}
 						onClose={() => setIsOpen(false)}
-						width={1800}
+						width={2000}
 						button={
-							<Button
-								onClick={() => setOpenForCreateUI(!openForCreateUI)}
-								classes="absolute bottom-12 right-4 p-2 bg-blue-500 rounded-md shadow-lg hover:shadow-none transition-shadow"
-							/>
+							<ToastProvider>
+								<CreateNewGroupPlanesButton
+								openForCreateUI={openForCreateUI}
+								setOpenForCreateUI={setOpenForCreateUI}
+								/>
+							</ToastProvider>
 						}
 					>
 						 <ToastProvider>

@@ -3,17 +3,19 @@ import settingsIcon from '../assets/settings-svgrepo-com.svg';
 import EditMode from './EditMode';
 import Modal from './custom-components/Modal';
 import { AsValuesType } from '../store/slices/slice.wasm';
+import { StepArmType } from '../types/data.types';
 
 type propsType={
 	id:string,
 	planes:number[],
 	color:string,
 	name:string
-	asValues:AsValuesType
+	asValues:AsValuesType,
+	steps:StepArmType
 }
-export default function ChoosedPlaneItem({id, planes, color, name, asValues}:propsType) {
+export default function ChoosedPlaneItem({id, planes, color, name, asValues, steps}:propsType) {
 	const [isOpen, setIsOpen] = useState(false);
-	console.log(planes);
+	console.log(steps);
 	
   return (
 	<>
@@ -28,6 +30,10 @@ export default function ChoosedPlaneItem({id, planes, color, name, asValues}:pro
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as2}</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as3}</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as4}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.asw1}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.asw2}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{steps?.mainStep}</td>
+			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{steps?.secondaryStep}</td>
 
 			<td>
 				<button
@@ -42,7 +48,15 @@ export default function ChoosedPlaneItem({id, planes, color, name, asValues}:pro
 			</td>
 		</tr>
 		<Modal isOpen={isOpen} onClose={()=>setIsOpen(false)}>
-			<EditMode id={id} name={name} color={color} planes={planes} asValues={asValues} onClose={()=>setIsOpen(false)}/>
+			<EditMode 
+				id={id} 
+				name={name} 
+				color={color} 
+				planes={planes} 
+				asValues={asValues} 
+				steps={steps}
+				onClose={()=>setIsOpen(false)}
+			/>
 		</Modal>
 	</>
   )

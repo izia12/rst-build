@@ -11,7 +11,7 @@ use serde_json;
 // use web_sys::console;
 
 
-use crate::libs::lira_parse::LiraFile;
+use crate::{libs::lira_parse::LiraFile};
 #[derive(Serialize,Deserialize, Debug, Clone)]
 pub struct Vertex {
     pub x: f64,
@@ -37,6 +37,8 @@ pub struct RowData {
     pub as2: Vec<f64>,
     pub as3: Vec<f64>,
     pub as4: Vec<f64>,
+    pub asw1: Vec<f64>,
+    pub asw2: Vec<f64>,
 }
 
 
@@ -64,6 +66,8 @@ pub struct EntityWithXlsx {
             "as2" => Some(self.row.clone().unwrap().as2),
             "as3" => Some(self.row.clone().unwrap().as3),
             "as4" => Some(self.row.clone().unwrap().as4),
+            "asw1" => Some(self.row.clone().unwrap().asw1),
+            "asw2" => Some(self.row.clone().unwrap().asw2),
             _ => None, // если ключ не найден
         }
     }
@@ -257,8 +261,6 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
     // !!! Тут вводились изменения из за разного формата таблиц и их расширения(xlsx xls)
     for sheet_name in sheet_names {
         let range = workbook.worksheet_range(&sheet_name).map_err(|e| e.to_string())?;
-        // string_log_two_params(&sheet_name, &String::from("Название листа"));
-
         // Собираем все строки в вектор для доступа к соседним строкам
         let rows: Vec<&[Data]> = range.rows().collect();
         let mut current_row: Option<RowData> = None;
@@ -270,7 +272,6 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
                 Some(Data::Int(i)) => *i as usize,
                 Some(Data::String(s)) => s.parse().unwrap_or(0),
                 _ => {
-                    // string_log_two_params("", &String::from("Пропуск строки с невалидным ID"));
                     continue;
                 }
             };
@@ -280,12 +281,17 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
             }
 
             // Парсим значения столбцов с учетом ячейки ниже
+            let asw1_values = parse_column_with_below(&rows, row_index, 5);
+            let asw2_values = parse_column_with_below(&rows, row_index, 6);
+            // Логируем результаты для asw1 и asw2
             current_row = Some(RowData {
                 id,
-                as1: parse_column_with_below(&rows, row_index, 1),
-                as2: parse_column_with_below(&rows, row_index, 2),
-                as3: parse_column_with_below(&rows, row_index, 3),
-                as4: parse_column_with_below(&rows, row_index, 4),
+                as1:  parse_column_with_below(&rows, row_index, 1),
+                as2:  parse_column_with_below(&rows, row_index, 2),
+                as3:  parse_column_with_below(&rows, row_index, 3),
+                as4:  parse_column_with_below(&rows, row_index, 4),
+                asw1: asw1_values,
+                asw2: asw2_values,
             });
         }
 
@@ -298,19 +304,19 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
 }
 
 // Вспомогательная функция для парсинга столбцов
-fn parse_column(row: &[Data], index: usize) -> Vec<f64> {
-    row.get(index).map_or_else(
-        || vec![0.0],
-        |cell| match cell {
-            Data::Float(f) => vec![*f],
-            Data::Int(i) => vec![*i as f64],
-            Data::String(s) => s.split(',')
-                .filter_map(|part| part.trim().parse().ok())
-                .collect(),
-            _ => vec![0.0]
-        }
-    )
-}
+// fn parse_column(row: &[Data], index: usize) -> Vec<f64> {
+//     row.get(index).map_or_else(
+//         || vec![0.0],
+//         |cell| match cell {
+//             Data::Float(f) => vec![*f],
+//             Data::Int(i) => vec![*i as f64],
+//             Data::String(s) => s.split(',')
+//                 .filter_map(|part| part.trim().parse().ok())
+//                 .collect(),
+//             _ => vec![0.0]
+//         }
+//     )
+// }
 
 // Функция для парсинга столбцов с учетом ячейки ниже
 fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize) -> Vec<f64> {
@@ -320,16 +326,32 @@ fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize)
     if let Some(row) = rows.get(row_index) {
         if let Some(cell) = row.get(col_index) {
             match cell {
-                Data::Float(f) => result.push(*f),
-                Data::Int(i) => result.push(*i as f64),
-                Data::String(s) => {
-                    for part in s.split(',') {
-                        if let Ok(val) = part.trim().parse() {
-                            result.push(val);
-                        }
-                    }
+                Data::Float(f) => {
+                    result.push(*f);
                 },
-                _ => result.push(0.0)
+                Data::Int(i) => {
+                    result.push(*i as f64);
+                },
+				Data::String(s) => {
+					// ЗАМЕНА ТОЛЬКО ЭТОГО БЛОКА!
+					let normalized = s.replace(',', ".");
+					match normalized.parse::<f64>() {
+						Ok(val) => {
+							result.push(val);
+						}
+						Err(_) => {
+							// Резервный вариант для нескольких значений
+							for part in normalized.split(',') {
+								if let Ok(val) = part.trim().parse() {
+									result.push(val);
+								}
+							}
+						}
+					}
+				},
+                _ => {
+                    result.push(0.0);
+                }
             }
         }
     }
@@ -338,15 +360,29 @@ fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize)
     if let Some(row) = rows.get(row_index + 1) {
         if let Some(cell) = row.get(col_index) {
             match cell {
-                Data::Float(f) => result.push(*f),
-                Data::Int(i) => result.push(*i as f64),
-                Data::String(s) => {
-                    for part in s.split(',') {
-                        if let Ok(val) = part.trim().parse() {
-                            result.push(val);
-                        }
-                    }
+                Data::Float(f) => {
+                    result.push(*f);
                 },
+                Data::Int(i) => {
+                    result.push(*i as f64);
+                },
+				Data::String(s) => {
+					// ЗАМЕНА ТОЛЬКО ЭТОГО БЛОКА!
+					let normalized = s.replace(',', ".");
+					match normalized.parse::<f64>() {
+						Ok(val) => {
+							result.push(val);
+						}
+						Err(_) => {
+							// Резервный вариант для нескольких значений
+							for part in normalized.split(',') {
+								if let Ok(val) = part.trim().parse() {
+									result.push(val);
+								}
+							}
+						}
+					}
+				},
                 _ => result.push(0.0)
             }
         }
@@ -414,7 +450,6 @@ pub fn get_indexes(sli_data: &str, txt_data: &str) ->(Vec<SerializableEntity>, H
                         let material_num = attributes.iter()
                             .find(|attr| attr.name.local_name == "Material")
                             .and_then(|attr| attr.value.parse::<usize>().ok());
-                        
                         // Создаем сущность с временным node_id, который будет заменен позже
                         let entity = SerializableEntity{
                             entity_type,
@@ -490,11 +525,9 @@ pub fn get_indexes(sli_data: &str, txt_data: &str) ->(Vec<SerializableEntity>, H
             _ => {}
         }
     }
-    
     // Сопоставляем элементы из SLI и TXT файлов по координатам
     // и устанавливаем node_id из TXT файла
     let mut sli_elements_map: HashMap<String, usize> = HashMap::new();
-    
     // Заполняем хэш-мапу для SLI элементов
     for (i, entity) in entities.iter().enumerate() {
         // Создаем ключ из отсортированных координат
@@ -506,15 +539,12 @@ pub fn get_indexes(sli_data: &str, txt_data: &str) ->(Vec<SerializableEntity>, H
                 .then(a.1.partial_cmp(&b.1).unwrap())
                 .then(a.2.partial_cmp(&b.2).unwrap())
         });
-        
         let key = coords_set.iter()
             .map(|(x, y, z)| format!("{:.5},{:.5},{:.5}", x, y, z))
             .collect::<Vec<String>>()
             .join("|");
-        
         sli_elements_map.insert(key, i);
     }
-    
     // Устанавливаем node_id из TXT файла для соответствующих элементов SLI
     for (key, txt_index) in &txt_elements_map {
         if let Some(&sli_index) = sli_elements_map.get(key) {
@@ -522,7 +552,6 @@ pub fn get_indexes(sli_data: &str, txt_data: &str) ->(Vec<SerializableEntity>, H
             entities[sli_index].node_id = txt_index + 1; // +1 потому что индексы в TXT файле начинаются с 1
         }
     }
-    
 	(entities, materials)
 }
 
@@ -547,7 +576,7 @@ pub fn convert_sli_xsl_to_json(sli_data: &str, txt_data: &str, xls_data: &[u8]) 
 				EntityWithXlsx{
 					entity_type:"hello".to_string(),
 					vertices:entity.vertices.clone(),
-					row:Some(RowData { id: (4294967295), as1: vec!(0.0,0.0), as2: vec!(0.0,0.0), as3: vec!(0.0,0.0), as4: vec!(0.0,0.0) }),
+					row:Some(RowData { id: (4294967295), as1: vec!(0.0,0.0), as2: vec!(0.0,0.0), as3: vec!(0.0,0.0), as4: vec!(0.0,0.0), asw1:vec!(0.0,0.0), asw2:vec!(0.0,0.0) }),
 					changed: false,
                     material,
 				}

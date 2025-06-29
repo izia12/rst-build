@@ -15,7 +15,7 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 	const selectedPlainsToUnification = useAppSelector(state => state.wasm.groupUniqueItems)
 	// const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const [sortToBig, setSortToBig] = useState(false)
-	console.log(wasmJsData);
+	// console.log(wasmJsData);
 	
 	return (
 		<div className="p-4 relative">
@@ -44,8 +44,9 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as2</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as3</th>
 								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as4</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max asw1</th>
+								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max asw2</th>
 								<th colSpan={2} className="px-4 py-2 text-center font-medium text-gray-500">Шаги (мм)</th>
-								
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-200">
@@ -68,13 +69,17 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 										<UniqeItem
 											key={key}
 											checkboxId={key}
-											platesLength={value?.plates?.length}
-											rodsLength={value?.rods?.length}
+											platesLength={value.plates}
+											rodsLength={value.rods}
 											materials={value.Materials}
 											maxAs1={value.maxAs1}
 											maxAs2={value.maxAs2}
 											maxAs3={value.maxAs3}
 											maxAs4={value.maxAs4}
+											maxAsw1={value.maxAsw1}
+											maxAsw2={value.maxAsw2}
+											parentMainStep={value.mainStep}
+											parentSecondaryStep={value.secondaryStep}
 										/>
 									))}
 						</tbody>
@@ -82,28 +87,13 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 
 					<CreateUniqueItem
 						onClose={()=>{
-							return setOpenForCreateUI(false)
+							 setOpenForCreateUI(false)
 						}}
 						isOpen={openForCreateUI}
 					/>
 				</div>
 				<div>
-					<table className=" divide-y divide-gray-200 bg-white max-h-min" style={{ maxWidth: "550px" }}>
-						<thead className="bg-gray-50">
-							<tr>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Название унификации</th>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Этаж</th>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Цвет</th>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as1</th>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as2</th>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as3</th>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Max as4</th>
-							</tr>
-						</thead>
-						<tbody className="divide-y divide-gray-200">
-							<Choosedplanes />
-						</tbody>
-					</table>
+					<Choosedplanes/>
 				</div>
 			</div>
 		</div>

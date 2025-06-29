@@ -1,29 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ArmDiameters, MaxAsFn, SpecifiedFitParamsType, WasmDataJsType, WASMDataType } from '../../types/data.types'
+import { ArmDiameters, MaxAsFn, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WasmDataJsType, WASMDataType } from '../../types/data.types'
 import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
 import { string } from 'three/tsl';
 
 type UniqeItem = {
 	id: string,
 	planes: number[],
-	name: string,
+	name: string,  
 	color:string, 
 	maxAsValues:AsValuesType[],
-	steps?:StepArmType
+	steps:StepArmType
 }
-export type StepArmType ={
-	mainStep:number,
-	secondaryStep:number
-}
+
 export type AsValuesType={
 	as1:number,
 	as2:number,
 	as3:number,
-	as4:number
+	as4:number,
+	asw1:number,
+	asw2:number,
 }
 export type PlainItemtype = {
 	plainNumber:number,
-	asValues:AsValuesType
+	asValues:AsValuesType,
+	steps:StepArmType
 }
 export interface WasmDataState {
 	wasmData: Array<WASMDataType>
@@ -35,7 +35,7 @@ export interface WasmDataState {
 		end: number,
 	},
 	armDiameters:ArmDiameters[],
-	wasmJsData: WasmDataJsType,
+	wasmJsData: PureWASMJsData,
 	error: null | Error
 	specifiedFitParams:SpecifiedFitParamsType[],
 	maxAsFns:MaxAsFn[]
@@ -80,7 +80,6 @@ export const wasmSlice = createSlice({
 				uniqueItem.planes = newUniqeItem.planes
 			}
 		},
-
 		deleteGroupUniqueItem:(state, action:PayloadAction<string>)=>{
 			state.groupUniqueItems=state.groupUniqueItems.filter(i=>i.id!==action.payload)
 		},
@@ -95,13 +94,26 @@ export const wasmSlice = createSlice({
 			item.price = action.payload.price;
 			item.isSpecified = true;
 		},
-		setArmStep:(state, action:PayloadAction<{id:string, secondaryStep:number, mainStep:number}>)=>{
-			const foundUniqueItem = state.groupUniqueItems.find(el=>el.id===action.payload.id);
+		setArmStep:(state, action:PayloadAction<{plane:string, secondaryStep:number, mainStep:number}>)=>{
+			const foundUniqueItem = state.wasmJsData[action.payload.plane];
 			if(foundUniqueItem){
-				foundUniqueItem.steps = {mainStep:action.payload.mainStep, secondaryStep:action.payload.secondaryStep}
+				foundUniqueItem.mainStep = action.payload.mainStep;
+				foundUniqueItem.secondaryStep = action.payload.secondaryStep;
+				foundUniqueItem.isSelected=true
 			}
-		}
+			// state.wasmJsData ={
+			// 	...state.wasmJsData,
+			// 	foundUniqueItem
+			// }
+		},
+		selectToUniqueGroup:(state, action:PayloadAction<string>)=>{
+			state.wasmJsData[action.payload].isSelected=true
+		},
+		unSelectToUniqueGroup:(state, action:PayloadAction<string>)=>{
+			state.wasmJsData[action.payload].isSelected=false
+		},
 	},
+
 	extraReducers: (builder) => {
 		builder.addCase(fetchWasmData.fulfilled, (state, action) => {
 			state.wasmData = action.payload
@@ -118,12 +130,12 @@ export const wasmSlice = createSlice({
 			state.loading = true
 		})
 		builder.addCase(fetchWasmJSData.fulfilled, (state, action) => {
-			state.wasmJsData = action.payload;
+			state.wasmJsData = action.payload
 			state.loading = false
 		})
 		builder.addCase(fetchWasmJSData.rejected, (state, action) => {
-			state.error = action.error as Error
-			state.loading = false
+			state.error = action.error as Error;
+			state.loading = false;
 		})
 		builder.addCase(fetchArmDimeters.pending, (state) => {
 			state.loading = true;
@@ -131,11 +143,11 @@ export const wasmSlice = createSlice({
 		builder.addCase(fetchArmDimeters.fulfilled, (state, action) => {
 			state.armDiameters = action.payload;
 			state.specifiedFitParams = state.armDiameters.map(el=>({area:el.area, diameter:el.diameter, isSpecified:false, price:0}))
-			state.loading = false
+			state.loading = false;
 		})
 		builder.addCase(fetchArmDimeters.rejected, (state, action) => {
-			state.error = action.error as Error
-			state.loading = false
+			state.error = action.error as Error;
+			state.loading = false;
 		})
 	}
 })
@@ -150,7 +162,9 @@ export const {
 	deleteGroupUniqueItem,
 	updateUniqueItem,
 	setFitParamsItem,
-	setArmStep
+	setArmStep,
+	selectToUniqueGroup,
+	unSelectToUniqueGroup
 } = wasmSlice.actions
 
 export default wasmSlice.reducer

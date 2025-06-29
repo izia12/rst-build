@@ -49,13 +49,13 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 				<Button
 					disabled={name === ""}
 					onClick={() => {
-						console.log(22);
 						dispatch(addToGroupUniqueItem({
 							id: uuidv4(),
 							color: color || ('#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0..toString())),
 							name,
 							planes: choosedPlains.map(el=>el.plainNumber),
-							maxAsValues:choosedPlains.map(el=>el.asValues)
+							maxAsValues:choosedPlains.map(el=>el.asValues),
+							steps:choosedPlains[0].steps
 						}))
 						setTimeout(() => onClose(), 1)
 					}}

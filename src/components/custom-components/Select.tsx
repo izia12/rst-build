@@ -17,7 +17,6 @@ export const Select = ({ label,onSelect, error, options, ...props }: SelectProps
 				<select
 					{...props}
 					onChange={(e)=>{
-						console.log(e.target.value);
 						 onSelect(+e.target.value)
 					}}
 					className={`

@@ -99,7 +99,6 @@ const InteractiveCubes = () => {
       
       // Меняем цвет и выводим информацию
       material.color.setHex(Math.random() * 0xffffff);
-      console.log('Clicked cube ID:', clickedCube.userData.id);
     }
   }, []);
 

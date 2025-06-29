@@ -2,7 +2,7 @@ use std:: collections::{HashMap, HashSet};
 use js_sys::{Array, Object, Reflect};
 use ordered_float::OrderedFloat;
 use wasm_bindgen::{ prelude::wasm_bindgen, JsValue};
-use crate::GLOBAL_ENTITIES;
+use crate::{string_log_two_params, GLOBAL_ENTITIES};
 use super::parse::EntityWithXlsx;
 
 #[wasm_bindgen]
@@ -75,6 +75,8 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 			let mut max_as2 = f64::NEG_INFINITY;
 			let mut max_as3 = f64::NEG_INFINITY;
 			let mut max_as4 = f64::NEG_INFINITY;
+			let mut max_asw1 = f64::NEG_INFINITY;
+			let mut max_asw2 = f64::NEG_INFINITY;
 
 		for plate in plates.iter() {
 		    if let Some(row) = &plate.row {
@@ -87,18 +89,25 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 		        let as3_1 = *row.as3.get(1).unwrap_or(&0.0);
 		        let as4_0 = *row.as4.get(0).unwrap_or(&0.0);
 		        let as4_1 = *row.as4.get(1).unwrap_or(&0.0);
-		        
+		        let asw1_0 = *row.asw1.get(0).unwrap_or(&0.0);
+		        let asw1_1 = *row.asw1.get(1).unwrap_or(&0.0);
+		        let asw2_0 = *row.asw2.get(0).unwrap_or(&0.0);
+		        let asw2_1 = *row.asw2.get(1).unwrap_or(&0.0);
 		        // Вычисляем текущие максимумы
 		        let current_as1 = if as1_0 > as1_1 { as1_0 } else { as1_1 };
 		        let current_as2 = if as2_0 > as2_1 { as2_0 } else { as2_1 };
 		        let current_as3 = if as3_0 > as3_1 { as3_0 } else { as3_1 };
 		        let current_as4 = if as4_0 > as4_1 { as4_0 } else { as4_1 };
+		        let current_asw1 = if asw1_0 > asw1_1 { asw1_0 } else { asw1_1 };
+		        let current_asw2 = if asw2_0 > asw2_1 { asw2_0 } else { asw2_1 };
 		        
 		        // Обновляем общие максимумы
 		        if current_as1 > max_as1 { max_as1 = current_as1; }
 		        if current_as2 > max_as2 { max_as2 = current_as2; }
 		        if current_as3 > max_as3 { max_as3 = current_as3; }
 		        if current_as4 > max_as4 { max_as4 = current_as4; }
+		        if current_asw1 > max_asw1 { max_asw1 = current_asw1; }
+		        if current_asw2 > max_asw2 { max_asw2 = current_asw2; }
 		    }
 		}
 
@@ -107,12 +116,16 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 			if max_as2 == f64::NEG_INFINITY { max_as2 = 0.0; }
 			if max_as3 == f64::NEG_INFINITY { max_as3 = 0.0; }
 			if max_as4 == f64::NEG_INFINITY { max_as4 = 0.0; }
+			if max_asw1 == f64::NEG_INFINITY { max_asw1 = 0.0; }
+			if max_asw2 == f64::NEG_INFINITY { max_asw2 = 0.0; }
 
 				// Устанавливаем значения
 			Reflect::set(&level_obj, &"maxAs1".into(), &JsValue::from_f64(max_as1)).unwrap_or_default();
 			Reflect::set(&level_obj, &"maxAs2".into(), &JsValue::from_f64(max_as2)).unwrap_or_default();
 			Reflect::set(&level_obj, &"maxAs3".into(), &JsValue::from_f64(max_as3)).unwrap_or_default();
 			Reflect::set(&level_obj, &"maxAs4".into(), &JsValue::from_f64(max_as4)).unwrap_or_default();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAsw1"), &JsValue::from_f64(max_asw1)).unwrap();
+            Reflect::set(&level_obj, &JsValue::from_str("maxAsw2"), &JsValue::from_f64(max_asw2)).unwrap();
             for plate in plates {
                 js_plates.push(&entity_to_js(plate));
 				current_z_material.insert(plate.material.clone().unwrap().material_num.unwrap());
@@ -121,6 +134,8 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
             Reflect::set(&level_obj, &JsValue::from_str("maxAs2"), &JsValue::from_f64(max_as2)).unwrap();
             Reflect::set(&level_obj, &JsValue::from_str("maxAs3"), &JsValue::from_f64(max_as3)).unwrap();
             Reflect::set(&level_obj, &JsValue::from_str("maxAs4"), &JsValue::from_f64(max_as4)).unwrap();
+            Reflect::set(&level_obj, &JsValue::from_str("maxAsw1"), &JsValue::from_f64(max_asw1)).unwrap();
+            Reflect::set(&level_obj, &JsValue::from_str("maxAsw2"), &JsValue::from_f64(max_asw2)).unwrap();
             Reflect::set(&level_obj, &"plates".into(), &js_plates).unwrap();
         }
 
@@ -139,7 +154,6 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 		 }
 		Reflect::set(&level_obj, &JsValue::from("Materials"), &JsValue::from(materials_arr)).unwrap();
         Reflect::set(&result, &z_key, &level_obj).unwrap();
-		
     }
     result.into()
 }
@@ -172,6 +186,8 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
         Reflect::set(&row_obj, &"as2".into(), &convert_to_js_array(&row.as2)).unwrap();
         Reflect::set(&row_obj, &"as3".into(), &convert_to_js_array(&row.as3)).unwrap();
         Reflect::set(&row_obj, &"as4".into(), &convert_to_js_array(&row.as4)).unwrap();
+        Reflect::set(&row_obj, &"asw1".into(), &convert_to_js_array(&row.asw1)).unwrap();
+        Reflect::set(&row_obj, &"asw2".into(), &convert_to_js_array(&row.asw2)).unwrap();
         Reflect::set(&obj, &"rowData".into(), &row_obj).unwrap();
     }
 

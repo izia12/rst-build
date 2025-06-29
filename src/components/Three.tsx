@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 //@ts-expect-error this library is exists but ts shows an error
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
@@ -8,7 +8,7 @@ import { transformLinesPointsIntoArray } from '../helpers/transformLinesPointsIn
 import { WASMDataType } from '../types/data.types.ts'
 import { endPerfomance } from '../store/slices/slice.wasm.ts'
 
-const ThreeScene = () => {
+const ThreeScene = memo(() => {
 	const dispatch = useAppDispatch()
 	const data = useAppSelector(state => state.wasm.wasmData)
 
@@ -184,6 +184,6 @@ const ThreeScene = () => {
 			</div>
 		</div>
 	)
-}
+})
 
 export default ThreeScene
