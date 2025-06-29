@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ArmDiameters, MaxAsFn, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WasmDataJsType, WASMDataType } from '../../types/data.types'
-import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
-import { string } from 'three/tsl';
+import { ArmDiameters, MaxAsFn, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WASMDataType } from '../../types/data.types'
+import {  fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
+import { stepVariantsToState } from '../../constants/stepConstants';
+
 
 type UniqeItem = {
 	id: string,
@@ -45,7 +46,7 @@ const initialState: WasmDataState = {
 	wasmData: [],
 	wasmJsData: {},
 	choosedPlainsFromList:[],
-	specifiedFitParams:[],
+	specifiedFitParams:stepVariantsToState,
 	loading: false,
 	perfomance: {
 		start: 0,
@@ -91,6 +92,8 @@ export const wasmSlice = createSlice({
 		},
 		setFitParamsItem:(state, action:PayloadAction<{area:number, price:number}>)=>{
 			const item = state.specifiedFitParams.find(el=>el.area === action.payload.area);
+			console.log(item);
+			
 			item.price = action.payload.price;
 			item.isSpecified = true;
 		},
@@ -112,6 +115,11 @@ export const wasmSlice = createSlice({
 		unSelectToUniqueGroup:(state, action:PayloadAction<string>)=>{
 			state.wasmJsData[action.payload].isSelected=false
 		},
+		setPriceForArmItem:(state, action:PayloadAction<{area:number, price:number}>)=>{
+			const found = state.specifiedFitParams.find(el=>el.area===action.payload.area);
+			found.price = action.payload.price
+			found.isSpecified=true
+		}
 	},
 
 	extraReducers: (builder) => {
@@ -137,18 +145,18 @@ export const wasmSlice = createSlice({
 			state.error = action.error as Error;
 			state.loading = false;
 		})
-		builder.addCase(fetchArmDimeters.pending, (state) => {
-			state.loading = true;
-		})
-		builder.addCase(fetchArmDimeters.fulfilled, (state, action) => {
-			state.armDiameters = action.payload;
-			state.specifiedFitParams = state.armDiameters.map(el=>({area:el.area, diameter:el.diameter, isSpecified:false, price:0}))
-			state.loading = false;
-		})
-		builder.addCase(fetchArmDimeters.rejected, (state, action) => {
-			state.error = action.error as Error;
-			state.loading = false;
-		})
+		// builder.addCase(fetchArmDimeters.pending, (state) => {
+		// 	state.loading = true;
+		// })
+		// builder.addCase(fetchArmDimeters.fulfilled, (state, action) => {
+		// 	state.armDiameters = action.payload;
+		// 	state.specifiedFitParams = state.armDiameters.map(el=>({area:el.area, diameter:el.diameter, isSpecified:false, price:0}))
+		// 	state.loading = false;
+		// })
+		// builder.addCase(fetchArmDimeters.rejected, (state, action) => {
+		// 	state.error = action.error as Error;
+		// 	state.loading = false;
+		// })
 	}
 })
 
@@ -164,7 +172,8 @@ export const {
 	setFitParamsItem,
 	setArmStep,
 	selectToUniqueGroup,
-	unSelectToUniqueGroup
+	unSelectToUniqueGroup,
+	setPriceForArmItem
 } = wasmSlice.actions
 
 export default wasmSlice.reducer

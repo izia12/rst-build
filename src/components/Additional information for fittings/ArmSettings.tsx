@@ -2,14 +2,10 @@ import React, { ReactElement, useState } from 'react'
 import Modal from '../custom-components/Modal'
 import { AdditionInfoArm } from './AdditionInfoArm';
 import { Button } from '../custom-components/Button';
-import { useAppSelector } from '../../store/store';
+
 
 export default function ArmSettings(): ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
-	const specifiedArms = useAppSelector(state=>state.wasm.specifiedFitParams).filter(el=>el.isSpecified)
-	function getSpecifiedArms (){
-		const availableDiameters = specifiedArms.map(el=>el.diameter);
-	}
 	return (
 		<>
 			<Modal

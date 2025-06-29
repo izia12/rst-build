@@ -49,8 +49,9 @@ export type ArmDiameters={
 export type SpecifiedFitParamsType = {
 	diameter:number,
     area:number,
-	price:number,
+	price:number | null,
 	isSpecified:boolean,
+	default:boolean
 }
 export type MaxAsFn={
 	[key:string]:number

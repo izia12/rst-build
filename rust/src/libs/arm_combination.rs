@@ -471,12 +471,10 @@ pub fn find_optimal_combination_for_area(
 		// Для каждого тестового случая находим оптимальную комбинацию и записываем в файл
 		for (target_area, main_step, secondary_step) in &test_cases {
 			let combinations = self.find_optimal_combination_for_area(*target_area, *main_step, *secondary_step);
-			
 			if !combinations.is_empty() {
 				// Выводим информацию только для первой комбинации с полными данными
 				let (d1, d2, total_area) = combinations[0];
 				let deviation = ((total_area / target_area) - 1.0) * 100.0;
-				
 				if d2 > 0 {
 					writeln!(
 						file,
@@ -492,12 +490,10 @@ pub fn find_optimal_combination_for_area(
 						d1, total_area, deviation
 					)?;
 				}
-				
 				// Для остальных комбинаций не выводим повторяющиеся значения
 				for i in 1..combinations.len() {
 					let (d1, d2, total_area) = combinations[i];
 					let deviation = ((total_area / target_area) - 1.0) * 100.0;
-					
 					if d2 > 0 {
 						writeln!(
 							file,

@@ -8,11 +8,13 @@ import { setFitParamsItem } from '../../store/slices/slice.wasm';
 export default function SetArmItem(): ReactElement {
 	const dispatch = useAppDispatch();
 	const diameters = useAppSelector(state=>state.wasm.specifiedFitParams);
+
 	const armDiameters = diameters
-		.filter(el=>el.isSpecified===false)
+		.filter(el=>el.default===false&&el.isSpecified===false)
 		.map(el=>({value:el.area.toString(), label:el.diameter.toString()}));
 	const [selectedItem, setSelectedItem] = useState<null| number>(null);
 	const [price, setPrice] = useState(0);
+	
 	function handleSetPrice(){
 		dispatch(setFitParamsItem({
 			area: +selectedItem,
@@ -21,25 +23,27 @@ export default function SetArmItem(): ReactElement {
 		))
 	}
 	return (
-		<tr className="hover:bg-gray-50 even:bg-gray-50 transition-colors">
-			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">
+		<div className=" flex items-center hover:bg-gray-50 even:bg-gray-50 transition-colors gap-2">
+			<div className="px-4 py-2 text-gray-700 border-b border-gray-200 w-80">
 				<Select
 					options={armDiameters}
 					onSelect={setSelectedItem}
+					className=''
 				/>
-			</td>
-			<td>
+			</div>
+			<div>
 				<Input
-					onChange={(e)=>setPrice(+e.target.value)}
+					onChange={(e)=>setPrice(+e.currentTarget.value)}
 					type={"number"}
 				/>
-			</td>
-			<td>
+			</div>
+			<div className='w-full'>
 				<Button
+					classes='px-4 py-2 block'
 					onClick={handleSetPrice}
 					buttonName='Задать цену'
 				/>
-			</td>
-		</tr>
+			</div>
+		</div>
 	)
 }

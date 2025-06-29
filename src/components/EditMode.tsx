@@ -119,7 +119,7 @@ export default function EditMode({ id, color, name, planes, onClose, asValues, s
 								})
 								?.map(([el])=>(
 									<div key={el}>
-										<input type="checkbox" name="" id={el} onChange={(e)=>{
+										<input type="checkbox" name="" id={el} onChange={()=>{
 											setSelectedPlainsFromFree(selectedPlainsFromFree.filter(([sel])=>sel!==el))
 										}}/>
 										<span>{el}</span>

@@ -1,3 +1,4 @@
+
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 	label?: string;
 	error?: string;
@@ -23,12 +24,14 @@ export const Select = ({ label,onSelect, error, options, ...props }: SelectProps
 			  w-full px-4 py-2 pr-8 border rounded-lg appearance-none
 			  focus:outline-none focus:ring-2 transition-all
 			  ${error
-							? "border-red-500 focus:ring-red-200"
-							: "border-gray-300 focus:border-blue-500 focus:ring-blue-200"}
+					? "border-red-500 focus:ring-red-200"
+					: "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
+				}
 			  disabled:bg-gray-100 disabled:cursor-not-allowed
 			  ${props.className || ""}
 			`}
 				>
+					<option value="" disabled selected>выберите диаметр</option>
 					{options.map((option) => (
 						<option key={option.value} value={option.value} disabled={option.disabled}>
 							{option.label}
