@@ -2,7 +2,7 @@ use std:: collections::{HashMap, HashSet};
 use js_sys::{Array, Object, Reflect};
 use ordered_float::OrderedFloat;
 use wasm_bindgen::{ prelude::wasm_bindgen, JsValue};
-use crate::{string_log_two_params, GLOBAL_ENTITIES};
+use crate::{ GLOBAL_ENTITIES};
 use super::parse::EntityWithXlsx;
 
 #[wasm_bindgen]

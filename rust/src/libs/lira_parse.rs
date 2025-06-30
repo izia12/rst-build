@@ -2,13 +2,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::Path;
-use std::collections::HashSet;
-
 use std::fs;
-
 use crate::libs::parse::{get_indexes, SerializableEntity};
-
-
 
 // Структура для хранения координат
 #[derive(Debug, Clone)]
@@ -51,10 +46,6 @@ impl LiraFile {
         }
     }
 
-    // Парсинг файла
-   // Парсинг файла
-// ... existing code ...
-
 // Парсинг файла
 pub fn parse_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
     let file = File::open(path)?;
@@ -68,13 +59,10 @@ pub fn parse_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
     for line in reader.lines() {
         let line = line?;
         let trimmed_line = line.trim();
-        
         self.process_line(trimmed_line, &mut current_document, &mut current_content, &mut is_first_line_in_document);
     }
-    
     // Обрабатываем документы
     self.process_documents();
-    
     Ok(())
 }
 
