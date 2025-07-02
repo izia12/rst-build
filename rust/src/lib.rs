@@ -1,7 +1,12 @@
 use std::{cell::RefCell, collections::HashMap};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut};
-use libs::{ arm_combination::SORTAMENT, createDxf::{create_dxf_after_change, create_simple_dxf_with_block}, parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, unification_data::unification_data};
+use libs::{ 
+	arm_combination::SORTAMENT, createDxf::{create_dxf_after_change, create_simple_dxf_with_block}, 
+	parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, 
+	unification_data::unification_data,
+
+};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
 use web_sys::console;
@@ -11,18 +16,8 @@ use docx_rs::{Docx, Paragraph, Pic, Run};
 use serde::{Serialize, Deserialize};
 use libs::drawItem::DrawItemZ;
 use ordered_float::OrderedFloat;
-// use crate::libs::arm_combination::SORTAMENT;
-pub mod libs{
-	pub mod parse;
-	pub mod lira_parse;
-	pub mod drawItem;
-	pub mod createDxf;
-	pub mod getTransformedObject;
-	pub mod unification_data;
-	pub mod arm_combination;
 
-	// pub mod create_simple_dxf_with_block;
-}
+pub mod libs;
 
 #[wasm_bindgen]
 pub fn log_data(x: f64, y: f64) {
@@ -410,4 +405,23 @@ pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
     }
     
     csv_content
+}
+#[wasm_bindgen]
+pub fn get_excell_report_for_arms() -> Vec<u8> {
+    use crate::libs::arm_combination::SORTAMENT;
+    
+    SORTAMENT.generate_excel_report_to_wasm("armature_report.xlsx")
+        .unwrap_or_else(|_| Vec::new())
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = Date, js_name = now)]
+    fn js_date_now() -> f64;
+}
+
+// Функция для WASM
+#[cfg(target_arch = "wasm32")]
+pub fn get_unix_time() -> u64 {
+    (js_date_now() / 1000.0) as u64  // Конвертируем в секунды
 }

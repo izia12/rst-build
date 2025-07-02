@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const get_horizontal_elements_object_js: () => any;
 export const log_data: (a: number, b: number) => void;
 export const str_log_data: (a: number, b: number) => void;
 export const parse_data: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
@@ -13,7 +14,7 @@ export const get_changed_row_data: (a: any) => [number, number];
 export const get_sortament_data: () => any;
 export const find_combinations_with_custom_diameters: (a: number, b: number, c: number, d: any) => any;
 export const create_csv_from_all_parsed_entities: () => [number, number];
-export const get_horizontal_elements_object_js: () => any;
+export const get_excell_report_for_arms: () => [number, number];
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 export const __wbindgen_exn_store: (a: number) => void;

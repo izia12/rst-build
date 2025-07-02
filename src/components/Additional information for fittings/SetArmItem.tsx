@@ -14,7 +14,7 @@ export default function SetArmItem(): ReactElement {
 		.map(el=>({value:el.area.toString(), label:el.diameter.toString()}));
 	const [selectedItem, setSelectedItem] = useState<null| number>(null);
 	const [price, setPrice] = useState(0);
-	
+
 	function handleSetPrice(){
 		dispatch(setFitParamsItem({
 			area: +selectedItem,

@@ -1,9 +1,15 @@
 use calamine::XlsxError;
 use lazy_static::lazy_static;
 use map_macro::hash_map;
+use rust_xlsxwriter::DocProperties;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
+use crate::libs::constants::arm_consts::ARM_CONSTS;
+
+// mod constants {          
+//     pub mod arm_consts;  // файл arm_consts.rs внутри
+// }
 // static SORTAMENT: phf::Map<u32, f32>=phf_map!{
 // 	6=>1.0,
 // };
@@ -20,7 +26,8 @@ pub struct DiameterInfo {
 pub struct Sortament {
     data: HashMap<u32, f32>,
 }
-
+#[cfg(target_arch = "wasm32")]
+use crate::get_unix_time; 
 impl Sortament {
     // Создание нового экземпляра
     pub fn new() -> Self {
@@ -358,118 +365,10 @@ pub fn find_optimal_combination_for_area(
 		writeln!(file, "Целевая площадь;Основной шаг;Доп. шаг;Основная арматура;Доп. арматура;Общая площадь;Отклонение (%)")?;
 	
 		// Используем те же тестовые данные, что и в оригинальном методе
-		let test_cases = [
-
-		(0.1, 0.2, 0.2),
-		(0.2, 0.2, 0.2),
-		(0.3, 0.2, 0.2),
-		(0.4, 0.2, 0.2),
-		(0.5, 0.2, 0.2),
-		(0.6, 0.2, 0.2),
-		(0.7, 0.2, 0.2),
-		(0.8, 0.2, 0.2),
-		(0.9, 0.2, 0.2),
-
-		(1.0, 0.4, 0.2),
-		(1.1, 0.4, 0.2),
-		(1.2, 0.4, 0.2),
-		(1.3, 0.4, 0.2),
-		(1.4, 0.4, 0.2),
-		(1.5, 0.4, 0.2),
-		(1.6, 0.4, 0.2),
-		(1.7, 0.4, 0.2),
-		(1.8, 0.4, 0.2),
-		(1.9, 0.4, 0.2),
-
-		(2.0, 0.4, 0.1),
-		(2.2, 0.4, 0.1),
-		(2.4, 0.4, 0.1),
-		(2.6, 0.4, 0.1),
-		(2.8, 0.4, 0.1),
-		
-		// Разные шаги при одинаковой площади
-		(3.0, 0.2, 0.2),
-		(3.2, 0.2, 0.2),
-		(3.4, 0.2, 0.2),
-		(3.6, 0.2, 0.2),
-		(3.8, 0.2, 0.2),
-
-		(4.0, 0.2, 0.2),
-		(4.2, 0.2, 0.2),
-		(4.4, 0.2, 0.2),
-		(4.6, 0.2, 0.2),
-		(4.8, 0.2, 0.2),
-
-		(5.0, 0.2, 0.2),
-		(5.2, 0.2, 0.2),
-		(5.4, 0.2, 0.2),
-		(5.6, 0.2, 0.2),
-		(5.8, 0.2, 0.2),
-
-		(6.0, 0.2, 0.2),
-		(6.2, 0.2, 0.2),
-		(6.4, 0.2, 0.2),
-		(6.6, 0.2, 0.2),
-		(6.8, 0.2, 0.2),
-
-		(7.0, 0.2, 0.2),
-		(7.2, 0.2, 0.2),
-		(7.4, 0.2, 0.2),
-		(7.6, 0.2, 0.2),
-		(7.8, 0.2, 0.2),
-
-		(8.0, 0.2, 0.2),
-		(8.2, 0.2, 0.2),
-		(8.4, 0.2, 0.2),
-		(8.6, 0.2, 0.2),
-		(8.8, 0.2, 0.2),
-
-		(10.0, 0.4, 0.2),
-		(20.0, 0.4, 0.2),
-		(30.0, 0.4, 0.2),
-		(40.0, 0.4, 0.2),
-		(50.0, 0.4, 0.2),
-		(60.0, 0.4, 0.2),
-
-		(20.0, 0.2, 0.4),
-		(40.0, 0.2, 0.4),
-		(60.0, 0.2, 0.4),
-		(80.0, 0.2, 0.4),
-
-		(100.0, 0.2, 0.4),
-		(120.0, 0.2, 0.4),
-		(140.0, 0.2, 0.4),
-		(160.0, 0.2, 0.4),
-		(180.0, 0.2, 0.4),
-
-		(200.0, 0.2, 0.4),
-		(220.0, 0.2, 0.4),
-		(240.0, 0.2, 0.4),
-		(260.0, 0.2, 0.4),
-		(280.0, 0.2, 0.4),
-
-		(300.0, 0.2, 0.4),
-		(320.0, 0.2, 0.4),
-		(340.0, 0.2, 0.4),
-		(360.0, 0.2, 0.4),
-		(380.0, 0.2, 0.4),
-
-		(400.0, 0.6, 0.3),
-		(420.0, 0.6, 0.3),
-		(440.0, 0.6, 0.3),
-		(460.0, 0.6, 0.3),
-		(480.0, 0.6, 0.3),
-
-		(500.0, 0.2, 0.4),
-		(520.0, 0.2, 0.4),
-		(540.0, 0.2, 0.4),
-		(560.0, 0.2, 0.4),
-		(580.0, 0.2, 0.4),
-		// Добавьте другие тестовые случаи по необходимости
-	];
+		let test_cases = ARM_CONSTS;
 	
 		// Для каждого тестового случая находим оптимальную комбинацию и записываем в файл
-		for (target_area, main_step, secondary_step) in &test_cases {
+		for (target_area, main_step, secondary_step) in test_cases {
 			let combinations = self.find_optimal_combination_for_area(*target_area, *main_step, *secondary_step);
 			if !combinations.is_empty() {
 				// Выводим информацию только для первой комбинации с полными данными
@@ -533,118 +432,10 @@ pub fn find_optimal_combination_for_area(
 		)?;
 
         // Тестовые данные - различные комбинации целевой площади и шагов
-        let test_cases = [
-
-            (0.1, 0.2, 0.2),
-            (0.2, 0.2, 0.2),
-            (0.3, 0.2, 0.2),
-            (0.4, 0.2, 0.2),
-            (0.5, 0.2, 0.2),
-            (0.6, 0.2, 0.2),
-            (0.7, 0.2, 0.2),
-            (0.8, 0.2, 0.2),
-            (0.9, 0.2, 0.2),
-
-			(1.0, 0.4, 0.2),
-			(1.1, 0.4, 0.2),
-			(1.2, 0.4, 0.2),
-			(1.3, 0.4, 0.2),
-			(1.4, 0.4, 0.2),
-			(1.5, 0.4, 0.2),
-			(1.6, 0.4, 0.2),
-			(1.7, 0.4, 0.2),
-			(1.8, 0.4, 0.2),
-			(1.9, 0.4, 0.2),
-
-            (2.0, 0.4, 0.1),
-            (2.2, 0.4, 0.1),
-            (2.4, 0.4, 0.1),
-            (2.6, 0.4, 0.1),
-            (2.8, 0.4, 0.1),
-            
-            // Разные шаги при одинаковой площади
-            (3.0, 0.2, 0.2),
-            (3.2, 0.2, 0.2),
-            (3.4, 0.2, 0.2),
-            (3.6, 0.2, 0.2),
-            (3.8, 0.2, 0.2),
-
-            (4.0, 0.2, 0.2),
-            (4.2, 0.2, 0.2),
-            (4.4, 0.2, 0.2),
-            (4.6, 0.2, 0.2),
-            (4.8, 0.2, 0.2),
-
-            (5.0, 0.2, 0.2),
-            (5.2, 0.2, 0.2),
-            (5.4, 0.2, 0.2),
-            (5.6, 0.2, 0.2),
-            (5.8, 0.2, 0.2),
-
-            (6.0, 0.2, 0.2),
-            (6.2, 0.2, 0.2),
-            (6.4, 0.2, 0.2),
-            (6.6, 0.2, 0.2),
-            (6.8, 0.2, 0.2),
-
-            (7.0, 0.2, 0.2),
-            (7.2, 0.2, 0.2),
-            (7.4, 0.2, 0.2),
-            (7.6, 0.2, 0.2),
-            (7.8, 0.2, 0.2),
-
-            (8.0, 0.2, 0.2),
-            (8.2, 0.2, 0.2),
-            (8.4, 0.2, 0.2),
-            (8.6, 0.2, 0.2),
-            (8.8, 0.2, 0.2),
-
-            (10.0, 0.4, 0.2),
-            (20.0, 0.4, 0.2),
-            (30.0, 0.4, 0.2),
-            (40.0, 0.4, 0.2),
-            (50.0, 0.4, 0.2),
-            (60.0, 0.4, 0.2),
-
-            (20.0, 0.2, 0.4),
-            (40.0, 0.2, 0.4),
-            (60.0, 0.2, 0.4),
-            (80.0, 0.2, 0.4),
-
-            (100.0, 0.2, 0.4),
-            (120.0, 0.2, 0.4),
-            (140.0, 0.2, 0.4),
-            (160.0, 0.2, 0.4),
-            (180.0, 0.2, 0.4),
-
-            (200.0, 0.2, 0.4),
-            (220.0, 0.2, 0.4),
-            (240.0, 0.2, 0.4),
-            (260.0, 0.2, 0.4),
-            (280.0, 0.2, 0.4),
-
-            (300.0, 0.2, 0.4),
-            (320.0, 0.2, 0.4),
-            (340.0, 0.2, 0.4),
-            (360.0, 0.2, 0.4),
-            (380.0, 0.2, 0.4),
-
-            (400.0, 0.6, 0.3),
-            (420.0, 0.6, 0.3),
-            (440.0, 0.6, 0.3),
-            (460.0, 0.6, 0.3),
-            (480.0, 0.6, 0.3),
-
-            (500.0, 0.2, 0.4),
-            (520.0, 0.2, 0.4),
-            (540.0, 0.2, 0.4),
-            (560.0, 0.2, 0.4),
-            (580.0, 0.2, 0.4),
-            // Добавьте другие тестовые случаи по необходимости
-        ];
+        let test_cases = ARM_CONSTS;
 
         // Для каждого тестового случая находим комбинации и записываем в файл
-        for (target_area, main_step, secondary_step) in &test_cases {
+        for (target_area, main_step, secondary_step) in test_cases {
 			let combinations =
 				self.find_combinations_for_area(*target_area, *main_step, *secondary_step);
 	
@@ -741,120 +532,12 @@ pub fn find_optimal_combination_for_area(
 		worksheet.write_with_format(0, 10, "Шкала. Шаг доп", &header_format);
 		worksheet.write_with_format(0, 11, "Шкала площадь", &header_format);
 		// Используем те же тестовые данные, что и в оригинальном методе
-		let test_cases = [
-
-		(0.1, 0.2, 0.2),
-		(0.2, 0.2, 0.2),
-		(0.3, 0.2, 0.2),
-		(0.4, 0.2, 0.2),
-		(0.5, 0.2, 0.2),
-		(0.6, 0.2, 0.2),
-		(0.7, 0.2, 0.2),
-		(0.8, 0.2, 0.2),
-		(0.9, 0.2, 0.2),
-
-		(1.0, 0.4, 0.2),
-		(1.1, 0.4, 0.2),
-		(1.2, 0.4, 0.2),
-		(1.3, 0.4, 0.2),
-		(1.4, 0.4, 0.2),
-		(1.5, 0.4, 0.2),
-		(1.6, 0.4, 0.2),
-		(1.7, 0.4, 0.2),
-		(1.8, 0.4, 0.2),
-		(1.9, 0.4, 0.2),
-
-		(2.0, 0.4, 0.1),
-		(2.2, 0.4, 0.1),
-		(2.4, 0.4, 0.1),
-		(2.6, 0.4, 0.1),
-		(2.8, 0.4, 0.1),
-		
-		// Разные шаги при одинаковой площади
-		(3.0, 0.2, 0.2),
-		(3.2, 0.2, 0.2),
-		(3.4, 0.2, 0.2),
-		(3.6, 0.2, 0.2),
-		(3.8, 0.2, 0.2),
-
-		(4.0, 0.2, 0.2),
-		(4.2, 0.2, 0.2),
-		(4.4, 0.2, 0.2),
-		(4.6, 0.2, 0.2),
-		(4.8, 0.2, 0.2),
-
-		(5.0, 0.2, 0.2),
-		(5.2, 0.2, 0.2),
-		(5.4, 0.2, 0.2),
-		(5.6, 0.2, 0.2),
-		(5.8, 0.2, 0.2),
-
-		(6.0, 0.2, 0.2),
-		(6.2, 0.2, 0.2),
-		(6.4, 0.2, 0.2),
-		(6.6, 0.2, 0.2),
-		(6.8, 0.2, 0.2),
-
-		(7.0, 0.2, 0.2),
-		(7.2, 0.2, 0.2),
-		(7.4, 0.2, 0.2),
-		(7.6, 0.2, 0.2),
-		(7.8, 0.2, 0.2),
-
-		(8.0, 0.2, 0.2),
-		(8.2, 0.2, 0.2),
-		(8.4, 0.2, 0.2),
-		(8.6, 0.2, 0.2),
-		(8.8, 0.2, 0.2),
-
-		(10.0, 0.4, 0.2),
-		(20.0, 0.4, 0.2),
-		(30.0, 0.4, 0.2),
-		(40.0, 0.4, 0.2),
-		(50.0, 0.4, 0.2),
-		(60.0, 0.4, 0.2),
-
-		(20.0, 0.2, 0.4),
-		(40.0, 0.2, 0.4),
-		(60.0, 0.2, 0.4),
-		(80.0, 0.2, 0.4),
-
-		(100.0, 0.2, 0.4),
-		(120.0, 0.2, 0.4),
-		(140.0, 0.2, 0.4),
-		(160.0, 0.2, 0.4),
-		(180.0, 0.2, 0.4),
-
-		(200.0, 0.2, 0.4),
-		(220.0, 0.2, 0.4),
-		(240.0, 0.2, 0.4),
-		(260.0, 0.2, 0.4),
-		(280.0, 0.2, 0.4),
-
-		(300.0, 0.2, 0.4),
-		(320.0, 0.2, 0.4),
-		(340.0, 0.2, 0.4),
-		(360.0, 0.2, 0.4),
-		(380.0, 0.2, 0.4),
-
-		(400.0, 0.6, 0.3),
-		(420.0, 0.6, 0.3),
-		(440.0, 0.6, 0.3),
-		(460.0, 0.6, 0.3),
-		(480.0, 0.6, 0.3),
-
-		(500.0, 0.2, 0.4),
-		(520.0, 0.2, 0.4),
-		(540.0, 0.2, 0.4),
-		(560.0, 0.2, 0.4),
-		(580.0, 0.2, 0.4),
-		// Добавьте другие тестовые случаи по необходимости
-	];
+		let test_cases = ARM_CONSTS;
 		// Получаем все доступные диаметры из сортамента
 		let mut diameters = self.get_diameters();
 		let mut row = 1; // Начинаем с первой строки (после заголовков)
 		// Для каждого тестового случая находим комбинации и записываем в файл
-		for (target_area, main_step, secondary_step) in &test_cases {
+		for (target_area, main_step, secondary_step) in test_cases {
 			let combinations = self.find_combinations_for_area(*target_area, *main_step, *secondary_step);
 			if combinations.is_empty() {
 				// Случай А: Комбинация не найдена, используем только основную арматуру
@@ -990,6 +673,194 @@ pub fn find_optimal_combination_for_area(
 		// Сохраняем файл
 		workbook.save(filename);
 		Ok(())
+	}
+
+
+	pub fn generate_excel_report_to_wasm(&self, filename: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+		use rust_xlsxwriter::{Workbook, Format, Color, XlsxError, ExcelDateTime, DocProperties, CustomProperty};
+		// let excel_date = ExcelDateTime::from_ymd(2023, 1, 1)?;
+		// let property = DocProperties::new().set_creation_datetime(&excel_date);
+		
+		// Создаем новый файл Excel с пустыми свойствами документа, чтобы избежать вызова ExcelDateTime::utc_now()
+		    let mut workbook = Workbook::new();
+		// Используем get_unix_time() для получения времени из JavaScript
+
+		let worksheet = workbook.add_worksheet();
+		// Создаем форматы для заголовков и данных
+		let header_format = Format::new().set_bold().set_align(rust_xlsxwriter::FormatAlign::Center);
+		let yellow_fill = Format::new().set_background_color(Color::RGB(0xFFFF00));
+		// Форматы для чисел с фиксированным количеством десятичных знаков
+		let step_format = Format::new().set_num_format("0.0");
+		let area_format = Format::new().set_num_format("0.000");
+		let deviation_format = Format::new().set_num_format("0.0");
+		// Задаем ширину колонок
+		worksheet.set_column_width(0, 15);
+		worksheet.set_column_width(1, 15);
+		worksheet.set_column_width(2, 15);
+		worksheet.set_column_width(3, 15);
+		worksheet.set_column_width(4, 15);
+		worksheet.set_column_width(5, 15);
+		worksheet.set_column_width(6, 15);
+		worksheet.set_column_width(7, 15);
+		worksheet.set_column_width(8, 15);
+		worksheet.set_column_width(9, 15);
+		worksheet.set_column_width(10, 15);
+		worksheet.set_column_width(11, 15);
+		// Записываем заголовки
+		worksheet.write_with_format(0, 0, "Целевая площадь", &header_format);
+		worksheet.write_with_format(0, 1, "Основной шаг", &header_format);
+		worksheet.write_with_format(0, 2, "Доп. шаг", &header_format);
+		worksheet.write_with_format(0, 3, "Основная арматура", &header_format);
+		worksheet.write_with_format(0, 4, "Доп. арматура", &header_format);
+		worksheet.write_with_format(0, 5, "Общая площадь", &header_format);
+		worksheet.write_with_format(0, 6, "Отклонение (%)", &header_format);
+		worksheet.write_with_format(0, 7, "Шкала. Диам осн", &header_format);
+		worksheet.write_with_format(0, 8, "Шкала. Шаг осн", &header_format);
+		worksheet.write_with_format(0, 9, "Шкала. Диам доп", &header_format);
+		worksheet.write_with_format(0, 10, "Шкала. Шаг доп", &header_format);
+		worksheet.write_with_format(0, 11, "Шкала площадь", &header_format);
+		// Используем те же тестовые данные, что и в оригинальном методе
+		let test_cases = ARM_CONSTS;
+		// Получаем все доступные диаметры из сортамента
+		let mut diameters = self.get_diameters();
+		let mut row = 1; // Начинаем с первой строки (после заголовков)
+		// Для каждого тестового случая находим комбинации и записываем в файл
+		for (target_area, main_step, secondary_step) in test_cases {
+			let combinations = self.find_combinations_for_area(*target_area, *main_step, *secondary_step);
+			if combinations.is_empty() {
+				// Случай А: Комбинация не найдена, используем только основную арматуру
+				// Находим ближайшую основную арматуру к target_area
+				let main_count = 1.0 / main_step;
+				// Находим диаметр, который дает площадь, ближайшую к target_area
+				let mut best_d = 0;
+				let mut best_area_diff = f32::MAX;
+				for &d in &diameters {
+					if let Some(area) = self.get_area(d) {
+						let total_area = main_count * area;
+						let area_diff = (total_area - target_area).abs();
+						if area_diff < best_area_diff {
+							best_area_diff = area_diff;
+							best_d = d;
+						}
+					}
+				}
+				if best_d > 0 {
+					let area = self.get_area(best_d).unwrap_or(0.0);
+					let total_area = main_count * area;
+					let deviation = ((total_area / target_area) - 1.0) * 100.0;
+					// Записываем основную строку
+					worksheet.write_with_format(row, 0, *target_area, &area_format);
+					worksheet.write_with_format(row, 1, *main_step, &step_format);
+					worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					worksheet.write(row, 3, format!("Ø{} мм", best_d));
+					worksheet.write(row, 4, "Нет");
+					worksheet.write_with_format(row, 5, total_area, &area_format);
+					worksheet.write_with_format(row, 6, deviation, &deviation_format);
+					// Переходим к следующей строке для шкал
+					row += 1;
+					// Заполняем ячейки с желтым фоном для случая без доп. арматуры
+					worksheet.write_with_format(row, 7, format!("Ø{} мм", best_d), &yellow_fill);
+					worksheet.write_with_format(row, 8, *main_step, &yellow_fill);
+					worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+					worksheet.write_with_format(row, 10, *secondary_step, &yellow_fill);
+					worksheet.write_with_format(row, 11, total_area, &yellow_fill);
+					// Переходим к следующей строке для следующего тестового случая
+					row += 1;
+				} else {
+					// Если не нашли подходящий диаметр
+					worksheet.write_with_format(row, 0, *target_area, &area_format);
+					worksheet.write_with_format(row, 1, *main_step, &step_format);
+					worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					worksheet.write(row, 3, "Нет");
+					worksheet.write(row, 4, "Нет");
+					worksheet.write_with_format(row, 5, 0.0, &area_format);
+					worksheet.write_with_format(row, 6, 0.0, &deviation_format);
+					// Переходим к следующей строке для следующего тестового случая
+					row += 1;
+				}
+			} else {
+				// Случай Б: Нашлись комбинации
+				let limit = combinations.len();
+				for i in 0..limit {
+					let (d1, d2, total_area) = combinations[i];
+					let deviation = ((total_area / target_area) - 1.0) * 100.0;
+					// Записываем строку с информацией о комбинации
+					if i == 0 {
+						// Первая строка с полной информацией
+						worksheet.write_with_format(row, 0, *target_area, &area_format);
+						worksheet.write_with_format(row, 1, *main_step, &step_format);
+						worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					} else {
+						// Для последующих комбинаций не заполняем первые три колонки
+						worksheet.write(row, 0, "");
+						worksheet.write(row, 1, "");
+						worksheet.write(row, 2, "");
+					}
+					if d2 > 0 {
+						worksheet.write(row, 3, format!("Ø{} мм", d1));
+						worksheet.write(row, 4, format!("Ø{} мм", d2));
+					} else {
+						worksheet.write(row, 3, format!("Ø{} мм", d1));
+						worksheet.write(row, 4, "Нет");
+					}
+					// Используем значение total_area из комбинации, которое уже рассчитано правильно
+					worksheet.write_with_format(row, 5, total_area, &area_format);
+					worksheet.write_with_format(row, 6, deviation, &deviation_format);
+					// Переходим к следующей строке для шкал
+					row += 1;
+					// Заполняем шкалу диаметров по новым требованиям
+					if d2 > 0 {
+						// Случай с дополнительной арматурой
+						let main_count = 1.0 / main_step;
+						let secondary_count = 1.0 / secondary_step;
+						let area1 = self.get_area(d1).unwrap_or(0.0);
+						// Сначала добавляем случай без дополнительной арматуры (0)
+						let main_only_area = main_count * area1;
+						worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+						worksheet.write_with_format(row, 8, *main_step, &step_format);
+						worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+						worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+						worksheet.write_with_format(row, 11, main_only_area, &area_format);
+						row += 1;
+						// Теперь перебираем все диаметры от минимального до d2
+						for &curr_d in &diameters {
+							// Пропускаем диаметры больше d2
+							if curr_d > d2 {
+								break;
+							}
+							// Пропускаем 0 (уже обработали случай без доп. арматуры)
+							if curr_d == 0 {
+								continue;
+							}
+							let area_curr = self.get_area(curr_d).unwrap_or(0.0);
+							let combined_area = main_count * area1 + secondary_count * area_curr;
+							worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+							worksheet.write_with_format(row, 8, *main_step, &step_format);
+							worksheet.write_with_format(row, 9, format!("Ø{} мм", curr_d), &yellow_fill);
+							worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+							worksheet.write_with_format(row, 11, combined_area, &area_format);
+							row += 1;
+						}
+					} else {
+						// Случай без дополнительной арматуры
+						let main_count = 1.0 / main_step;
+						let area1 = self.get_area(d1).unwrap_or(0.0);
+						let main_only_area = main_count * area1;
+						worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+						worksheet.write_with_format(row, 8, *main_step, &step_format);
+						worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+						worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+						worksheet.write_with_format(row, 11, main_only_area, &area_format);
+						row += 1;
+					}
+				}
+			}
+			// Добавляем пустую строку между разными тестовыми случаями для лучшей читаемости
+			row += 1;
+		}
+		// Сохраняем файл
+		let buffer = workbook.save_to_buffer()?;
+    	Ok(buffer)
 	}
 }
 

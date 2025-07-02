@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export function get_horizontal_elements_object_js(): any;
 export function log_data(x: number, y: number): void;
 export function str_log_data(str: string): void;
 export function parse_data(sli_data: string, txt_data: string, xlsx_data: Uint8Array): void;
@@ -12,12 +13,13 @@ export function get_changed_row_data(planes: any): Uint8Array;
 export function get_sortament_data(): any;
 export function find_combinations_with_custom_diameters(target_area: number, main_step: number, secondary_step: number, available_diameters: any): any;
 export function create_csv_from_all_parsed_entities(): Uint8Array;
-export function get_horizontal_elements_object_js(): any;
+export function get_excell_report_for_arms(): Uint8Array;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly get_horizontal_elements_object_js: () => any;
   readonly log_data: (a: number, b: number) => void;
   readonly str_log_data: (a: number, b: number) => void;
   readonly parse_data: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
@@ -30,7 +32,7 @@ export interface InitOutput {
   readonly get_sortament_data: () => any;
   readonly find_combinations_with_custom_diameters: (a: number, b: number, c: number, d: any) => any;
   readonly create_csv_from_all_parsed_entities: () => [number, number];
-  readonly get_horizontal_elements_object_js: () => any;
+  readonly get_excell_report_for_arms: () => [number, number];
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;

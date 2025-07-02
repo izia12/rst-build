@@ -167,6 +167,14 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
+ * @returns {any}
+ */
+export function get_horizontal_elements_object_js() {
+    const ret = wasm.get_horizontal_elements_object_js();
+    return ret;
+}
+
+/**
  * @param {number} x
  * @param {number} y
  */
@@ -336,11 +344,13 @@ export function create_csv_from_all_parsed_entities() {
 }
 
 /**
- * @returns {any}
+ * @returns {Uint8Array}
  */
-export function get_horizontal_elements_object_js() {
-    const ret = wasm.get_horizontal_elements_object_js();
-    return ret;
+export function get_excell_report_for_arms() {
+    const ret = wasm.get_excell_report_for_arms();
+    var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v1;
 }
 
 async function __wbg_load(module, imports) {
@@ -467,6 +477,10 @@ function __wbg_get_imports() {
         const ret = arg0.next();
         return ret;
     }, arguments) };
+    imports.wbg.__wbg_now_807e54c39636c349 = function() {
+        const ret = Date.now();
+        return ret;
+    };
     imports.wbg.__wbg_push_737cfc8c1432c2c6 = function(arg0, arg1) {
         const ret = arg0.push(arg1);
         return ret;
