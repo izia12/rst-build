@@ -176,9 +176,6 @@ impl LiraFile {
         // Ok(())
     }
 
-    // ... existing code ...
-
-    // Парсинг координат из документа 4
     // Парсинг координат из документа 4
     fn parse_coordinates(&mut self, content: &str) {
         // self.coordinates.clear();
@@ -216,9 +213,6 @@ impl LiraFile {
 
         println!("Прочитано координат: {}", self.coordinates.len() - 1); // Вычитаем фиктивную координату
     }
-
-    // Парсинг элементов из документа 1
-    // Парсинг элементов из документа 1
     // Парсинг элементов из документа 1
     fn parse_elements(&mut self, content: &str) {
         self.elements.clear();
@@ -240,9 +234,7 @@ impl LiraFile {
                 // Минимум тип и материал
                 let element_type = values[0].parse::<u32>().unwrap_or(0);
                 let material = values[1].parse::<u32>().unwrap_or(0);
-
                 let mut coordinates = Vec::new();
-
                 // Обрабатываем координаты (индексы в документе 4)
                 for i in 2..values.len() {
                     if let Ok(coord_index) = values[i].parse::<usize>() {
@@ -298,4 +290,3 @@ impl LiraFile {
     }
 }
 
-// Другие общие структуры...

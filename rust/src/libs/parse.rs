@@ -1,5 +1,4 @@
-use dxf::Drawing;
-use std::{collections::HashMap, fs, path::Path, u32};
+use std::{collections::HashMap};
 // use image::io::Reader;
 use calamine::{Data, Reader as clamineReader};
 use serde::{Deserialize, Serialize};
@@ -10,8 +9,6 @@ use xml::EventReader;
 
 use crate::libs::types::LiraFile;
 // use web_sys::console;
-
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Vertex {
     pub x: f64,
@@ -440,7 +437,7 @@ pub fn get_indexes(
 ) -> (Vec<SerializableEntity1>, HashMap<usize, Material>) {
     // Парсим TXT файл
     let mut lira_file = LiraFile::new();
-    lira_file.parse_file_from_string(txt_data);
+    let _ = lira_file.parse_file_from_string(txt_data);
     let txt_elements = lira_file.get_elements();
 
     // Создаем хэш-мапу для TXT элементов для быстрого поиска по координатам

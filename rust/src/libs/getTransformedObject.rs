@@ -100,7 +100,6 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 		        let current_as4 = if as4_0 > as4_1 { as4_0 } else { as4_1 };
 		        let current_asw1 = if asw1_0 > asw1_1 { asw1_0 } else { asw1_1 };
 		        let current_asw2 = if asw2_0 > asw2_1 { asw2_0 } else { asw2_1 };
-		        
 		        // Обновляем общие максимумы
 		        if current_as1 > max_as1 { max_as1 = current_as1; }
 		        if current_as2 > max_as2 { max_as2 = current_as2; }

@@ -88,11 +88,9 @@ pub fn find_combinations_for_area(
     let max_area = target_area * 1.2; // Максимально допустимая площадь (+20%)
     let mut result = Vec::new();
     let diameters = self.get_diameters();
-    
     // Количество стержней на 1 метр для каждого шага
     let main_count = 1.0 / main_step;
     let secondary_count = 1.0 / secondary_step;
-    
     // Сначала пробуем найти комбинации с учетом обоих шагов
     for &d1 in &diameters {
         let area1 = self.get_area(d1).unwrap_or(0.0);
@@ -100,19 +98,16 @@ pub fn find_combinations_for_area(
             let area2 = self.get_area(d2).unwrap_or(0.0);
             // Вычисляем общую площадь с учетом шагов
             let total_area = main_count * area1 + secondary_count * area2;
-            
             // Сохраняем все комбинации для последующей сортировки
             result.push((d1, d2, total_area));
         }
     }
-    
     // Сортируем по отклонению от целевой площади (по абсолютной величине)
     result.sort_by(|&(_, _, area_a), &(_, _, area_b)| {
         let deviation_a = (area_a - target_area).abs();
         let deviation_b = (area_b - target_area).abs();
         deviation_a.partial_cmp(&deviation_b).unwrap_or(std::cmp::Ordering::Equal)
     });
-    
     // Проверяем, есть ли комбинации с отклонением менее 20%
     let mut valid_combinations: Vec<(u32, u32, f32)> = result
         .iter()
@@ -120,44 +115,34 @@ pub fn find_combinations_for_area(
         .map(|&(d1, d2, area)| (d1, d2, area))
         .take(8) // Берем 8 лучших комбинаций
         .collect();
-    
-    // План Б: если не нашли подходящих комбинаций, игнорируем secondary_step
 	// ... existing code ...
 // План Б: если не нашли подходящих комбинаций, игнорируем secondary_step
 if valid_combinations.is_empty() {
     println!("Не найдено комбинаций с отклонением менее 20%. Применяем план Б - игнорируем дополнительную арматуру.");
     // Очищаем предыдущие результаты
     result.clear();
-    
     // Ищем комбинации только с основным шагом (secondary_count = 0)
     for &d1 in &diameters {
         let area1 = self.get_area(d1).unwrap_or(0.0);
         // Вычисляем общую площадь только с основным шагом
         let total_area = main_count * area1;
-        
         // Добавляем комбинацию с нулевым вторым диаметром
         result.push((d1, 0, total_area));
     }
-    
     // Сортируем все результаты по площади (от меньшей к большей)
     result.sort_by(|&(_, _, area_a), &(_, _, area_b)| {
         area_a.partial_cmp(&area_b).unwrap_or(std::cmp::Ordering::Equal)
     });
-    
     // Находим индекс первого элемента с положительным отклонением
     let positive_index = result.iter().position(|&(_, _, area)| area >= target_area);
-    
     let mut final_combinations = Vec::new();
-    
     if let Some(pos_idx) = positive_index {
         // Если есть элемент с отрицательным отклонением перед положительным
         if pos_idx > 0 {
             final_combinations.push(result[pos_idx - 1]); // Ближайший отрицательный
         }
-        
         // Добавляем первый положительный
         final_combinations.push(result[pos_idx]);
-        
         // Добавляем следующий положительный, если он существует
         if pos_idx + 1 < result.len() {
             final_combinations.push(result[pos_idx + 1]);
@@ -171,11 +156,8 @@ if valid_combinations.is_empty() {
             final_combinations.push(result[result.len() - 1]);
         }
     }
-    
     valid_combinations = final_combinations;
 }
-// ... existing code ...
-    
     valid_combinations
 }
 pub fn find_optimal_combination_for_area(
@@ -186,14 +168,11 @@ pub fn find_optimal_combination_for_area(
 ) -> Vec<(u32, u32, f32)> {
     let max_area = target_area * 1.2; // Максимально допустимая площадь (+20%)
     let mut result = Vec::new();
-    
     // Получаем все доступные диаметры из сортамента
     let diameters: Vec<u32> = self.data.keys().copied().collect();
-    
     // Количество стержней на 1 метр для каждого шага
     let main_count = 1.0 / main_step;
     let secondary_count = 1.0 / secondary_step;
-    
     // Сначала пробуем найти комбинации с учетом обоих шагов
     for &d1 in &diameters {
         let area1 = self.get_area(d1).unwrap_or(0.0);
@@ -201,26 +180,22 @@ pub fn find_optimal_combination_for_area(
             let area2 = self.get_area(d2).unwrap_or(0.0);
             // Вычисляем общую площадь с учетом шагов
             let total_area = main_count * area1 + secondary_count * area2;
-            
             // Сохраняем все комбинации для последующей сортировки
             result.push((d1, d2, total_area));
         }
     }
-    
     // Сортируем по отклонению от целевой площади (по абсолютной величине)
     result.sort_by(|&(_, _, area_a), &(_, _, area_b)| {
         let deviation_a = (area_a - target_area).abs();
         let deviation_b = (area_b - target_area).abs();
         deviation_a.partial_cmp(&deviation_b).unwrap_or(std::cmp::Ordering::Equal)
     });
-    
     // Проверяем, есть ли комбинации с отклонением менее 20%
     let mut valid_combinations: Vec<(u32, u32, f32)> = result
         .iter()
         .filter(|&&(_, _, area)| area >= target_area && area <= max_area)
         .map(|&(d1, d2, area)| (d1, d2, area))
         .collect(); // Берем все подходящие комбинации, без ограничения
-    
     // План Б: если не нашли подходящих комбинаций, игнорируем secondary_step
     if valid_combinations.is_empty() {
         println!("Не найдено комбинаций с отклонением менее 20%. Применяем план Б - игнорируем дополнительную арматуру.");
@@ -231,19 +206,15 @@ pub fn find_optimal_combination_for_area(
             let area1 = self.get_area(d1).unwrap_or(0.0);
             // Вычисляем общую площадь только с основным шагом
             let total_area = main_count * area1;
-            
             // Добавляем комбинацию с нулевым вторым диаметром
             result.push((d1, 0, total_area));
         }
-        
         // Сортируем все результаты по площади (от меньшей к большей)
         result.sort_by(|&(_, _, area_a), &(_, _, area_b)| {
             area_a.partial_cmp(&area_b).unwrap_or(std::cmp::Ordering::Equal)
         });
-        
         // Находим индекс первого элемента с положительным отклонением
         let positive_index = result.iter().position(|&(_, _, area)| area >= target_area);
-        
         // Выбираем только один оптимальный вариант для Плана Б
         if let Some(pos_idx) = positive_index {
             // Возвращаем только первый положительный (ближайший к нулю)
@@ -253,7 +224,6 @@ pub fn find_optimal_combination_for_area(
             valid_combinations = vec![result[result.len() - 1]];
         }
     }
-    
     valid_combinations
 }
 
@@ -266,23 +236,19 @@ pub fn find_optimal_combination_for_area(
 	) -> Vec<(u32, u32)> {
 		let max_area = target_area * 1.2; // Максимально допустимая площадь (+20%)
 		let mut result = Vec::new();
-		
 		// Используем только доступные диаметры, переданные пользователем
 		let diameters: Vec<u32> = available_diameters
 			.iter()
 			.filter(|&&d| self.get_area(d).is_some()) // Проверяем, что диаметр есть в сортаменте
 			.copied()
 			.collect();
-		
 		// Если список диаметров пуст, возвращаем пустой результат
 		if diameters.is_empty() {
 			return Vec::new();
 		}
-		
 		// Количество стержней на 1 метр для каждого шага
 		let main_count = 1.0 / main_step;
 		let secondary_count = 1.0 / secondary_step;
-		
 		// Сначала пробуем найти комбинации с учетом обоих шагов
 		for &d1 in &diameters {
 			let area1 = self.get_area(d1).unwrap_or(0.0);
@@ -290,19 +256,16 @@ pub fn find_optimal_combination_for_area(
 				let area2 = self.get_area(d2).unwrap_or(0.0);
 				// Вычисляем общую площадь с учетом шагов
 				let total_area = main_count * area1 + secondary_count * area2;
-				
 				// Сохраняем все комбинации для последующей сортировки
 				result.push((d1, d2, total_area));
 			}
 		}
-		
 		// Сортируем по отклонению от целевой площади (по абсолютной величине)
 		result.sort_by(|&(_, _, area_a), &(_, _, area_b)| {
 			let deviation_a = (area_a - target_area).abs();
 			let deviation_b = (area_b - target_area).abs();
 			deviation_a.partial_cmp(&deviation_b).unwrap_or(std::cmp::Ordering::Equal)
 		});
-		
 		// Проверяем, есть ли комбинации с отклонением менее 20%
 		let mut valid_combinations: Vec<(u32, u32)> = result
 			.iter()
@@ -310,31 +273,25 @@ pub fn find_optimal_combination_for_area(
 			.map(|&(d1, d2, _)| (d1, d2))
 			.take(8) // Берем 8 лучших комбинаций
 			.collect();
-		
 		// План Б: если не нашли подходящих комбинаций, игнорируем secondary_step
 		if valid_combinations.is_empty() {
 			println!("Не найдено комбинаций с отклонением менее 20%. Применяем план Б - игнорируем дополнительную арматуру.");
-			
 			// Очищаем предыдущие результаты
 			result.clear();
-			
 			// Ищем комбинации только с основным шагом (secondary_count = 0)
 			for &d1 in &diameters {
 				let area1 = self.get_area(d1).unwrap_or(0.0);
 				// Вычисляем общую площадь только с основным шагом
 				let total_area = main_count * area1;
-				
 				// Добавляем комбинацию с нулевым вторым диаметром
 				result.push((d1, 0, total_area));
 			}
-			
 			// Сортируем по отклонению от целевой площади
 			result.sort_by(|&(_, _, area_a), &(_, _, area_b)| {
 				let deviation_a = (area_a - target_area).abs();
 				let deviation_b = (area_b - target_area).abs();
 				deviation_a.partial_cmp(&deviation_b).unwrap_or(std::cmp::Ordering::Equal)
 			});
-			
 			// Берем 8 лучших комбинаций (или меньше, если их меньше 8)
 			valid_combinations = result
 				.iter()
@@ -342,7 +299,6 @@ pub fn find_optimal_combination_for_area(
 				.take(8)
 				.collect();
 		}
-		
 		valid_combinations
 	}
     // Получение данных в виде HashMap
@@ -351,13 +307,10 @@ pub fn find_optimal_combination_for_area(
     }
 	pub fn generate_optimal_test_report(&self, filename: &str) -> std::io::Result<()> {
 		let mut file = File::create(filename)?;
-	
 		// Заголовок таблицы
 		writeln!(file, "Целевая площадь;Основной шаг;Доп. шаг;Основная арматура;Доп. арматура;Общая площадь;Отклонение (%)")?;
-	
 		// Используем те же тестовые данные, что и в оригинальном методе
 		let test_cases = ARM_CONSTS;
-	
 		// Для каждого тестового случая находим оптимальную комбинацию и записываем в файл
 		for (target_area, main_step, secondary_step) in test_cases {
 			let combinations = self.find_optimal_combination_for_area(*target_area, *main_step, *secondary_step);
@@ -405,11 +358,9 @@ pub fn find_optimal_combination_for_area(
 					target_area, main_step, secondary_step
 				)?;
 			}
-			
 			// Пустая строка между разными тестовыми случаями для лучшей читаемости
 			writeln!(file, "")?;
 		}
-	
 		Ok(())
 	}
     pub fn generate_test_report(&self, filename: &str) -> std::io::Result<()> {
@@ -429,7 +380,6 @@ pub fn find_optimal_combination_for_area(
         for (target_area, main_step, secondary_step) in test_cases {
 			let combinations =
 				self.find_combinations_for_area(*target_area, *main_step, *secondary_step);
-	
 			if combinations.is_empty() {
 				writeln!(
 					file,
@@ -475,7 +425,6 @@ pub fn find_optimal_combination_for_area(
 					}
 				}
 			}
-	
 			// Пустая строка между разными тестовыми случаями для лучшей читаемости
 			writeln!(file, "")?;
 		}
@@ -660,7 +609,7 @@ pub fn find_optimal_combination_for_area(
 			row += 1;
 		}
 		// Сохраняем файл
-		workbook.save(filename);
+		let _ =workbook.save(filename);
 		Ok(())
 	}
 
@@ -851,8 +800,6 @@ pub fn find_optimal_combination_for_area(
 }
 
 // Создаем глобальный экземпляр для использования в проекте
-
-// Создаем глобальный экземпляр для использования в проекте
 lazy_static! {
     pub static ref SORTAMENT: Sortament = Sortament::new();
 }
@@ -910,10 +857,8 @@ fn main1() {
     for (i, (d1, d2,_)) in combinations.iter().enumerate() {
         let area1 = SORTAMENT.get_area(*d1).unwrap_or(0.0);
         let area2 = SORTAMENT.get_area(*d2).unwrap_or(0.0);
-
         let main_count = 1.0 / main_step;
         let secondary_count = 1.0 / secondary_step;
-
         let total_area = main_count * area1 + secondary_count * area2;
 
         println!("Вариант {}: основная Ø{} мм, дополнительная Ø{} мм, общая площадь: {:.3}, отклонение: {:.2}%", 
@@ -928,7 +873,6 @@ fn main1() {
 }
 fn main() {
     println!("Тестирование функции find_combinations_for_area");
-
     // Тестируем для площади 3.1 с шагами 0.2 и 0.25
     let target_area = 3.1;
     let main_step = 0.2; // 5 штук на метр

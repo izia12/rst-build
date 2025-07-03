@@ -6,7 +6,6 @@ use rusttype::{Font, Scale};
 use serde:: Serialize;
 use crate::string_log_two_params;
 use super::parse::EntityWithXlsx;
-
 pub enum AsFunctions  {
 	As1,
 	As2,

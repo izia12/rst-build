@@ -231,7 +231,6 @@ fn format_element_coords(element: &Element) -> String {
         .join("      ")
 }
 
-// Функция для форматирования координат элемента из SLI файла
 // fn format_entity_coords(entity:  &SerializableEntity1) -> String {
 
 fn format_entity_coords(entity: &SerializableEntity1) -> String {
