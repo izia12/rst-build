@@ -1,5 +1,5 @@
 pub mod parse;
-pub mod lira_parse;
+
 pub mod types; 
 pub mod drawItem;
 pub mod createDxf;

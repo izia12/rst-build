@@ -31,7 +31,7 @@ pub fn get_standard_sortament() -> HashMap<u32, f32> {
     }
 }
 
-/// Ленивая инициализация для глобального доступа
+//Ленивая инициализация для глобального доступа
 lazy_static! {
     pub static ref STANDARD_SORTAMENT: HashMap<u32, f32> = get_standard_sortament();
 }

@@ -1,19 +1,10 @@
 use calamine::XlsxError;
 use lazy_static::lazy_static;
 use map_macro::hash_map;
-use rust_xlsxwriter::DocProperties;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use crate::libs::constants::arm_consts::ARM_CONSTS;
-
-// mod constants {          
-//     pub mod arm_consts;  // файл arm_consts.rs внутри
-// }
-// static SORTAMENT: phf::Map<u32, f32>=phf_map!{
-// 	6=>1.0,
-// };
-// #[derive(Clone, Debug, Serialize, Deserialize)]
 
 // Структура для работы с сортаментом арматуры
 use serde::{Deserialize, Serialize};
@@ -447,8 +438,6 @@ pub fn find_optimal_combination_for_area(
 				)?;
 			} else {
 				let limit = combinations.len();
-				let plan_b_active = combinations[0].1 == 0; // Проверяем, активен ли план Б
-	
 				for i in 0..limit {
 					let (d1, d2, total_area) = combinations[i];
 					let deviation = ((total_area / target_area) - 1.0) * 100.0;
@@ -493,7 +482,7 @@ pub fn find_optimal_combination_for_area(
         Ok(())
     }
 	pub fn generate_excel_report(&self, filename: &str) -> Result<(), XlsxError> {
-		use rust_xlsxwriter::{Workbook, Format, Color, XlsxError};
+		use rust_xlsxwriter::{Workbook, Format, Color};
 		// Создаем новый файл Excel
 		let mut workbook = Workbook::new();
 		// Добавляем лист
@@ -506,35 +495,35 @@ pub fn find_optimal_combination_for_area(
 		let area_format = Format::new().set_num_format("0.000");
 		let deviation_format = Format::new().set_num_format("0.0");
 		// Задаем ширину колонок
-		worksheet.set_column_width(0, 15);
-		worksheet.set_column_width(1, 15);
-		worksheet.set_column_width(2, 15);
-		worksheet.set_column_width(3, 15);
-		worksheet.set_column_width(4, 15);
-		worksheet.set_column_width(5, 15);
-		worksheet.set_column_width(6, 15);
-		worksheet.set_column_width(7, 15);
-		worksheet.set_column_width(8, 15);
-		worksheet.set_column_width(9, 15);
-		worksheet.set_column_width(10, 15);
-		worksheet.set_column_width(11, 15);
+		let _ = worksheet.set_column_width(0, 15);
+		let _ = worksheet.set_column_width(1, 15);
+		let _ = worksheet.set_column_width(2, 15);
+		let _ = worksheet.set_column_width(3, 15);
+		let _ = worksheet.set_column_width(4, 15);
+		let _ = worksheet.set_column_width(5, 15);
+		let _ = worksheet.set_column_width(6, 15);
+		let _ = worksheet.set_column_width(7, 15);
+		let _ = worksheet.set_column_width(8, 15);
+		let _ = worksheet.set_column_width(9, 15);
+		let _ = worksheet.set_column_width(10, 15);
+		let _ = worksheet.set_column_width(11, 15);
 		// Записываем заголовки
-		worksheet.write_with_format(0, 0, "Целевая площадь", &header_format);
-		worksheet.write_with_format(0, 1, "Основной шаг", &header_format);
-		worksheet.write_with_format(0, 2, "Доп. шаг", &header_format);
-		worksheet.write_with_format(0, 3, "Основная арматура", &header_format);
-		worksheet.write_with_format(0, 4, "Доп. арматура", &header_format);
-		worksheet.write_with_format(0, 5, "Общая площадь", &header_format);
-		worksheet.write_with_format(0, 6, "Отклонение (%)", &header_format);
-		worksheet.write_with_format(0, 7, "Шкала. Диам осн", &header_format);
-		worksheet.write_with_format(0, 8, "Шкала. Шаг осн", &header_format);
-		worksheet.write_with_format(0, 9, "Шкала. Диам доп", &header_format);
-		worksheet.write_with_format(0, 10, "Шкала. Шаг доп", &header_format);
-		worksheet.write_with_format(0, 11, "Шкала площадь", &header_format);
+		let _ =worksheet.write_with_format(0, 0, "Целевая площадь", &header_format);
+		let _ =worksheet.write_with_format(0, 1, "Основной шаг", &header_format);
+		let _ =worksheet.write_with_format(0, 2, "Доп. шаг", &header_format);
+		let _ =worksheet.write_with_format(0, 3, "Основная арматура", &header_format);
+		let _ =worksheet.write_with_format(0, 4, "Доп. арматура", &header_format);
+		let _ =worksheet.write_with_format(0, 5, "Общая площадь", &header_format);
+		let _ =worksheet.write_with_format(0, 6, "Отклонение (%)", &header_format);
+		let _ =worksheet.write_with_format(0, 7, "Шкала. Диам осн", &header_format);
+		let _ =worksheet.write_with_format(0, 8, "Шкала. Шаг осн", &header_format);
+		let _ =worksheet.write_with_format(0, 9, "Шкала. Диам доп", &header_format);
+		let _ =worksheet.write_with_format(0, 10, "Шкала. Шаг доп", &header_format);
+		let _ =worksheet.write_with_format(0, 11, "Шкала площадь", &header_format);
 		// Используем те же тестовые данные, что и в оригинальном методе
 		let test_cases = ARM_CONSTS;
 		// Получаем все доступные диаметры из сортамента
-		let mut diameters = self.get_diameters();
+		let diameters = self.get_diameters();
 		let mut row = 1; // Начинаем с первой строки (после заголовков)
 		// Для каждого тестового случая находим комбинации и записываем в файл
 		for (target_area, main_step, secondary_step) in test_cases {
@@ -561,32 +550,32 @@ pub fn find_optimal_combination_for_area(
 					let total_area = main_count * area;
 					let deviation = ((total_area / target_area) - 1.0) * 100.0;
 					// Записываем основную строку
-					worksheet.write_with_format(row, 0, *target_area, &area_format);
-					worksheet.write_with_format(row, 1, *main_step, &step_format);
-					worksheet.write_with_format(row, 2, *secondary_step, &step_format);
-					worksheet.write(row, 3, format!("Ø{} мм", best_d));
-					worksheet.write(row, 4, "Нет");
-					worksheet.write_with_format(row, 5, total_area, &area_format);
-					worksheet.write_with_format(row, 6, deviation, &deviation_format);
+					let _ =worksheet.write_with_format(row, 0, *target_area, &area_format);
+					let _ =worksheet.write_with_format(row, 1, *main_step, &step_format);
+					let _ =worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					let _ =worksheet.write(row, 3, format!("Ø{} мм", best_d));
+					let _ =worksheet.write(row, 4, "Нет");
+					let _ =worksheet.write_with_format(row, 5, total_area, &area_format);
+					let _ =worksheet.write_with_format(row, 6, deviation, &deviation_format);
 					// Переходим к следующей строке для шкал
 					row += 1;
 					// Заполняем ячейки с желтым фоном для случая без доп. арматуры
-					worksheet.write_with_format(row, 7, format!("Ø{} мм", best_d), &yellow_fill);
-					worksheet.write_with_format(row, 8, *main_step, &yellow_fill);
-					worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
-					worksheet.write_with_format(row, 10, *secondary_step, &yellow_fill);
-					worksheet.write_with_format(row, 11, total_area, &yellow_fill);
+					let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", best_d), &yellow_fill);
+					let _ =worksheet.write_with_format(row, 8, *main_step, &yellow_fill);
+					let _ =worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+					let _ =worksheet.write_with_format(row, 10, *secondary_step, &yellow_fill);
+					let _ =worksheet.write_with_format(row, 11, total_area, &yellow_fill);
 					// Переходим к следующей строке для следующего тестового случая
 					row += 1;
 				} else {
 					// Если не нашли подходящий диаметр
-					worksheet.write_with_format(row, 0, *target_area, &area_format);
-					worksheet.write_with_format(row, 1, *main_step, &step_format);
-					worksheet.write_with_format(row, 2, *secondary_step, &step_format);
-					worksheet.write(row, 3, "Нет");
-					worksheet.write(row, 4, "Нет");
-					worksheet.write_with_format(row, 5, 0.0, &area_format);
-					worksheet.write_with_format(row, 6, 0.0, &deviation_format);
+					let _ =worksheet.write_with_format(row, 0, *target_area, &area_format);
+					let _ =worksheet.write_with_format(row, 1, *main_step, &step_format);
+					let _ =worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					let _ =worksheet.write(row, 3, "Нет");
+					let _ =worksheet.write(row, 4, "Нет");
+					let _ =worksheet.write_with_format(row, 5, 0.0, &area_format);
+					let _ =worksheet.write_with_format(row, 6, 0.0, &deviation_format);
 					// Переходим к следующей строке для следующего тестового случая
 					row += 1;
 				}
@@ -599,25 +588,25 @@ pub fn find_optimal_combination_for_area(
 					// Записываем строку с информацией о комбинации
 					if i == 0 {
 						// Первая строка с полной информацией
-						worksheet.write_with_format(row, 0, *target_area, &area_format);
-						worksheet.write_with_format(row, 1, *main_step, &step_format);
-						worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+						let _ =worksheet.write_with_format(row, 0, *target_area, &area_format);
+						let _ =worksheet.write_with_format(row, 1, *main_step, &step_format);
+						let _ =worksheet.write_with_format(row, 2, *secondary_step, &step_format);
 					} else {
 						// Для последующих комбинаций не заполняем первые три колонки
-						worksheet.write(row, 0, "");
-						worksheet.write(row, 1, "");
-						worksheet.write(row, 2, "");
+						let _ =worksheet.write(row, 0, "");
+						let _ =worksheet.write(row, 1, "");
+						let _ =worksheet.write(row, 2, "");
 					}
 					if d2 > 0 {
-						worksheet.write(row, 3, format!("Ø{} мм", d1));
-						worksheet.write(row, 4, format!("Ø{} мм", d2));
+						let _ =worksheet.write(row, 3, format!("Ø{} мм", d1));
+						let _ =worksheet.write(row, 4, format!("Ø{} мм", d2));
 					} else {
-						worksheet.write(row, 3, format!("Ø{} мм", d1));
-						worksheet.write(row, 4, "Нет");
+						let _ =worksheet.write(row, 3, format!("Ø{} мм", d1));
+						let _ =worksheet.write(row, 4, "Нет");
 					}
 					// Используем значение total_area из комбинации, которое уже рассчитано правильно
-					worksheet.write_with_format(row, 5, total_area, &area_format);
-					worksheet.write_with_format(row, 6, deviation, &deviation_format);
+					let _ =worksheet.write_with_format(row, 5, total_area, &area_format);
+					let _ =worksheet.write_with_format(row, 6, deviation, &deviation_format);
 					// Переходим к следующей строке для шкал
 					row += 1;
 					// Заполняем шкалу диаметров по новым требованиям
@@ -628,11 +617,11 @@ pub fn find_optimal_combination_for_area(
 						let area1 = self.get_area(d1).unwrap_or(0.0);
 						// Сначала добавляем случай без дополнительной арматуры (0)
 						let main_only_area = main_count * area1;
-						worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
-						worksheet.write_with_format(row, 8, *main_step, &step_format);
-						worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
-						worksheet.write_with_format(row, 10, *secondary_step, &step_format);
-						worksheet.write_with_format(row, 11, main_only_area, &area_format);
+						let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+						let _ =worksheet.write_with_format(row, 8, *main_step, &step_format);
+						let _ =worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+						let _ =worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+						let _ =worksheet.write_with_format(row, 11, main_only_area, &area_format);
 						row += 1;
 						// Теперь перебираем все диаметры от минимального до d2
 						for &curr_d in &diameters {
@@ -646,11 +635,11 @@ pub fn find_optimal_combination_for_area(
 							}
 							let area_curr = self.get_area(curr_d).unwrap_or(0.0);
 							let combined_area = main_count * area1 + secondary_count * area_curr;
-							worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
-							worksheet.write_with_format(row, 8, *main_step, &step_format);
-							worksheet.write_with_format(row, 9, format!("Ø{} мм", curr_d), &yellow_fill);
-							worksheet.write_with_format(row, 10, *secondary_step, &step_format);
-							worksheet.write_with_format(row, 11, combined_area, &area_format);
+							let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+							let _ =worksheet.write_with_format(row, 8, *main_step, &step_format);
+							let _ =worksheet.write_with_format(row, 9, format!("Ø{} мм", curr_d), &yellow_fill);
+							let _ =worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+							let _ =worksheet.write_with_format(row, 11, combined_area, &area_format);
 							row += 1;
 						}
 					} else {
@@ -658,11 +647,11 @@ pub fn find_optimal_combination_for_area(
 						let main_count = 1.0 / main_step;
 						let area1 = self.get_area(d1).unwrap_or(0.0);
 						let main_only_area = main_count * area1;
-						worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
-						worksheet.write_with_format(row, 8, *main_step, &step_format);
-						worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
-						worksheet.write_with_format(row, 10, *secondary_step, &step_format);
-						worksheet.write_with_format(row, 11, main_only_area, &area_format);
+						let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+						let _ =worksheet.write_with_format(row, 8, *main_step, &step_format);
+						let _ =worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+						let _ =worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+						let _ =worksheet.write_with_format(row, 11, main_only_area, &area_format);
 						row += 1;
 					}
 				}
@@ -676,8 +665,8 @@ pub fn find_optimal_combination_for_area(
 	}
 
 
-	pub fn generate_excel_report_to_wasm(&self, filename: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-		use rust_xlsxwriter::{Workbook, Format, Color, XlsxError, ExcelDateTime, DocProperties, CustomProperty};
+	pub fn generate_excel_report_to_wasm(&self) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+		use rust_xlsxwriter::{Workbook, Format, Color};
 		// Создаем новый файл Excel с пустыми свойствами документа, чтобы избежать вызова ExcelDateTime::utc_now()
 		    let mut workbook = Workbook::new();
 		// Используем get_unix_time() для получения времени из JavaScript
@@ -691,35 +680,35 @@ pub fn find_optimal_combination_for_area(
 		let area_format = Format::new().set_num_format("0.000");
 		let deviation_format = Format::new().set_num_format("0.0");
 		// Задаем ширину колонок
-		worksheet.set_column_width(0, 15);
-		worksheet.set_column_width(1, 15);
-		worksheet.set_column_width(2, 15);
-		worksheet.set_column_width(3, 15);
-		worksheet.set_column_width(4, 15);
-		worksheet.set_column_width(5, 15);
-		worksheet.set_column_width(6, 15);
-		worksheet.set_column_width(7, 15);
-		worksheet.set_column_width(8, 15);
-		worksheet.set_column_width(9, 15);
-		worksheet.set_column_width(10, 15);
-		worksheet.set_column_width(11, 15);
+		let _ = worksheet.set_column_width(0, 15);
+		let _ = worksheet.set_column_width(1, 15);
+		let _ = worksheet.set_column_width(2, 15);
+		let _ = worksheet.set_column_width(3, 15);
+		let _ = worksheet.set_column_width(4, 15);
+		let _ = worksheet.set_column_width(5, 15);
+		let _ = worksheet.set_column_width(6, 15);
+		let _ = worksheet.set_column_width(7, 15);
+		let _ = worksheet.set_column_width(8, 15);
+		let _ = worksheet.set_column_width(9, 15);
+		let _ = worksheet.set_column_width(10, 15);
+		let _ = worksheet.set_column_width(11, 15);
 		// Записываем заголовки
-		worksheet.write_with_format(0, 0, "Целевая площадь", &header_format);
-		worksheet.write_with_format(0, 1, "Основной шаг", &header_format);
-		worksheet.write_with_format(0, 2, "Доп. шаг", &header_format);
-		worksheet.write_with_format(0, 3, "Основная арматура", &header_format);
-		worksheet.write_with_format(0, 4, "Доп. арматура", &header_format);
-		worksheet.write_with_format(0, 5, "Общая площадь", &header_format);
-		worksheet.write_with_format(0, 6, "Отклонение (%)", &header_format);
-		worksheet.write_with_format(0, 7, "Шкала. Диам осн", &header_format);
-		worksheet.write_with_format(0, 8, "Шкала. Шаг осн", &header_format);
-		worksheet.write_with_format(0, 9, "Шкала. Диам доп", &header_format);
-		worksheet.write_with_format(0, 10, "Шкала. Шаг доп", &header_format);
-		worksheet.write_with_format(0, 11, "Шкала площадь", &header_format);
+		let _ =worksheet.write_with_format(0, 0, "Целевая площадь", &header_format);
+		let _ =worksheet.write_with_format(0, 1, "Основной шаг", &header_format);
+		let _ =worksheet.write_with_format(0, 2, "Доп. шаг", &header_format);
+		let _ =worksheet.write_with_format(0, 3, "Основная арматура", &header_format);
+		let _ =worksheet.write_with_format(0, 4, "Доп. арматура", &header_format);
+		let _ =worksheet.write_with_format(0, 5, "Общая площадь", &header_format);
+		let _ =worksheet.write_with_format(0, 6, "Отклонение (%)", &header_format);
+		let _ =worksheet.write_with_format(0, 7, "Шкала. Диам осн", &header_format);
+		let _ =worksheet.write_with_format(0, 8, "Шкала. Шаг осн", &header_format);
+		let _ =worksheet.write_with_format(0, 9, "Шкала. Диам доп", &header_format);
+		let _ =worksheet.write_with_format(0, 10, "Шкала. Шаг доп", &header_format);
+		let _ =worksheet.write_with_format(0, 11, "Шкала площадь", &header_format);
 		// Используем те же тестовые данные, что и в оригинальном методе
 		let test_cases = ARM_CONSTS;
 		// Получаем все доступные диаметры из сортамента
-		let mut diameters = self.get_diameters();
+		let diameters = self.get_diameters();
 		let mut row = 1; // Начинаем с первой строки (после заголовков)
 		// Для каждого тестового случая находим комбинации и записываем в файл
 		for (target_area, main_step, secondary_step) in test_cases {
@@ -746,32 +735,32 @@ pub fn find_optimal_combination_for_area(
 					let total_area = main_count * area;
 					let deviation = ((total_area / target_area) - 1.0) * 100.0;
 					// Записываем основную строку
-					worksheet.write_with_format(row, 0, *target_area, &area_format);
-					worksheet.write_with_format(row, 1, *main_step, &step_format);
-					worksheet.write_with_format(row, 2, *secondary_step, &step_format);
-					worksheet.write(row, 3, format!("Ø{} мм", best_d));
-					worksheet.write(row, 4, "Нет");
-					worksheet.write_with_format(row, 5, total_area, &area_format);
-					worksheet.write_with_format(row, 6, deviation, &deviation_format);
+					let _ =worksheet.write_with_format(row, 0, *target_area, &area_format);
+					let _ =worksheet.write_with_format(row, 1, *main_step, &step_format);
+					let _ =worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					let _ =worksheet.write(row, 3, format!("Ø{} мм", best_d));
+					let _ =worksheet.write(row, 4, "Нет");
+					let _ =worksheet.write_with_format(row, 5, total_area, &area_format);
+					let _ =worksheet.write_with_format(row, 6, deviation, &deviation_format);
 					// Переходим к следующей строке для шкал
 					row += 1;
 					// Заполняем ячейки с желтым фоном для случая без доп. арматуры
-					worksheet.write_with_format(row, 7, format!("Ø{} мм", best_d), &yellow_fill);
-					worksheet.write_with_format(row, 8, *main_step, &yellow_fill);
-					worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
-					worksheet.write_with_format(row, 10, *secondary_step, &yellow_fill);
-					worksheet.write_with_format(row, 11, total_area, &yellow_fill);
+					let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", best_d), &yellow_fill);
+					let _ =worksheet.write_with_format(row, 8, *main_step, &yellow_fill);
+					let _ =worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+					let _ =worksheet.write_with_format(row, 10, *secondary_step, &yellow_fill);
+					let _ =worksheet.write_with_format(row, 11, total_area, &yellow_fill);
 					// Переходим к следующей строке для следующего тестового случая
 					row += 1;
 				} else {
 					// Если не нашли подходящий диаметр
-					worksheet.write_with_format(row, 0, *target_area, &area_format);
-					worksheet.write_with_format(row, 1, *main_step, &step_format);
-					worksheet.write_with_format(row, 2, *secondary_step, &step_format);
-					worksheet.write(row, 3, "Нет");
-					worksheet.write(row, 4, "Нет");
-					worksheet.write_with_format(row, 5, 0.0, &area_format);
-					worksheet.write_with_format(row, 6, 0.0, &deviation_format);
+					let _ =worksheet.write_with_format(row, 0, *target_area, &area_format);
+					let _ =worksheet.write_with_format(row, 1, *main_step, &step_format);
+					let _ =worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+					let _ =worksheet.write(row, 3, "Нет");
+					let _ =worksheet.write(row, 4, "Нет");
+					let _ =worksheet.write_with_format(row, 5, 0.0, &area_format);
+					let _ =worksheet.write_with_format(row, 6, 0.0, &deviation_format);
 					// Переходим к следующей строке для следующего тестового случая
 					row += 1;
 				}
@@ -784,25 +773,25 @@ pub fn find_optimal_combination_for_area(
 					// Записываем строку с информацией о комбинации
 					if i == 0 {
 						// Первая строка с полной информацией
-						worksheet.write_with_format(row, 0, *target_area, &area_format);
-						worksheet.write_with_format(row, 1, *main_step, &step_format);
-						worksheet.write_with_format(row, 2, *secondary_step, &step_format);
+						let _ =worksheet.write_with_format(row, 0, *target_area, &area_format);
+						let _ =worksheet.write_with_format(row, 1, *main_step, &step_format);
+						let _ =worksheet.write_with_format(row, 2, *secondary_step, &step_format);
 					} else {
 						// Для последующих комбинаций не заполняем первые три колонки
-						worksheet.write(row, 0, "");
-						worksheet.write(row, 1, "");
-						worksheet.write(row, 2, "");
+						let _ =worksheet.write(row, 0, "");
+						let _ =worksheet.write(row, 1, "");
+						let _ =worksheet.write(row, 2, "");
 					}
 					if d2 > 0 {
-						worksheet.write(row, 3, format!("Ø{} мм", d1));
-						worksheet.write(row, 4, format!("Ø{} мм", d2));
+						let _ =worksheet.write(row, 3, format!("Ø{} мм", d1));
+						let _ =worksheet.write(row, 4, format!("Ø{} мм", d2));
 					} else {
-						worksheet.write(row, 3, format!("Ø{} мм", d1));
-						worksheet.write(row, 4, "Нет");
+						let _ =worksheet.write(row, 3, format!("Ø{} мм", d1));
+						let _ =worksheet.write(row, 4, "Нет");
 					}
 					// Используем значение total_area из комбинации, которое уже рассчитано правильно
-					worksheet.write_with_format(row, 5, total_area, &area_format);
-					worksheet.write_with_format(row, 6, deviation, &deviation_format);
+					let _ =worksheet.write_with_format(row, 5, total_area, &area_format);
+					let _ =worksheet.write_with_format(row, 6, deviation, &deviation_format);
 					// Переходим к следующей строке для шкал
 					row += 1;
 					// Заполняем шкалу диаметров по новым требованиям
@@ -813,11 +802,11 @@ pub fn find_optimal_combination_for_area(
 						let area1 = self.get_area(d1).unwrap_or(0.0);
 						// Сначала добавляем случай без дополнительной арматуры (0)
 						let main_only_area = main_count * area1;
-						worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
-						worksheet.write_with_format(row, 8, *main_step, &step_format);
-						worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
-						worksheet.write_with_format(row, 10, *secondary_step, &step_format);
-						worksheet.write_with_format(row, 11, main_only_area, &area_format);
+						let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+						let _ =worksheet.write_with_format(row, 8, *main_step, &step_format);
+						let _ =worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+						let _ =worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+						let _ =worksheet.write_with_format(row, 11, main_only_area, &area_format);
 						row += 1;
 						// Теперь перебираем все диаметры от минимального до d2
 						for &curr_d in &diameters {
@@ -831,11 +820,11 @@ pub fn find_optimal_combination_for_area(
 							}
 							let area_curr = self.get_area(curr_d).unwrap_or(0.0);
 							let combined_area = main_count * area1 + secondary_count * area_curr;
-							worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
-							worksheet.write_with_format(row, 8, *main_step, &step_format);
-							worksheet.write_with_format(row, 9, format!("Ø{} мм", curr_d), &yellow_fill);
-							worksheet.write_with_format(row, 10, *secondary_step, &step_format);
-							worksheet.write_with_format(row, 11, combined_area, &area_format);
+							let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+							let _ =worksheet.write_with_format(row, 8, *main_step, &step_format);
+							let _ =worksheet.write_with_format(row, 9, format!("Ø{} мм", curr_d), &yellow_fill);
+							let _ =worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+							let _ =worksheet.write_with_format(row, 11, combined_area, &area_format);
 							row += 1;
 						}
 					} else {
@@ -843,11 +832,11 @@ pub fn find_optimal_combination_for_area(
 						let main_count = 1.0 / main_step;
 						let area1 = self.get_area(d1).unwrap_or(0.0);
 						let main_only_area = main_count * area1;
-						worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
-						worksheet.write_with_format(row, 8, *main_step, &step_format);
-						worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
-						worksheet.write_with_format(row, 10, *secondary_step, &step_format);
-						worksheet.write_with_format(row, 11, main_only_area, &area_format);
+						let _ =worksheet.write_with_format(row, 7, format!("Ø{} мм", d1), &yellow_fill);
+						let _ =worksheet.write_with_format(row, 8, *main_step, &step_format);
+						let _ =worksheet.write_with_format(row, 9, "Нет", &yellow_fill);
+						let _ =worksheet.write_with_format(row, 10, *secondary_step, &step_format);
+						let _ =worksheet.write_with_format(row, 11, main_only_area, &area_format);
 						row += 1;
 					}
 				}

@@ -23,7 +23,6 @@ impl EntityWithXlsx {
 pub fn unification_data(
     planes: Vec<f32>,
     data: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>>,
-    group_name: &str
 ) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
     let mut result = HashMap::new();
     let mut shape_map: HashMap<u64, Vec<&EntityWithXlsx>> = HashMap::new();

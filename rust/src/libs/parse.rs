@@ -474,7 +474,6 @@ pub fn get_indexes(
     let mut points: Vec<Vertex> = Vec::new();
     let mut entities: Vec<SerializableEntity1> = Vec::new();
     let mut materials: HashMap<usize, Material> = HashMap::new();
-    let mut in_materials_array = false;
     let mut current_material_num: Option<usize> = None;
     for e in parser {
         match e {
@@ -556,9 +555,7 @@ pub fn get_indexes(
                             };
                         }
                     }
-                    "MaterialsArray" => {
-                        in_materials_array = true;
-                    }
+                   
                     "Material" => {
                         let num = attributes
                             .iter()

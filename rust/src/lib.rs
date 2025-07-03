@@ -1,12 +1,7 @@
+pub mod libs;
 use std::{cell::RefCell, collections::HashMap};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
 use imageproc::drawing::{draw_line_segment_mut, draw_text_mut};
-use libs::{ 
-	arm_combination::SORTAMENT, createDxf::{create_dxf_after_change, create_simple_dxf_with_block}, 
-	parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, 
-	unification_data::unification_data,
-
-};
 use rusttype::{Font, Scale};
 use std::io::Cursor;
 use web_sys::console;
@@ -16,8 +11,13 @@ use docx_rs::{Docx, Paragraph, Pic, Run};
 use serde::{Serialize, Deserialize};
 use libs::drawItem::DrawItemZ;
 use ordered_float::OrderedFloat;
+use libs::{ 
+	arm_combination::SORTAMENT,
+	parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, 
+	unification_data::unification_data,
 
-pub mod libs;
+};
+
 
 #[wasm_bindgen]
 pub fn log_data(x: f64, y: f64) {
@@ -77,8 +77,6 @@ pub fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> 
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-	let a = &SORTAMENT;
-	let b =&a;
 	let hash = sort_by_z(entities);
 	let width_cm = 140;
     let height_cm = 105;
@@ -246,7 +244,7 @@ pub fn new_draw_polygon(data: Vec<EntityWithXlsx>) -> Vec<u8> {
 
 fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
     let mut map: HashMap<OrderedFloat<f32>, DrawItemZ> = HashMap::new();
-	let mut map1:HashMap<String, String> = HashMap::new();
+	let mut _map1:HashMap<String, String> = HashMap::new();
 	// map1.
     for item in data1.into_iter() {
 		let z0 = item.vertices[0].z;
@@ -287,7 +285,7 @@ pub fn get_changed_row_data(planes: JsValue) -> Vec<u8> {
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
     let sorted_data = sort_by_same_z(data);
-    let changed_row_data = unification_data(planes_vec, sorted_data, "hi");
+    let changed_row_data = unification_data(planes_vec, sorted_data);
     // Создаем 4 DXF файла для as1, as2, as3, as4
     let mut combined = Vec::new();
     for as_index in 0..4 {
@@ -409,7 +407,7 @@ pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
 pub fn get_excell_report_for_arms() -> Vec<u8> {
     use crate::libs::arm_combination::SORTAMENT;
     
-    SORTAMENT.generate_excel_report_to_wasm("armature_report.xlsx")
+    SORTAMENT.generate_excel_report_to_wasm()
         .unwrap_or_else(|_| Vec::new())
 }
 

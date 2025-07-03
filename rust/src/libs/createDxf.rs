@@ -3,8 +3,7 @@ use super::drawItem::DrawItemZ;
 use super::parse::EntityWithXlsx;
 use std::io:: Cursor;
 
-use dxf::enums::{AcadVersion, HorizontalTextJustification, VerticalTextJustification};
-use dxf::tables::Layer;
+use dxf::enums::{HorizontalTextJustification, VerticalTextJustification};
 use dxf::{entities::*, Block, Color, Drawing, Vector};
 use dxf::Point;
 use ordered_float::OrderedFloat;
