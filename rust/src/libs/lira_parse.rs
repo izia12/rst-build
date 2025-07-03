@@ -9,11 +9,6 @@ use rst_build::libs::{
     types::{ Element, LiraFile},
     parse::{get_indexes, SerializableEntity1}
 };
-// use super::parse::get_indexes;
-
-
-
-
 // Пример использования
 pub fn parse_lira_file(file_path: &str) -> io::Result<LiraFile> {
     let mut lira_file = LiraFile::new();

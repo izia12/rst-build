@@ -17,8 +17,6 @@ pub struct DiameterInfo {
 pub struct Sortament {
     data: HashMap<u32, f32>,
 }
-#[cfg(target_arch = "wasm32")]
-use crate::get_unix_time; 
 impl Sortament {
     // Создание нового экземпляра
     pub fn new() -> Self {
@@ -78,7 +76,6 @@ impl Sortament {
     }
 
     // Поиск комбинаций диаметров, сумма площадей которых >= target_area, но не более чем на 10%
-// ... existing code ...
 pub fn find_combinations_for_area(
     &self,
     target_area: f32,
@@ -115,7 +112,6 @@ pub fn find_combinations_for_area(
         .map(|&(d1, d2, area)| (d1, d2, area))
         .take(8) // Берем 8 лучших комбинаций
         .collect();
-	// ... existing code ...
 // План Б: если не нашли подходящих комбинаций, игнорируем secondary_step
 if valid_combinations.is_empty() {
     println!("Не найдено комбинаций с отклонением менее 20%. Применяем план Б - игнорируем дополнительную арматуру.");

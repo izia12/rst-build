@@ -21,7 +21,6 @@ dxf = "0.6"
 serde_json = "1.0.133"
 serde = { version = "1.0.215", features = ["derive"] }
 uuid = { version = "1.14", features = ["js"] }
-quick-xml = { version = "0.37.2", features = ["serialize"] }
 # getrandom = { version = "0.3.1", features = ["js"] }
 calamine = "0.26.1"
 xml = "0.8.20"
