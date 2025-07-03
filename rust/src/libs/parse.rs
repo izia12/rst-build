@@ -7,9 +7,11 @@ use serde_json;
 use std::io::Cursor;
 use xml::reader::XmlEvent;
 use xml::EventReader;
+
+use crate::libs::types::LiraFile;
 // use web_sys::console;
 
-use crate::libs::lira_parse::LiraFile;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Vertex {
     pub x: f64,

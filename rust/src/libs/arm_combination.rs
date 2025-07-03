@@ -678,9 +678,6 @@ pub fn find_optimal_combination_for_area(
 
 	pub fn generate_excel_report_to_wasm(&self, filename: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
 		use rust_xlsxwriter::{Workbook, Format, Color, XlsxError, ExcelDateTime, DocProperties, CustomProperty};
-		// let excel_date = ExcelDateTime::from_ymd(2023, 1, 1)?;
-		// let property = DocProperties::new().set_creation_datetime(&excel_date);
-		
 		// Создаем новый файл Excel с пустыми свойствами документа, чтобы избежать вызова ExcelDateTime::utc_now()
 		    let mut workbook = Workbook::new();
 		// Используем get_unix_time() для получения времени из JavaScript

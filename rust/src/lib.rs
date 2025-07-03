@@ -403,7 +403,6 @@ pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
             }
         }
     }
-    
     csv_content
 }
 #[wasm_bindgen]
@@ -414,6 +413,15 @@ pub fn get_excell_report_for_arms() -> Vec<u8> {
         .unwrap_or_else(|_| Vec::new())
 }
 
+#[wasm_bindgen]
+pub fn get_custom_sortament_report(
+    available_diameters: Vec<u32>,
+    floors_data_json: &str,
+) -> Result<Vec<u8>, JsValue> {
+    use crate::libs::final_report::custom_sortament::create_custom_sortament_report;
+    
+    create_custom_sortament_report(available_diameters, floors_data_json)
+}
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = Date, js_name = now)]
