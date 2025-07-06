@@ -14,6 +14,7 @@ export const AdditionInfoArm = (): ReactElement => {
 			<table className=" divide-y divide-gray-200 bg-white " style={{ maxWidth: "550px" }}>
 				<thead className="bg-gray-50">
 					<tr>
+						<th></th>
 						<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Диаметр</th>
 						<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Цена</th>
 						<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Цена</th>

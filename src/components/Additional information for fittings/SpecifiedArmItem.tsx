@@ -9,6 +9,7 @@ export const SpecifiedArmItem = ({area, diameter, price}:SpecifiedFitParamsType)
 	const dispatch = useAppDispatch();
 	return (
 		<tr key={diameter}>
+			<td> <input type="checkbox" name="" id="" checked={true} /> </td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">
 				{diameter}мм
 			</td>

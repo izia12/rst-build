@@ -4,7 +4,7 @@ import {  fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
 import { stepVariantsToState } from '../../constants/stepConstants';
 
 
-type UniqeItem = {
+export type UniqeItem = {
 	id: string,
 	planes: number[],
 	name: string,  

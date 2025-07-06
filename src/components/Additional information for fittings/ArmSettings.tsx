@@ -2,7 +2,7 @@ import React, { ReactElement, useState } from 'react'
 import Modal from '../custom-components/Modal'
 import { AdditionInfoArm } from './AdditionInfoArm';
 import { Button } from '../custom-components/Button';
-import init, { get_excell_report_for_arms } from '../../assets/pkg/rst_build';
+import init, { get_custom_sortament_report, get_excell_report_for_arms } from '../../assets/pkg/rst_build';
 
 
 export default function ArmSettings(): ReactElement {
@@ -18,6 +18,7 @@ export default function ArmSettings(): ReactElement {
 			console.log(e);
 		}
 	}
+	// const fn = get_custom_sortament_report();
 	const saveFile = (data: Uint8Array,) => {
 		const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 		const url = URL.createObjectURL(blob);

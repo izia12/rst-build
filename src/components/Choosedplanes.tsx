@@ -4,7 +4,6 @@ import ChoosedPlaneItem from './ChoosedPlaneItem';
 import { AsValuesType } from '../store/slices/slice.wasm';
 export default function Choosedplanes(): ReactElement {
 	const choosedUniqueplains = useAppSelector(state => state.wasm.groupUniqueItems)
-	// const choosedPlains = useAppSelector(state=>state.wasm.choosedItems);
 	function getMaxAsValueFromGroup(values: AsValuesType[]): AsValuesType {
 		let maxAs1 = 0, maxAs2 = 0, maxAs3 = 0, maxAs4 = 0, maxAsw1 = 0, maxAsw2 = 0
 		for (let i = 0; i < values.length; i++) {

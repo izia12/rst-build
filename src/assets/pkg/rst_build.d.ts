@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export function create_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 export function get_horizontal_elements_object_js(): any;
 export function log_data(x: number, y: number): void;
 export function str_log_data(str: string): void;
@@ -14,11 +15,13 @@ export function get_sortament_data(): any;
 export function find_combinations_with_custom_diameters(target_area: number, main_step: number, secondary_step: number, available_diameters: any): any;
 export function create_csv_from_all_parsed_entities(): Uint8Array;
 export function get_excell_report_for_arms(): Uint8Array;
+export function get_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly get_horizontal_elements_object_js: () => any;
   readonly log_data: (a: number, b: number) => void;
   readonly str_log_data: (a: number, b: number) => void;
@@ -33,11 +36,13 @@ export interface InitOutput {
   readonly find_combinations_with_custom_diameters: (a: number, b: number, c: number, d: any) => any;
   readonly create_csv_from_all_parsed_entities: () => [number, number];
   readonly get_excell_report_for_arms: () => [number, number];
+  readonly get_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_4: WebAssembly.Table;
+  readonly __externref_table_dealloc: (a: number) => void;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }

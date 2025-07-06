@@ -74,13 +74,12 @@ export type PureWASMJsData={
 	[key:string]:PureWASMJsDataValue
 }
 export type UniqueFloorsExportToWASM={
-	floors:number[],
 	title:string | null,
-	level:number[],
-	maxAs1:number,
-	maxAs2:number,
-	maxAs3:number,
-	maxAs4:number,
+	level:string,
+	max_as1:number,  // ← Изменено на snake_case
+	max_as2:number,  // ← Изменено на snake_case
+	max_as3:number,  // ← Изменено на snake_case
+	max_as4:number,  // ← Изменено на snake_case
 	steps:[number, number],
-	color:string | null
+	color?:string | null
 }

@@ -13,6 +13,7 @@ export const Button = (props: propsType): ReactElement => {
 		<button
 			disabled={props.disabled || false}
 			onClick={props.onClick}
+			title="Создать унификацию"
 			// onClick={() => setIsOpen(true)}
 			className={`rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ${props.classes} ${props.disabled ? "disabled:opacity-75" : ""}`}
 		>
