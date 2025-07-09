@@ -421,13 +421,17 @@ pub fn get_custom_sortament_report(
     create_custom_sortament_report(available_diameters, floors_data_json)
 }
 #[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = Date, js_name = now)]
-    fn js_date_now() -> f64;
-}
-
-// Функция для WASM
-#[cfg(target_arch = "wasm32")]
-pub fn get_unix_time() -> u64 {
-    (js_date_now() / 1000.0) as u64  // Конвертируем в секунды
+pub fn get_table_data_for_frontend(
+    available_diameters: Vec<u32>,
+    floors_data_json: &str,
+) -> String {
+    use crate::libs::final_report::custom_sortament::get_table_data;
+    
+    match get_table_data(available_diameters, floors_data_json) {
+        Ok(data) => data,
+       Err(e) => {
+            console::log_1(&format!("Ошибка в get_table_data_for_frontend: {:?}", e).into());
+            "[]".to_string()
+        }
+    }
 }
