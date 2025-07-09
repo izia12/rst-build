@@ -7,6 +7,7 @@ import { getPreparedUniqueFloor } from '../helpers/getPreparedUniqueFloors'
 import { getPreparedDataFromUniqueGroups } from '../helpers/getPreparedDataFromUniqueGroups'
 import init,{ create_custom_sortament_report } from '../assets/pkg/rst_build'
 import { fetchExcelViewData } from '../store/slices/thunks/wasmThanks'
+import { useAppDispatch } from './../store/store';
 
 
 type propsType={
@@ -15,6 +16,7 @@ type propsType={
 }
 export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenForCreateUI}:propsType) {
 	const {showToast} = useToast();
+	const dispatch = useAppDispatch()
 	const floors1 = useAppSelector(state=>state.wasm.specifiedFitParams)
 	const items = useAppSelector(state=>state.wasm.wasmJsData)
 	const choosedItems  = useAppSelector(state=>state.wasm.choosedPlainsFromList)
@@ -49,14 +51,15 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 		try{
 			await init()
 			setTimeout(async()=>{
-				await fetchExcelViewData({diameters:summaryData.availableDiameters, floorsJson:summaryData.jsonArray});
+				 dispatch(
+					await fetchExcelViewData({diameters:summaryData.availableDiameters, floorsJson:summaryData.jsonArray})
+				)
 				console.log(summaryData);
 			},2000)
 			
 			const data = await create_custom_sortament_report(summaryData.availableDiameters, summaryData.jsonArray	);
 			const combinedData = new Uint8Array(data);
 			saveFile(combinedData)
-			console.log(11111);
 
 		}catch(e){
 			console.log(e);

@@ -341,6 +341,8 @@ pub fn find_combinations_with_custom_diameters(
 // В начале файла добавьте:
 use std::io::Write;
 
+use crate::libs::final_report::custom_sortament::{CustomSortament, FloorData};
+
 // ... остальные импорты ...
 
 #[wasm_bindgen]
@@ -420,18 +422,18 @@ pub fn get_custom_sortament_report(
     
     create_custom_sortament_report(available_diameters, floors_data_json)
 }
+
 #[wasm_bindgen]
 pub fn get_table_data_for_frontend(
     available_diameters: Vec<u32>,
     floors_data_json: &str,
-) -> String {
-    use crate::libs::final_report::custom_sortament::get_table_data;
+) -> Result<String, JsValue> {
+    let floors_data: Vec<FloorData> = serde_json::from_str(floors_data_json)
+        .map_err(|e| JsValue::from_str(&format!("JSON parsing error: {}", e)))?;
     
-    match get_table_data(available_diameters, floors_data_json) {
-        Ok(data) => data,
-       Err(e) => {
-            console::log_1(&format!("Ошибка в get_table_data_for_frontend: {:?}", e).into());
-            "[]".to_string()
-        }
-    }
+    let sortament = CustomSortament::from_js_data(available_diameters);
+    let excel_data = sortament.generate_excel_data_for_js(floors_data);
+    
+    serde_json::to_string(&excel_data)
+        .map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }

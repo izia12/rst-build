@@ -153,7 +153,15 @@ export const wasmSlice = createSlice({
 			state.loading = false;
 		})
 		builder.addCase(fetchExcelViewData.pending, (state, action)=>{
-			state.excelViewData = action.payload
+			state.loading=true;
+		})
+		builder.addCase(fetchExcelViewData.fulfilled, (state, action)=>{
+			state.excelViewData = action.payload;
+			state.loading=false;
+		})
+		builder.addCase(fetchExcelViewData.rejected, (state, action)=>{
+			state.error = action.payload as Error;
+			state.loading=false;
 		})
 		// builder.addCase(fetchArmDimeters.pending, (state) => {
 		// 	state.loading = true;
