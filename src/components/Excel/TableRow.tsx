@@ -1,4 +1,4 @@
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, useCallback } from "react";
 import { ExcelView } from "../../types/data.types";
 
 interface TableRowProps {
@@ -14,23 +14,22 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 	const totalRows = floorData.values.reduce((sum, armature) => sum + armature.combinations.length, 0);
 	
 	// Функция для определения минимального отклонения для каждой функции
-	const getMinDeviationForFunction = (functionName: string) => {
+	const getMinDeviationForFunction = useCallback((functionName: string) => {
 		const armature = floorData.values.find(a => a.function_name === functionName);
 		if (!armature || armature.combinations.length === 0) return null;
 		
 		return Math.min(...armature.combinations.map(c => Math.abs(c.deviation)));
-	};
+	},[floorData.values]);
 
 	// Функция для проверки, должен ли checkbox быть отмечен по умолчанию
-	const shouldBeCheckedByDefault = (functionName: string, deviation: number) => {
+	const shouldBeCheckedByDefault = useCallback((functionName: string, deviation: number) => {
 		const minDeviation = getMinDeviationForFunction(functionName);
 		return minDeviation !== null && Math.abs(deviation) === minDeviation;
-	};
+	},[getMinDeviationForFunction]);
 
 	// Инициализация состояния checkbox'ов при загрузке компонента
 	useEffect(() => {
 		const defaultSelected = new Set<string>();
-		
 		floorData.values.forEach((armature) => {
 			armature.combinations.forEach((combination, index) => {
 				if (shouldBeCheckedByDefault(armature.function_name, combination.deviation)) {
@@ -39,9 +38,8 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 				}
 			});
 		});
-		
 		setSelectedCombinations(defaultSelected);
-	}, [floorData]);
+	}, [ floorData.level, floorData.values, shouldBeCheckedByDefault]);
 
 	// Обработчик клика по checkbox'у
 	const handleCheckboxChange = (key: string) => {
@@ -55,12 +53,11 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 			return newSet;
 		});
 	};
-	
 	let currentRowIndex = 0;
 
 	return (
 		<>
-			{floorData.values.map((armature, armatureIndex) => (
+			{floorData.values.map((armature) => (
 				armature.combinations.map((combination, combinationIndex) => {
 					const isFirstRowOfFloor = currentRowIndex === 0;
 					const isFirstRowOfFunction = combinationIndex === 0;
@@ -100,7 +97,6 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 									{floorData.level}
 								</td>
 							)}
-							
 							{/* Название - показываем только в первой строке этажа */}
 							{isFirstRowOfFloor && (
 								<td 

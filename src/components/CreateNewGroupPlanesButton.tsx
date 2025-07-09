@@ -2,7 +2,6 @@ import React from 'react'
 import { Button } from './custom-components/Button'
 import { useToast } from './custom-components/Toast'
 import { useAppSelector } from '../store/store'
-import { UniqueFloorsExportToWASM } from '../types/data.types'
 import { getPreparedUniqueFloor } from '../helpers/getPreparedUniqueFloors'
 import { getPreparedDataFromUniqueGroups } from '../helpers/getPreparedDataFromUniqueGroups'
 import init,{ create_custom_sortament_report } from '../assets/pkg/rst_build'
@@ -36,7 +35,7 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 	const floors = choosedUniques.map(el=>el.planes).flat();
 	const entries = Object.entries(items);
 	
-	const filteredItems = entries.filter(([key, val])=>{
+	const filteredItems = entries.filter(([key])=>{
 		return !floors.includes(+key)
 	})
 	
