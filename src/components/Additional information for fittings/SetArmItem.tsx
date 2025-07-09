@@ -10,7 +10,7 @@ export default function SetArmItem(): ReactElement {
 	const diameters = useAppSelector(state=>state.wasm.specifiedFitParams);
 
 	const armDiameters = diameters
-		.filter(el=>el.default===false&&el.isSpecified===false)
+		.filter(el=>el.isDefault===false&&el.isSpecified===false)
 		.map(el=>({value:el.area.toString(), label:el.diameter.toString()}));
 	const [selectedItem, setSelectedItem] = useState<null| number>(null);
 	const [price, setPrice] = useState(0);

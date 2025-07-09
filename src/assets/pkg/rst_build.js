@@ -213,11 +213,31 @@ export function create_custom_sortament_report(available_diameters, floors_data_
 }
 
 /**
- * @returns {any}
+ * @param {Uint32Array} available_diameters
+ * @param {string} floors_data_json
+ * @returns {string}
  */
-export function get_horizontal_elements_object_js() {
-    const ret = wasm.get_horizontal_elements_object_js();
-    return ret;
+export function get_table_data(available_diameters, floors_data_json) {
+    let deferred4_0;
+    let deferred4_1;
+    try {
+        const ptr0 = passArray32ToWasm0(available_diameters, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(floors_data_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.get_table_data(ptr0, len0, ptr1, len1);
+        var ptr3 = ret[0];
+        var len3 = ret[1];
+        if (ret[3]) {
+            ptr3 = 0; len3 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred4_0 = ptr3;
+        deferred4_1 = len3;
+        return getStringFromWasm0(ptr3, len3);
+    } finally {
+        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+    }
 }
 
 /**
@@ -412,6 +432,36 @@ export function get_custom_sortament_report(available_diameters, floors_data_jso
     var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     return v3;
+}
+
+/**
+ * @param {Uint32Array} available_diameters
+ * @param {string} floors_data_json
+ * @returns {string}
+ */
+export function get_table_data_for_frontend(available_diameters, floors_data_json) {
+    let deferred3_0;
+    let deferred3_1;
+    try {
+        const ptr0 = passArray32ToWasm0(available_diameters, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(floors_data_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.get_table_data_for_frontend(ptr0, len0, ptr1, len1);
+        deferred3_0 = ret[0];
+        deferred3_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
+    }
+}
+
+/**
+ * @returns {any}
+ */
+export function get_horizontal_elements_object_js() {
+    const ret = wasm.get_horizontal_elements_object_js();
+    return ret;
 }
 
 async function __wbg_load(module, imports) {

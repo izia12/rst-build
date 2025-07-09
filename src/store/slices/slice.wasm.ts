@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ArmDiameters, MaxAsFn, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WASMDataType } from '../../types/data.types'
-import {  fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
+import { ArmDiameters, ExcelView, MaxAsFn, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WASMDataType } from '../../types/data.types'
+import {  fetchExcelViewData, fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
 import { stepVariantsToState } from '../../constants/stepConstants';
 
 
@@ -39,7 +39,8 @@ export interface WasmDataState {
 	wasmJsData: PureWASMJsData,
 	error: null | Error
 	specifiedFitParams:SpecifiedFitParamsType[],
-	maxAsFns:MaxAsFn[]
+	maxAsFns:MaxAsFn[],
+	excelViewData:ExcelView[]
 }
 
 const initialState: WasmDataState = {
@@ -55,7 +56,8 @@ const initialState: WasmDataState = {
 	maxAsFns:[],
 	armDiameters:[],
 	groupUniqueItems: [],
-	error: null
+	error: null,
+	excelViewData:[],
 }
 
 export const wasmSlice = createSlice({
@@ -92,10 +94,8 @@ export const wasmSlice = createSlice({
 		},
 		setFitParamsItem:(state, action:PayloadAction<{area:number, price:number}>)=>{
 			const item = state.specifiedFitParams.find(el=>el.area === action.payload.area);
-			console.log(item);
-			
 			item.price = action.payload.price;
-			item.isSpecified = true;
+			item.isDefault = true;
 		},
 		setArmStep:(state, action:PayloadAction<{plane:string, secondaryStep:number, mainStep:number}>)=>{
 			const foundUniqueItem = state.wasmJsData[action.payload.plane];
@@ -119,10 +119,17 @@ export const wasmSlice = createSlice({
 			const found = state.specifiedFitParams.find(el=>el.area===action.payload.area);
 			found.price = action.payload.price
 			found.isSpecified=true
+		},
+		setDefaultForArmItem:(state, action:PayloadAction<number>)=>{
+			const found = state.specifiedFitParams.find(el=>el.area===action.payload);
+			if(found){
+				found.isDefault = !found.isDefault;
+			}
 		}
 	},
 
 	extraReducers: (builder) => {
+
 		builder.addCase(fetchWasmData.fulfilled, (state, action) => {
 			state.wasmData = action.payload
 			state.loading = false
@@ -145,6 +152,9 @@ export const wasmSlice = createSlice({
 			state.error = action.error as Error;
 			state.loading = false;
 		})
+		builder.addCase(fetchExcelViewData.pending, (state, action)=>{
+			state.excelViewData = action.payload
+		})
 		// builder.addCase(fetchArmDimeters.pending, (state) => {
 		// 	state.loading = true;
 		// })
@@ -157,6 +167,7 @@ export const wasmSlice = createSlice({
 		// 	state.error = action.error as Error;
 		// 	state.loading = false;
 		// })
+
 	}
 })
 
@@ -173,7 +184,8 @@ export const {
 	setArmStep,
 	selectToUniqueGroup,
 	unSelectToUniqueGroup,
-	setPriceForArmItem
+	setPriceForArmItem,
+	setDefaultForArmItem
 } = wasmSlice.actions
 
 export default wasmSlice.reducer

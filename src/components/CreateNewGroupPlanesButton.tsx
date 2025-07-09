@@ -6,6 +6,7 @@ import { UniqueFloorsExportToWASM } from '../types/data.types'
 import { getPreparedUniqueFloor } from '../helpers/getPreparedUniqueFloors'
 import { getPreparedDataFromUniqueGroups } from '../helpers/getPreparedDataFromUniqueGroups'
 import init,{ create_custom_sortament_report } from '../assets/pkg/rst_build'
+import { fetchExcelViewData } from '../store/slices/thunks/wasmThanks'
 
 
 type propsType={
@@ -36,19 +37,26 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 	const filteredItems = entries.filter(([key, val])=>{
 		return !floors.includes(+key)
 	})
+	
 	const preparedItems = getPreparedUniqueFloor(filteredItems)
 	const preparedUniqes = getPreparedDataFromUniqueGroups(choosedUniques)
 	const fiteredArms = floors1.filter(el=>!el.isSpecified);
-	console.log(preparedItems, preparedUniqes);
+	const summaryData = {
+		availableDiameters: new Uint32Array(fiteredArms.map(el=>el.diameter)),
+		jsonArray:JSON.stringify([...preparedItems, ...preparedUniqes])
+	}
 		async function saveXlsx() {
 		try{
 			await init()
-			const data = await create_custom_sortament_report(
-							new Uint32Array(fiteredArms.map(el=>el.diameter)),
-							JSON.stringify([...preparedItems, ...preparedUniqes])
-						);
+			setTimeout(async()=>{
+				await fetchExcelViewData({diameters:summaryData.availableDiameters, floorsJson:summaryData.jsonArray});
+				console.log(summaryData);
+			},2000)
+			
+			const data = await create_custom_sortament_report(summaryData.availableDiameters, summaryData.jsonArray	);
 			const combinedData = new Uint8Array(data);
 			saveFile(combinedData)
+			console.log(11111);
 
 		}catch(e){
 			console.log(e);

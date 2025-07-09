@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export function create_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
-export function get_horizontal_elements_object_js(): any;
+export function get_table_data(available_diameters: Uint32Array, floors_data_json: string): string;
 export function log_data(x: number, y: number): void;
 export function str_log_data(str: string): void;
 export function parse_data(sli_data: string, txt_data: string, xlsx_data: Uint8Array): void;
@@ -16,13 +16,15 @@ export function find_combinations_with_custom_diameters(target_area: number, mai
 export function create_csv_from_all_parsed_entities(): Uint8Array;
 export function get_excell_report_for_arms(): Uint8Array;
 export function get_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
+export function get_table_data_for_frontend(available_diameters: Uint32Array, floors_data_json: string): string;
+export function get_horizontal_elements_object_js(): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
-  readonly get_horizontal_elements_object_js: () => any;
+  readonly get_table_data: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly log_data: (a: number, b: number) => void;
   readonly str_log_data: (a: number, b: number) => void;
   readonly parse_data: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
@@ -37,6 +39,8 @@ export interface InitOutput {
   readonly create_csv_from_all_parsed_entities: () => [number, number];
   readonly get_excell_report_for_arms: () => [number, number];
   readonly get_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
+  readonly get_table_data_for_frontend: (a: number, b: number, c: number, d: number) => [number, number];
+  readonly get_horizontal_elements_object_js: () => any;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;

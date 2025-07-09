@@ -51,7 +51,7 @@ export type SpecifiedFitParamsType = {
     area:number,
 	price:number | null,
 	isSpecified:boolean,
-	default:boolean
+	isDefault:boolean
 }
 export type MaxAsFn={
 	[key:string]:number
@@ -82,4 +82,22 @@ export type UniqueFloorsExportToWASM={
 	max_as4:number,  // ← Изменено на snake_case
 	steps:[number, number],
 	color?:string | null
+}
+export type ArmatureCombination ={
+    main_diameter: number;        // d1
+    additional_diameter: number;  // d2 (0 если нет)
+    total_area: number;          // общая площадь
+    deviation: number;           // отклонение от target_area
+    main_armature: string;       // "Ø16 мм"
+    additional_armature: string; // "Ø12 мм" или "Нет"
+}
+export type ExcelView ={
+    level: string;
+    title?: string;
+    function_name: string;
+    target_area: number;
+    main_step: number;
+    additional_step: number;
+    combinations: ArmatureCombination[]; // ← Массив всех найденных комбинаций!
+    selected_combination_index: number;  // Индекс выбранной комбинации
 }

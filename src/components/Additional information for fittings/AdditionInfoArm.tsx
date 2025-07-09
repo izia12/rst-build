@@ -21,7 +21,7 @@ export const AdditionInfoArm = (): ReactElement => {
 					</tr>
 				</thead>
 				<tbody>
-				{diameters.filter(el=>el.default||el.isSpecified).map((el)=>(
+				{diameters.filter(el=>el.isDefault||el.isSpecified).map((el)=>(
 					<SpecifiedArmItem key={el.area} {...el}/>
 				))}
 				</tbody>
