@@ -6,17 +6,17 @@ type LoaderProps = {
 	fullScreen?: boolean;
 }
 
-export const Loader = ({ 
-	size = 'md', 
-	text = 'Загрузка данных...', 
-	fullScreen = true 
+export const Loader = ({
+	size = 'md',
+	text = 'Загрузка данных...',
+	fullScreen = true
 }: LoaderProps): ReactElement => {
 	const sizeClasses = {
 		sm: 'h-6 w-6',
 		md: 'h-12 w-12',
 		lg: 'h-16 w-16'
 	};
-	
+
 	const spinner = (
 		<div className="flex flex-col items-center space-y-4">
 			<div className="relative">
@@ -35,13 +35,13 @@ export const Loader = ({
 			)}
 		</div>
 	);
-	
+
 	if (!fullScreen) {
 		return spinner;
 	}
-	
+
 	return (
-		<div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
+		<div className="fixed inset-0 bg-white/90 flex items-center justify-center z-[9999]">
 			{spinner}
 		</div>
 	);

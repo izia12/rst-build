@@ -117,6 +117,7 @@ function App() {
 			console.error('Ошибка сохранения:', error);
 		}
 	}
+	console.log(pending);
 	
 	const saveFile = (data: Uint8Array, filename: string) => {
 		const blob = new Blob([data], { type: 'application/dxf' });
@@ -149,9 +150,6 @@ function App() {
 
 	}, [onInputsChanged, sliInput, textInput, xlsxInput]); // Добавляем зависимости
 	
-	useEffect(()=>{
-		dispatch( fetchArmDimeters());
-	},[dispatch])
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50">
 			<div className="container mx-auto px-6 py-8">
@@ -161,7 +159,7 @@ function App() {
 					<p className="text-secondary-600">Система анализа и проектирования арматурных конструкций</p>
 				</div>
 
-				{pending && <Loader />}
+				{pending && <Loader fullScreen={true}/>}
 				
 				{/* File Upload Section */}
 				<div className="card mb-8 p-6">
