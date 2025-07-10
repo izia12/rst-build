@@ -48,12 +48,12 @@ const Modal = ({
 			onClick={closeOnOutsideClick ? onClose : undefined}
 		>
 			<div
-				className="relative max-h-[90vh] w-full overflow-hidden rounded-xl bg-white shadow-strong animate-slide-up"
+				className="relative max-h-[90vh] w-full rounded-xl bg-white shadow-strong animate-slide-up flex flex-col"
 				style={{ width: `${Math.min(width, window.innerWidth - 32)}px` }}
 				onClick={(e) => e.stopPropagation()}
 			>
 				{/* Header */}
-				<div className="flex items-center justify-between p-6 border-b border-secondary-200">
+				<div className="flex items-center justify-between p-6 border-b border-secondary-200 flex-shrink-0">
 					{title && (
 						<h2 className="text-xl font-semibold text-secondary-900">{title}</h2>
 					)}
@@ -69,13 +69,13 @@ const Modal = ({
 				</div>
 
 				{/* Content */}
-				<div className="flex-1 overflow-y-auto p-6">
+				<div className="flex-1 overflow-y-auto p-6 min-h-0">
 					{children}
 				</div>
 
 				{/* Footer */}
 				{button && (
-					<div className="border-t border-secondary-200 p-6">
+					<div className="border-t border-secondary-200 p-6 flex-shrink-0">
 						{button}
 					</div>
 				)}

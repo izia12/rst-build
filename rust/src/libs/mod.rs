@@ -12,3 +12,6 @@ pub mod final_report {
     pub mod custom_sortament;
     pub mod sortament_data;  // Добавить эту строку
 }
+pub mod convas_optimization {
+    pub mod canvas_optimization;
+}

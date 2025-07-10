@@ -70,7 +70,6 @@ impl CustomSortament {
 	        diameter_area_map,
 	    }
     }
-    /// Вычисляет площадь для заданного диаметра (π * (d/2)²)
     pub fn calculate_area_for_diameter(diameter: u32) -> f64 {
         let radius = diameter as f64 / 2.0;
         std::f64::consts::PI * radius * radius
@@ -86,8 +85,6 @@ impl CustomSortament {
 	    self.diameter_area_map.get(&diameter).copied()
 	}
     /// Находит оптимальную комбинацию арматуры для заданной площади
-/// Находит все возможные комбинации арматуры для заданной площади
-/// Находит все возможные комбинации арматуры для заданной площади
 	pub fn find_combinations_for_area(
 	    &self,
 	    target_area: f32,
@@ -578,32 +575,3 @@ pub fn create_custom_sortament_report(
         .generate_floors_excel_report_to_wasm(floors_data)
         .map_err(|e| JsValue::from_str(&format!("Excel generation error: {}", e)))
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     #[test]
-//     fn test_custom_sortament_creation() {
-//         let diameters = vec![8, 10, 12, 14, 16, 18, 20, 22, 25, 28, 32];
-//         let sortament = CustomSortament::from_js_data(diameters.clone());
-//         assert_eq!(sortament.get_available_diameters(), diameters);
-//         assert!(sortament.get_area(12).is_some());
-//         assert!(sortament.get_area(100).is_none());
-//     }
-//     #[test]
-//     fn test_area_calculation() {
-//         let area_12 = CustomSortament::calculate_area_for_diameter(12);
-//         let expected = std::f64::consts::PI * 6.0 * 6.0; // π * r²
-//         assert!((area_12 - expected).abs() < 0.001);
-//     }
-//     #[test]
-//     fn test_combination_finding() {
-//         let diameters = vec![8, 10, 12, 14, 16];
-//         let sortament = CustomSortament::from_js_data(diameters);
-//         let result = sortament.find_optimal_combination_for_area(500.0, 200.0, 150.0);
-//         assert!(result.is_some());
-//         let combo = result.unwrap();
-//         assert!(combo.total_area > 0.0);
-//         assert!(combo.deviation >= 0.0);
-//     }
-// }

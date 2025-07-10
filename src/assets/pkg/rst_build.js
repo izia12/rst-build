@@ -422,6 +422,42 @@ export function get_table_data_for_frontend(available_diameters, floors_data_jso
 }
 
 /**
+ * @param {number} max_shapes_per_level
+ * @param {number} max_total_shapes
+ * @param {number | null} [start_z]
+ * @param {number | null} [end_z]
+ * @returns {string}
+ */
+export function get_optimized_canvas_data_wasm(max_shapes_per_level, max_total_shapes, start_z, end_z) {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.get_optimized_canvas_data_wasm(max_shapes_per_level, max_total_shapes, isLikeNone(start_z) ? 0x100000001 : Math.fround(start_z), isLikeNone(end_z) ? 0x100000001 : Math.fround(end_z));
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * @returns {string}
+ */
+export function get_canvas_statistics_wasm() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.get_canvas_statistics_wasm();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
  * @param {Uint32Array} available_diameters
  * @param {string} floors_data_json
  * @returns {Uint8Array}

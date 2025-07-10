@@ -18,19 +18,19 @@ export const UniqeItems = ({openForCreateUI, setOpenForCreateUI}:propsType): Rea
 	// console.log(wasmJsData);
 	
 	return (
-		<div className="p-4 relative">
-			<div className=" flex justify-between">
+		<div className="p-2 sm:p-4 relative">
+			<div className="flex flex-col lg:flex-row gap-4 lg:justify-between">
 				{pending && <div className="text-gray-500 mb-4">Loading...</div>}
-				<div className=" overflow-x-auto rounded-lg border  border-gray-200 justify-between" >
-					<table className=" divide-y divide-gray-200 bg-white " style={{ maxWidth: "550px" }}>
+				<div className="overflow-x-auto rounded-lg border border-gray-200 flex-1" >
+					<table className="w-full divide-y divide-gray-200 bg-white" style={{ maxWidth: "550px" }}>
 						<thead className="bg-gray-50">
 							<tr>
-								<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+								<th className="px-2 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium text-gray-500">
 									<button 
 										onClick={()=>setSortToBig(!sortToBig)} 
-										className="bg-emerald-400"
+										className="bg-emerald-400 p-1 rounded touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
 										>
-										<img src={sortToBig?toSmall:toBig} alt="" className="w-8"
+										<img src={sortToBig?toSmall:toBig} alt="" className="w-6 sm:w-8"
 											style={{ filter: 'invert(56%) sepia(74%) saturate(4591%) hue-rotate(191deg) brightness(99%) contrast(92%)' }}
 										/>
 									</button>

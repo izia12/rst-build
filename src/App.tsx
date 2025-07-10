@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
-import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
+import { fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
 import { useAppDispatch, useAppSelector } from './store/store.ts';
 import Three from './components/Three.tsx';
 import { startPerfomance } from './store/slices/slice.wasm.ts';
@@ -152,19 +152,19 @@ function App() {
 	
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50">
-			<div className="container mx-auto px-6 py-8">
+			<div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
 				{/* Header */}
-				<div className="mb-8">
-					<h1 className="text-3xl font-bold text-secondary-900 mb-2">3D Проектирование</h1>
-					<p className="text-secondary-600">Система анализа и проектирования арматурных конструкций</p>
+				<div className="mb-6 sm:mb-8">
+					<h1 className="text-2xl sm:text-3xl font-bold text-secondary-900 mb-2">3D Проектирование</h1>
+					<p className="text-sm sm:text-base text-secondary-600">Система анализа и проектирования арматурных конструкций</p>
 				</div>
 
 				{pending && <Loader fullScreen={true}/>}
 				
 				{/* File Upload Section */}
-				<div className="card mb-8 p-6">
-					<h2 className="text-xl font-semibold text-secondary-900 mb-6">Загрузка файлов</h2>
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div className="card mb-6 sm:mb-8 p-4 sm:p-6">
+					<h2 className="text-lg sm:text-xl font-semibold text-secondary-900 mb-4 sm:mb-6">Загрузка файлов</h2>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 						{/* SLI File Upload */}
 						<div className="space-y-2">
 							<label className="block text-sm font-medium text-secondary-700">SLI файл</label>
@@ -178,7 +178,7 @@ function App() {
 								/>
 								<label
 									htmlFor="sli-input"
-									className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group"
+									className="flex flex-col items-center justify-center h-24 sm:h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group touch-manipulation"
 								>
 									<div className="flex flex-col items-center">
 										<svg className="w-8 h-8 text-secondary-400 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,7 +205,7 @@ function App() {
 								/>
 								<label
 									htmlFor="txt-input"
-									className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group"
+									className="flex flex-col items-center justify-center h-24 sm:h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group touch-manipulation"
 								>
 									<div className="flex flex-col items-center">
 										<svg className="w-8 h-8 text-secondary-400 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,7 +232,7 @@ function App() {
 								/>
 								<label
 									htmlFor="xlsx-input"
-									className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group"
+									className="flex flex-col items-center justify-center h-24 sm:h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group touch-manipulation"
 								>
 									<div className="flex flex-col items-center">
 										<svg className="w-8 h-8 text-secondary-400 group-hover:text-success-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,7 +252,7 @@ function App() {
 				<div className="flex flex-wrap gap-4 mb-8">
 					<button
 						onClick={() => setIsOpen(true)}
-						className="btn-primary"
+						className="btn-primary w-full sm:w-auto min-h-[44px] touch-manipulation"
 					>
 						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -262,7 +262,7 @@ function App() {
 					
 					<button
 						onClick={handleSaveDxf}
-						className="btn-success"
+						className="btn-success w-full sm:w-auto min-h-[44px] touch-manipulation"
 						// disabled={choosedPlanesFromList.length === 0}
 					>
 						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,8 +270,9 @@ function App() {
 						</svg>
 						Сохранить DXF
 					</button>
-					
-					<ArmSettings/>
+					<div className="w-full sm:w-auto">
+						<ArmSettings/>
+					</div>
 				</div>
 
 				{/* Main Content */}

@@ -53,4 +53,39 @@
   .table-row {
     @apply hover:bg-secondary-50 transition-colors duration-150;
   }
+  /* ... existing styles ... */
+
+/* Мобильные оптимизации */
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-success {
+    @apply text-base py-3 px-4;
+  }
+  
+  /* Увеличиваем размер текста в Canvas для мобильных */
+  .konva-stage {
+    touch-action: pan-x pan-y;
+  }
+}
+
+/* Улучшенная поддержка касаний */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Адаптивные контейнеры */
+.container {
+  @apply px-4 sm:px-6;
+}
+
+/* Адаптивные карточки */
+.card {
+  @apply shadow-soft hover:shadow-medium transition-shadow;
+}
+
+@media (max-width: 640px) {
+  .card {
+    @apply mx-2;
+  }
+}
 }

@@ -437,3 +437,52 @@ pub fn get_table_data_for_frontend(
     serde_json::to_string(&excel_data)
         .map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
+
+// ... existing code ...
+
+use crate::libs::convas_optimization::canvas_optimization::{
+    get_optimized_canvas_data, get_canvas_statistics
+};
+
+#[wasm_bindgen]
+pub fn get_optimized_canvas_data_wasm(
+    max_shapes_per_level: usize,
+    max_total_shapes: usize,
+    start_z: Option<f32>,
+    end_z: Option<f32>
+) -> String {
+    let data = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    let canvas_data = get_optimized_canvas_data(
+        data,
+        max_shapes_per_level,
+        max_total_shapes,
+        start_z,
+        end_z
+    );
+    
+    serde_json::to_string(&canvas_data)
+        .unwrap_or_else(|_| "{\"error\": \"Serialization failed\"}".to_string())
+}
+
+#[wasm_bindgen]
+pub fn get_canvas_statistics_wasm() -> String {
+    let data = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    let stats = get_canvas_statistics(data);
+    
+    serde_json::to_string(&stats)
+        .unwrap_or_else(|_| "{\"error\": \"Serialization failed\"}".to_string())
+}
+
+// ... existing code ...
