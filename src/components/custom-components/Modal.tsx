@@ -6,8 +6,9 @@ interface ModalProps {
 	onClose: () => void;
 	children: ReactNode;
 	closeOnOutsideClick?: boolean;
-	width?: number,
-	button?: React.ReactNode
+	width?: number;
+	button?: React.ReactNode;
+	title?: string;
 }
 
 const Modal = ({
@@ -16,59 +17,68 @@ const Modal = ({
 	children,
 	closeOnOutsideClick = true,
 	width = 600,
-	button
+	button,
+	title
 }: ModalProps) => {
-	// Обработка закрытия по ESC
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") onClose();
 		};
 
-		if (isOpen) window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
+		if (isOpen) {
+			window.addEventListener("keydown", handleKeyDown);
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'unset';
+		}
+		
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+			document.body.style.overflow = 'unset';
+		};
 	}, [isOpen, onClose]);
 
-	// Создаем портал только при isOpen = true
 	if (!isOpen) return null;
 
 	return createPortal(
 		<div
 			role="dialog"
 			aria-modal="true"
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in"
 			onClick={closeOnOutsideClick ? onClose : undefined}
 		>
 			<div
-				className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-xl transform-gpu will-change-transform flex flex-col"
-				style={{ width: `${width}px` }}
+				className="relative max-h-[90vh] w-full overflow-hidden rounded-xl bg-white shadow-strong animate-slide-up"
+				style={{ width: `${Math.min(width, window.innerWidth - 32)}px` }}
 				onClick={(e) => e.stopPropagation()}
 			>
-
-				{/* Кнопка закрытия */}
-				<button
-					onClick={onClose}
-					className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
-					aria-label="Close modal"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
+				{/* Header */}
+				<div className="flex items-center justify-between p-6 border-b border-secondary-200">
+					{title && (
+						<h2 className="text-xl font-semibold text-secondary-900">{title}</h2>
+					)}
+					<button
+						onClick={onClose}
+						className="p-2 text-secondary-400 hover:text-secondary-600 hover:bg-secondary-100 rounded-lg transition-colors"
+						aria-label="Закрыть модальное окно"
 					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M6 18L18 6M6 6l12 12"
-						/>
-					</svg>
-				</button>
+						<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
 
-				{/* Контент модалки */}
-				<div className="flex-grow overflow-y-auto pr-4">{children}</div>
-				{button && <div>{button}</div>}
+				{/* Content */}
+				<div className="flex-1 overflow-y-auto p-6">
+					{children}
+				</div>
+
+				{/* Footer */}
+				{button && (
+					<div className="border-t border-secondary-200 p-6">
+						{button}
+					</div>
+				)}
 			</div>
 		</div>,
 		document.body

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-
 import './App.css'
 import { fetchArmDimeters, fetchWasmData, fetchWasmJSData } from './store/slices/thunks/wasmThanks.ts';
 import { useAppDispatch, useAppSelector } from './store/store.ts';
@@ -154,106 +153,158 @@ function App() {
 		dispatch( fetchArmDimeters());
 	},[dispatch])
 	return (
-		<>
-			<div className="container m-auto w-full" >
-				<div role="form w-full">
-					{pending && <Loader />}
-					<div className="form-group flex mb-4">
-						{/* <label htmlFor="exampleInputFile">Choose a DXF file</label> */}
-						<div className="flex items-center mx-2">
-							<label
-								className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-								<span className="text-gray-500">Перетащите файл сюда .sli файл или нажмите для выбора</span>
+		<div className="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50">
+			<div className="container mx-auto px-6 py-8">
+				{/* Header */}
+				<div className="mb-8">
+					<h1 className="text-3xl font-bold text-secondary-900 mb-2">3D Проектирование</h1>
+					<p className="text-secondary-600">Система анализа и проектирования арматурных конструкций</p>
+				</div>
+
+				{pending && <Loader />}
+				
+				{/* File Upload Section */}
+				<div className="card mb-8 p-6">
+					<h2 className="text-xl font-semibold text-secondary-900 mb-6">Загрузка файлов</h2>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+						{/* SLI File Upload */}
+						<div className="space-y-2">
+							<label className="block text-sm font-medium text-secondary-700">SLI файл</label>
+							<div className="relative">
 								<input
-									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
 									type="file"
 									accept=".sli"
-									id="file-input"
-									name="file"
-									onChange={(e) => {
-										onSliInputChange(e);
-									}} />
-							</label>
+									className="hidden"
+									id="sli-input"
+									onChange={onSliInputChange}
+								/>
+								<label
+									htmlFor="sli-input"
+									className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group"
+								>
+									<div className="flex flex-col items-center">
+										<svg className="w-8 h-8 text-secondary-400 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+										</svg>
+										<span className="mt-2 text-sm text-secondary-600 group-hover:text-primary-600 transition-colors">
+											{sliInput ? 'Файл загружен' : 'Выберите .sli файл'}
+										</span>
+									</div>
+								</label>
+							</div>
 						</div>
-						<div className="flex items-center mx-2">
-							<label
-								className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-								<span className="text-gray-500">Перетащите файл сюда .txt файл или нажмите для выбора</span>
+
+						{/* TXT File Upload */}
+						<div className="space-y-2">
+							<label className="block text-sm font-medium text-secondary-700">TXT файл</label>
+							<div className="relative">
 								<input
-									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
 									type="file"
 									accept=".txt"
-									id="file-input"
-									name="txt-file"
-									onChange={(e) => {
-										onLiraInputChange(e);
-									}} />
-							</label>
+									className="hidden"
+									id="txt-input"
+									onChange={onLiraInputChange}
+								/>
+								<label
+									htmlFor="txt-input"
+									className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group"
+								>
+									<div className="flex flex-col items-center">
+										<svg className="w-8 h-8 text-secondary-400 group-hover:text-primary-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+										</svg>
+										<span className="mt-2 text-sm text-secondary-600 group-hover:text-primary-600 transition-colors">
+											{textInput ? 'Файл загружен' : 'Выберите .txt файл'}
+										</span>
+									</div>
+								</label>
+							</div>
 						</div>
-						<div className="flex items-center mx-2">
-							<label
-								className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-								<span className="text-gray-500">Перетащите файл сюда .xlsx и .xls файл или нажмите для выбора</span>
+
+						{/* XLSX File Upload */}
+						<div className="space-y-2">
+							<label className="block text-sm font-medium text-secondary-700">XLSX файл</label>
+							<div className="relative">
 								<input
-									className={"py-1 px-2 text-xl bg-blue-500 text-white rounded"}
 									type="file"
 									accept=".xlsx,.xls"
-									id="file-input"
-									name="file"
-									onChange={(e) => {
-										onXlsxInputChange(e)
-									}} />
-							</label>
-						</div>
-						<div className="progress progress-striped" style={{ width: '300px' }}>
-							<div id="file-progress-bar" className="progress-bar progress-bar-success" role="progressbar"
-								style={{ width: '0' }}>
+									className="hidden"
+									id="xlsx-input"
+									onChange={onXlsxInputChange}
+								/>
+								<label
+									htmlFor="xlsx-input"
+									className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 hover:bg-secondary-100 transition-colors group"
+								>
+									<div className="flex flex-col items-center">
+										<svg className="w-8 h-8 text-secondary-400 group-hover:text-success-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+										</svg>
+										<span className="mt-2 text-sm text-secondary-600 group-hover:text-success-600 transition-colors">
+											{xlsxInput ? 'Файл загружен' : 'Выберите .xlsx файл'}
+										</span>
+									</div>
+								</label>
 							</div>
 						</div>
 					</div>
+				</div>
+
+				{/* Action Buttons */}
+				<div className="flex flex-wrap gap-4 mb-8">
 					<button
 						onClick={() => setIsOpen(true)}
-						className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+						className="btn-primary"
 					>
+						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+						</svg>
 						Выбрать унификацию
 					</button>
+					
 					<button
-						// disabled={choosedPlanesFromList.length===0}
 						onClick={handleSaveDxf}
-						className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ml-2"
+						className="btn-success"
+						// disabled={choosedPlanesFromList.length === 0}
 					>
+						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+						</svg>
 						Сохранить DXF
 					</button>
+					
 					<ArmSettings/>
+				</div>
 
-					<Modal
-						isOpen={isOpen}
-						onClose={() => setIsOpen(false)}
-						width={2000}
-						button={
-							<ToastProvider>
-								<CreateNewGroupPlanesButton
+				{/* Main Content */}
+				<div className="">
+					<div className="space-y-6">
+						<ExcelView/>
+						<Three />
+						<Canvas />
+					</div>
+				</div>
+
+				{/* Modal */}
+				<Modal
+					isOpen={isOpen}
+					onClose={() => setIsOpen(false)}
+					width={2000}
+					button={
+						<ToastProvider>
+							<CreateNewGroupPlanesButton
 								openForCreateUI={openForCreateUI}
 								setOpenForCreateUI={setOpenForCreateUI}
-								/>
-							</ToastProvider>
-						}
-					>
-						 <ToastProvider>
-							<UniqeItems openForCreateUI={openForCreateUI} setOpenForCreateUI={setOpenForCreateUI} />
-    					</ToastProvider>
-					</Modal>
-
-					<Three />
-					<ExcelView/>
-					{/* <Quadrilaterals /> */}
-					<Canvas />
-					
-				</div>
-				{/*<FileUploadAndDocxGenerator/>*/}
-				{/*<DiagramGenerator/>*/}
+							/>
+						</ToastProvider>
+					}
+				>
+					<ToastProvider>
+						<UniqeItems openForCreateUI={openForCreateUI} setOpenForCreateUI={setOpenForCreateUI} />
+					</ToastProvider>
+				</Modal>
 			</div>
-		</>
+		</div>
 	)
 }
 
