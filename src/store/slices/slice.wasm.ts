@@ -90,7 +90,7 @@ export const wasmSlice = createSlice({
 			state.choosedPlainsFromList.push(action.payload);
 		},
 		deleteChoosedItem:(state, action:PayloadAction<PlainItemtype>)=>{
-			state.choosedPlainsFromList=state.choosedPlainsFromList.filter(el=>el!==action.payload);
+			state.choosedPlainsFromList=state.choosedPlainsFromList.filter(el=>el.plainNumber!==action.payload.plainNumber);
 		},
 		setFitParamsItem:(state, action:PayloadAction<{area:number, price:number}>)=>{
 			const item = state.specifiedFitParams.find(el=>el.area === action.payload.area);

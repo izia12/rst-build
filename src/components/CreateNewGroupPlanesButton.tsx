@@ -23,7 +23,6 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 	const checkAllStepsAreEqual = ()=>{
 		const choosedPlains = choosedItems.map(el=>el.plainNumber)
 		const res =  Object.entries(items)
-					.filter(([, val])=>val.isSelected)
 					.filter(([el]) => {
 						const choosedAllPlains = choosedPlains
 						return choosedAllPlains.includes(+el);
@@ -41,7 +40,7 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 	
 	const preparedItems = getPreparedUniqueFloor(filteredItems)
 	const preparedUniqes = getPreparedDataFromUniqueGroups(choosedUniques)
-	const fiteredArms = floors1.filter(el=>!el.isSpecified);
+	const fiteredArms = floors1.filter(el=>el.isDefault);
 	const summaryData = {
 		availableDiameters: new Uint32Array(fiteredArms.map(el=>el.diameter)),
 		jsonArray:JSON.stringify([...preparedItems, ...preparedUniqes])
@@ -99,6 +98,7 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 					}
 					setOpenForCreateUI(!openForCreateUI)
 				}}
+				buttonName='Создать унификацию'
 				classes=" p-2 bg-blue-500 rounded-md shadow-lg hover:shadow-none transition-shadow"
 			/>
 		</div>

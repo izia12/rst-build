@@ -15,7 +15,6 @@ type propsType={
 }
 export default function ChoosedPlaneItem({id, planes, color, name, asValues, steps}:propsType) {
 	const [isOpen, setIsOpen] = useState(false);
-	console.log(steps);
 	
   return (
 	<>
@@ -23,7 +22,7 @@ export default function ChoosedPlaneItem({id, planes, color, name, asValues, ste
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{name || "Неизвестный"}</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{planes.join(", ")}</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">
-			<div className='w-8 h-4' style={{background:color}}>
+			<div className='w-8 h-4' style={{background:color}} title={`${color}`}>
 			</div>
 			</td>
 			<td className="px-4 py-2 text-gray-700 border-b border-gray-200">{asValues.as1}</td>

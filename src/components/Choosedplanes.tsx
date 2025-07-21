@@ -38,7 +38,7 @@ export default function Choosedplanes(): ReactElement {
 
 	return (
 		<>
-			<table className=" divide-y divide-gray-200 bg-white max-h-min" style={{ maxWidth: "550px" }}>
+			<table className=" divide-y divide-gray-200 bg-white max-h-min overflow-scroll" style={{ maxWidth: "550px" }}>
 				<thead className="bg-gray-50">
 					<tr>
 						<th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Название унификации</th>

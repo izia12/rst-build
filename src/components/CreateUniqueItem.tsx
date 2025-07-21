@@ -15,7 +15,7 @@ export default function CreateUniqueItem({ onClose, isOpen }: propsType): ReactE
 	const dispatch = useAppDispatch();
 	const [name, setName] = useState("");
 	const [color, setColor] = useState("");
-
+	
 	return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose} width={600}>

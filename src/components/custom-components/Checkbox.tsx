@@ -20,7 +20,8 @@ export const Checkbox = ({ label, ...props }: CheckboxProps) => {
 	const {showToast} = useToast()
 	const dispatch = useAppDispatch();
 	const [checked, setChecked] = useState(false);
-	const isDisabled = props.currentStep.mainStep===null || props.currentStep.secondaryStep===null
+	const isDisabled = (props.currentStep.mainStep===null || props.currentStep.secondaryStep===null) 
+	|| (props.maxValues.as1 ===0 && props.maxValues.as2 ===0 && props.maxValues.as3 ===0 && props.maxValues.as4 ===0)
 
 	return (
 		<label className="flex items-center space-x-3 cursor-pointer group">

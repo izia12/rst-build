@@ -117,8 +117,6 @@ function App() {
 			console.error('Ошибка сохранения:', error);
 		}
 	}
-	console.log(pending);
-	
 	const saveFile = (data: Uint8Array, filename: string) => {
 		const blob = new Blob([data], { type: 'application/dxf' });
 		const url = URL.createObjectURL(blob);
@@ -288,7 +286,7 @@ function App() {
 				<Modal
 					isOpen={isOpen}
 					onClose={() => setIsOpen(false)}
-					width={2000}
+					width={2200}
 					button={
 						<ToastProvider>
 							<CreateNewGroupPlanesButton

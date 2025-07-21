@@ -15,8 +15,8 @@ export async function getPureWASMJsData(data:WasmDataJsType):Promise<PureWASMJsD
 				"maxAs4":item.maxAs4,
 				"maxAsw1":item.maxAsw1,
 				"maxAsw2":item.maxAsw2,
-				"mainStep": null,
-				"secondaryStep": null,
+				"mainStep": 200,
+				"secondaryStep": 200,
 				"isSelected":false
 			}
 		}
