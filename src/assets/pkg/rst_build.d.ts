@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export function create_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 export function get_horizontal_elements_object_js(): any;
 export function log_data(x: number, y: number): void;
 export function str_log_data(str: string): void;
@@ -18,12 +19,12 @@ export function get_custom_sortament_report(available_diameters: Uint32Array, fl
 export function get_table_data_for_frontend(available_diameters: Uint32Array, floors_data_json: string): string;
 export function get_optimized_canvas_data_wasm(max_shapes_per_level: number, max_total_shapes: number, start_z?: number | null, end_z?: number | null): string;
 export function get_canvas_statistics_wasm(): string;
-export function create_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly get_horizontal_elements_object_js: () => any;
   readonly log_data: (a: number, b: number) => void;
   readonly str_log_data: (a: number, b: number) => void;
@@ -42,14 +43,13 @@ export interface InitOutput {
   readonly get_table_data_for_frontend: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly get_optimized_canvas_data_wasm: (a: number, b: number, c: number, d: number) => [number, number];
   readonly get_canvas_statistics_wasm: () => [number, number];
-  readonly create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_4: WebAssembly.Table;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __externref_table_dealloc: (a: number) => void;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

@@ -31,3 +31,4 @@ export const stepVariantsToState:SpecifiedFitParamsType[] = stepsVariant.map(el=
 		isDefault:el.isDefault
 	}
 })
+

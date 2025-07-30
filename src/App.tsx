@@ -24,35 +24,6 @@ function App() {
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const pending = useAppSelector(state => state.wasm.loading)
 	const choosedPlanesFromList = useAppSelector(state=>state.wasm.choosedPlainsFromList);
-	
-	// useEffect(()=>{
-	// 	document.addEventListener("contextmenu", (e)=>{
-	// 		e.preventDefault();
-	// 	})
-	// 	document.addEventListener('keydown', function(e) {
-	// 	    if (e.key === 'F12' || 
-	// 	        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-	// 	        (e.ctrlKey && e.key === 'u')) {
-	// 	        e.preventDefault();
-	// 	    }
-	// 	});
-	// 	// const devtools = {
-	// 	//   open: false,
-	// 	//   orientation: null
-	// 	// };
-	// 	// 		setInterval(() => {
-	// 	//   if (window.outerHeight - window.innerHeight < 500 || 
-	// 	//       window.outerWidth - window.innerWidth < 500) {
-	// 	//     if (!devtools.open) {
-	// 	//       devtools.open = true;
-	// 	//       // Действия при обнаружении DevTools
-	// 	//       document.body.innerHTML = 'Доступ запрещен';
-	// 	//     }
-	// 	//   } else {
-	// 	//     devtools.open = false;
-	// 	//   }
-	// 	// }, 100);
-	// })
 	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>) {
 
 		const file = event.target?.files?.[0]
