@@ -248,139 +248,138 @@ impl CustomSortament {
 		
 		row += 1;
 	}
-} // ... existing code ...
-else {
-	// Случай Б: Нашлись комбинации
-	let limit = combinations.len();
-	
-	// ИСПРАВЛЕНИЕ: Обрабатываем каждую комбинацию отдельно
-	for i in 0..limit {
-		let (d1, d2, total_area) = combinations[i];
-		let deviation = ((total_area / target_area) - 1.0) * 100.0;
-		
-		// Записываем строку с информацией о комбинации
-		if i == 0 {
-			// Первая строка с полной информацией
-			worksheet.write_string_with_format(row, 0, &floor.level, &area_format)?;
-			if let Some(ref title) = floor.title {
-				worksheet.write_string_with_format(row, 1, title, &area_format)?;
-			} else {
-				worksheet.write_string_with_format(row, 1, "", &area_format)?;
-			}
-			worksheet.write_string(row, 2, area_name)?;
-			worksheet.write_with_format(row, 3, target_area, &area_format)?;
-			worksheet.write_with_format(row, 4, floor.steps[0], &step_format)?;
-			worksheet.write_with_format(row, 5, floor.steps[1], &step_format)?;
-		} else {
-			// Для последующих комбинаций не заполняем первые колонки
-			for col in 0..6 {
-				worksheet.write_string(row, col, "")?;
-			}
-		}
-		
-		if d2 > 0 {
-			worksheet.write_string(row, 6, &format!("Ø{} мм", d1))?;
-			worksheet.write_string(row, 7, &format!("Ø{} мм", d2))?;
-		} else {
-			worksheet.write_string(row, 6, &format!("Ø{} мм", d1))?;
-			worksheet.write_string(row, 7, "Нет")?;
-		}
-		
-		worksheet.write_with_format(row, 8, total_area, &area_format)?;
-		worksheet.write_with_format(row, 9, deviation, &deviation_format)?;
-		
-		// ИСПРАВЛЕНИЕ: Генерируем итоговую шкалу для КАЖДОЙ комбинации
-		let main_count = 1.0 / main_step;
-		let secondary_count = 1.0 / secondary_step;
-		let area1 = self.get_area(d1).unwrap_or(0.0);
-		
-		let mut result_scales = Vec::new();
-		
-		if d2 > 0 {
-			// Комбинация с дополнительной арматурой
-			let mut diameters = self.get_available_diameters();
-			if target_area < 5.0 {
-				diameters.retain(|&d| d <= 20);
-			}
+		} // ... existing code ...
+		else {
+			// Случай Б: Нашлись комбинации
+			let limit = combinations.len();
 			
-			// 1. Сначала вариант без дополнительной арматуры
-			let main_only_area = main_count * area1;
-			result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм]", main_only_area, d1, floor.steps[0]));
-			
-			// 2. Затем все варианты с дополнительной арматурой до d2 включительно
-			for &curr_d in &diameters {
-				if curr_d > d2 || curr_d == 0 {
-					continue;
+			// ИСПРАВЛЕНИЕ: Обрабатываем каждую комбинацию отдельно
+			for i in 0..limit {
+				let (d1, d2, total_area) = combinations[i];
+				let deviation = ((total_area / target_area) - 1.0) * 100.0;
+				
+				// Записываем строку с информацией о комбинации
+				if i == 0 {
+					// Первая строка с полной информацией
+					worksheet.write_string_with_format(row, 0, &floor.level, &area_format)?;
+					if let Some(ref title) = floor.title {
+						worksheet.write_string_with_format(row, 1, title, &area_format)?;
+					} else {
+						worksheet.write_string_with_format(row, 1, "", &area_format)?;
+					}
+					worksheet.write_string(row, 2, area_name)?;
+					worksheet.write_with_format(row, 3, target_area, &area_format)?;
+					worksheet.write_with_format(row, 4, floor.steps[0], &step_format)?;
+					worksheet.write_with_format(row, 5, floor.steps[1], &step_format)?;
+				} else {
+					// Для последующих комбинаций не заполняем первые колонки
+					for col in 0..6 {
+						worksheet.write_string(row, col, "")?;
+					}
 				}
 				
-				let area_curr = self.get_area(curr_d).unwrap_or(0.0);
-				let combined_area = main_count * area1 + secondary_count * area_curr;
-				result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм + Ø{} мм s={:.0} мм]", 
-					combined_area, d1, floor.steps[0], curr_d, floor.steps[1]));
-			}
-		} else {
-			// Комбинация только с основной арматурой
-			let main_only_area = main_count * area1;
-			result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм]", main_only_area, d1, floor.steps[0]));
-		}
-		
-		// ИСПРАВЛЕНИЕ: Записываем итоговую шкалу в ту же строку (горизонтальная ориентация)
-		let combined_result = result_scales.join("");
-		worksheet.write_string_with_format(row, 15, &combined_result, &area_format)?;
-		
-		row += 1;
-		
-		// Заполняем шкалу диаметров (желтые ячейки)
-		if d2 > 0 {
-			let main_count = 1.0 / main_step;
-			let secondary_count = 1.0 / secondary_step;
-			let area1 = self.get_area(d1).unwrap_or(0.0);
-			let mut diameters = self.get_available_diameters();
-			
-			if target_area < 5.0 {
-				diameters.retain(|&d| d <= 20);
-			}
-			
-			// Сначала добавляем случай без дополнительной арматуры
-			let main_only_area = main_count * area1;
-			worksheet.write_string_with_format(row, 10, &format!("Ø{} мм", d1), &yellow_fill)?;
-			worksheet.write_with_format(row, 11, floor.steps[0], &step_format)?;
-			worksheet.write_string_with_format(row, 12, "Нет", &yellow_fill)?;
-			worksheet.write_with_format(row, 13, floor.steps[1], &step_format)?;
-			worksheet.write_with_format(row, 14, main_only_area, &area_format)?;
-			row += 1;
-			
-			// Теперь перебираем все диаметры от минимального до d2
-			for &curr_d in &diameters {
-				if curr_d > d2 || curr_d == 0 {
-					continue;
+				if d2 > 0 {
+					worksheet.write_string(row, 6, &format!("Ø{} мм", d1))?;
+					worksheet.write_string(row, 7, &format!("Ø{} мм", d2))?;
+				} else {
+					worksheet.write_string(row, 6, &format!("Ø{} мм", d1))?;
+					worksheet.write_string(row, 7, "Нет")?;
 				}
 				
-				let area_curr = self.get_area(curr_d).unwrap_or(0.0);
-				let combined_area = main_count * area1 + secondary_count * area_curr;
+				worksheet.write_with_format(row, 8, total_area, &area_format)?;
+				worksheet.write_with_format(row, 9, deviation, &deviation_format)?;
 				
-				worksheet.write_string_with_format(row, 10, &format!("Ø{} мм", d1), &yellow_fill)?;
-				worksheet.write_with_format(row, 11, floor.steps[0], &step_format)?;
-				worksheet.write_string_with_format(row, 12, &format!("Ø{} мм", curr_d), &yellow_fill)?;
-				worksheet.write_with_format(row, 13, floor.steps[1], &step_format)?;
-				worksheet.write_with_format(row, 14, combined_area, &area_format)?;
+				// ИСПРАВЛЕНИЕ: Генерируем итоговую шкалу для КАЖДОЙ комбинации
+				let main_count = 1.0 / main_step;
+				let secondary_count = 1.0 / secondary_step;
+				let area1 = self.get_area(d1).unwrap_or(0.0);
+				
+				let mut result_scales = Vec::new();
+				
+				if d2 > 0 {
+					// Комбинация с дополнительной арматурой
+					let mut diameters = self.get_available_diameters();
+					if target_area < 5.0 {
+						diameters.retain(|&d| d <= 20);
+					}
+					
+					// 1. Сначала вариант без дополнительной арматуры
+					let main_only_area = main_count * area1;
+					result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм]", main_only_area, d1, floor.steps[0]));
+					
+					// 2. Затем все варианты с дополнительной арматурой до d2 включительно
+					for &curr_d in &diameters {
+						if curr_d > d2 || curr_d == 0 {
+							continue;
+						}
+						let area_curr = self.get_area(curr_d).unwrap_or(0.0);
+						let combined_area = main_count * area1 + secondary_count * area_curr;
+						result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм + Ø{} мм s={:.0} мм]", 
+							combined_area, d1, floor.steps[0], curr_d, floor.steps[1]));
+					}
+				} else {
+					// Комбинация только с основной арматурой
+					let main_only_area = main_count * area1;
+					result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм]", main_only_area, d1, floor.steps[0]));
+				}
+				
+				// ИСПРАВЛЕНИЕ: Записываем итоговую шкалу в ту же строку (горизонтальная ориентация)
+				let combined_result = result_scales.join("");
+				worksheet.write_string_with_format(row, 15, &combined_result, &area_format)?;
+				
 				row += 1;
+				
+				// Заполняем шкалу диаметров (желтые ячейки)
+				if d2 > 0 {
+					let main_count = 1.0 / main_step;
+					let secondary_count = 1.0 / secondary_step;
+					let area1 = self.get_area(d1).unwrap_or(0.0);
+					let mut diameters = self.get_available_diameters();
+					
+					if target_area < 5.0 {
+						diameters.retain(|&d| d <= 20);
+					}
+					
+					// Сначала добавляем случай без дополнительной арматуры
+					let main_only_area = main_count * area1;
+					worksheet.write_string_with_format(row, 10, &format!("Ø{} мм", d1), &yellow_fill)?;
+					worksheet.write_with_format(row, 11, floor.steps[0], &step_format)?;
+					worksheet.write_string_with_format(row, 12, "Нет", &yellow_fill)?;
+					worksheet.write_with_format(row, 13, floor.steps[1], &step_format)?;
+					worksheet.write_with_format(row, 14, main_only_area, &area_format)?;
+					row += 1;
+					
+					// Теперь перебираем все диаметры от минимального до d2
+					for &curr_d in &diameters {
+						if curr_d > d2 || curr_d == 0 {
+							continue;
+						}
+						
+						let area_curr = self.get_area(curr_d).unwrap_or(0.0);
+						let combined_area = main_count * area1 + secondary_count * area_curr;
+						
+						worksheet.write_string_with_format(row, 10, &format!("Ø{} мм", d1), &yellow_fill)?;
+						worksheet.write_with_format(row, 11, floor.steps[0], &step_format)?;
+						worksheet.write_string_with_format(row, 12, &format!("Ø{} мм", curr_d), &yellow_fill)?;
+						worksheet.write_with_format(row, 13, floor.steps[1], &step_format)?;
+						worksheet.write_with_format(row, 14, combined_area, &area_format)?;
+						row += 1;
+					}
+				} else {
+					// Случай без дополнительной арматуры
+					let main_count = 1.0 / main_step;
+					let area1 = self.get_area(d1).unwrap_or(0.0);
+					let main_only_area = main_count * area1;
+					
+					worksheet.write_string_with_format(row, 10, &format!("Ø{} мм", d1), &yellow_fill)?;
+					worksheet.write_with_format(row, 11, floor.steps[0], &step_format)?;
+					worksheet.write_string_with_format(row, 12, "Нет", &yellow_fill)?;
+					worksheet.write_with_format(row, 13, floor.steps[1], &step_format)?;
+					worksheet.write_with_format(row, 14, main_only_area, &area_format)?;
+					row += 1;
+				}
 			}
-		} else {
-			// Случай без дополнительной арматуры
-			let main_count = 1.0 / main_step;
-			let area1 = self.get_area(d1).unwrap_or(0.0);
-			let main_only_area = main_count * area1;
-			
-			worksheet.write_string_with_format(row, 10, &format!("Ø{} мм", d1), &yellow_fill)?;
-			worksheet.write_with_format(row, 11, floor.steps[0], &step_format)?;
-			worksheet.write_string_with_format(row, 12, "Нет", &yellow_fill)?;
-			worksheet.write_with_format(row, 13, floor.steps[1], &step_format)?;
-			worksheet.write_with_format(row, 14, main_only_area, &area_format)?;
-			row += 1;
 		}
-	}
-}
 
 					row += 1;
 				}
