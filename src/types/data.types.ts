@@ -103,3 +103,20 @@ export type CombinationItem={
 	total_area: number;
 	deviation: number;
 }
+export type CustomSettingsForCombinationItem={
+	isMinDeviation:boolean;
+	isDefaultChecked:boolean;
+}
+export type PreparedCombinationItem = CombinationItem & CustomSettingsForCombinationItem
+export type PreparedArmatureCombination = {
+	function_name: "as1" | "as2" | "as3" |"as4",
+	as_target_value:number;
+	combinations:PreparedCombinationItem[]
+}
+export type PreparedExcelView = {
+	level: string;
+	title?: string;
+	main_step: number;
+	additional_step: number;
+	values: PreparedArmatureCombination[];
+}

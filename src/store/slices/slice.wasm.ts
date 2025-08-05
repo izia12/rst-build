@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ArmDiameters, ExcelView, MaxAsFn, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WASMDataType } from '../../types/data.types'
+import { ArmDiameters, MaxAsFn, PreparedExcelView, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WASMDataType } from '../../types/data.types'
 import {  fetchExcelViewData, fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
 import { stepVariantsToState } from '../../constants/stepConstants';
 
@@ -40,7 +40,7 @@ export interface WasmDataState {
 	error: null | Error
 	specifiedFitParams:SpecifiedFitParamsType[],
 	maxAsFns:MaxAsFn[],
-	excelViewData:ExcelView[]
+	excelViewData:PreparedExcelView[]
 }
 
 const initialState: WasmDataState = {
