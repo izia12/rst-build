@@ -1,45 +1,34 @@
-import { ReactElement, useState, useEffect, useCallback } from "react";
-import { ExcelView } from "../../types/data.types";
+import { ReactElement, useState, useEffect } from "react";
+import { PreparedExcelView } from "../../types/data.types";
 
 interface TableRowProps {
-	floorData: ExcelView;
+	floorData: PreparedExcelView;
 	floorIndex: number;
 }
 
 export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement => {
+	console.log(floorData,"GGG");
+	
 	// Состояние для отслеживания выбранных checkbox'ов
 	const [selectedCombinations, setSelectedCombinations] = useState<Set<string>>(new Set());
 	
 	// Подсчитываем общее количество строк для этого этажа
 	const totalRows = floorData.values.reduce((sum, armature) => sum + armature.combinations.length, 0);
-	
-	// Функция для определения минимального отклонения для каждой функции
-	const getMinDeviationForFunction = useCallback((functionName: string) => {
-		const armature = floorData.values.find(a => a.function_name === functionName);
-		if (!armature || armature.combinations.length === 0) return null;
-		
-		return Math.min(...armature.combinations.map(c => Math.abs(c.deviation)));
-	},[floorData.values]);
-
-	// Функция для проверки, должен ли checkbox быть отмечен по умолчанию
-	const shouldBeCheckedByDefault = useCallback((functionName: string, deviation: number) => {
-		const minDeviation = getMinDeviationForFunction(functionName);
-		return minDeviation !== null && Math.abs(deviation) === minDeviation;
-	},[getMinDeviationForFunction]);
 
 	// Инициализация состояния checkbox'ов при загрузке компонента
+	// Используем готовое поле is_default_checked из WASM
 	useEffect(() => {
 		const defaultSelected = new Set<string>();
 		floorData.values.forEach((armature) => {
 			armature.combinations.forEach((combination, index) => {
-				if (shouldBeCheckedByDefault(armature.function_name, combination.deviation)) {
+				if (combination.is_default_checked) {
 					const key = `${floorData.level}-${armature.function_name}-${index}`;
 					defaultSelected.add(key);
 				}
 			});
 		});
 		setSelectedCombinations(defaultSelected);
-	}, [ floorData.level, floorData.values, shouldBeCheckedByDefault]);
+	}, [floorData.level, floorData.values]);
 
 	// Обработчик клика по checkbox'у
 	const handleCheckboxChange = (key: string) => {
@@ -63,7 +52,7 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 					const isFirstRowOfFunction = combinationIndex === 0;
 					const key = `${floorData.level}-${armature.function_name}-${combinationIndex}`;
 					const isChecked = selectedCombinations.has(key);
-					const isMinDeviation = shouldBeCheckedByDefault(armature.function_name, combination.deviation);
+					const isMinDeviation = combination.is_min_deviation;
 					currentRowIndex++;
 
 					return (

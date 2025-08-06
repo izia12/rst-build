@@ -104,8 +104,8 @@ export type CombinationItem={
 	deviation: number;
 }
 export type CustomSettingsForCombinationItem={
-	isMinDeviation:boolean;
-	isDefaultChecked:boolean;
+	is_min_deviation:boolean;
+	is_default_checked:boolean;
 }
 export type PreparedCombinationItem = CombinationItem & CustomSettingsForCombinationItem
 export type PreparedArmatureCombination = {

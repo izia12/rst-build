@@ -37,6 +37,8 @@ pub struct CombinationItem {
 	pub additional_diameter: u32, // 0 если нет дополнительной арматуры
 	pub total_area: f32,
 	pub deviation: f32,
+	pub is_min_deviation: bool,
+	pub is_default_checked: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -549,18 +551,36 @@ pub fn generate_excel_data_for_js(
 							additional_diameter: 0, // Нет дополнительной арматуры
 							total_area,
 							deviation,
+							is_min_deviation: true, // Единственная комбинация, значит минимальная
+							is_default_checked: true, // Если минимальная, то по умолчанию выбрана
 						});
-					}
+						}
 				} else {
 					// Случай Б: Нашлись комбинации
+					// Сначала создаем все комбинации с отклонениями
+					let mut temp_combinations: Vec<(u32, u32, f32, f32)> = Vec::new();
 					for &(d1, d2, total_area) in combinations.iter() {
 						let deviation = ((total_area / target_area) - 1.0) * 100.0;
+						temp_combinations.push((d1, d2, total_area, deviation));
+					}
+					
+					// Находим минимальное отклонение по абсолютной величине
+					let min_abs_deviation = temp_combinations.iter()
+						.map(|(_, _, _, dev)| dev.abs())
+						.fold(f32::INFINITY, f32::min);
+					
+					// Создаем CombinationItem с правильными флагами
+					for (d1, d2, total_area, deviation) in temp_combinations {
+						let is_min_deviation = (deviation.abs() - min_abs_deviation).abs() < f32::EPSILON;
+						let is_default_checked = is_min_deviation;
 						
 						combination_items.push(CombinationItem {
 							main_diameter: d1,
 							additional_diameter: d2, // 0 если нет дополнительной арматуры
 							total_area,
 							deviation,
+							is_min_deviation,
+							is_default_checked,
 						});
 					}
 				}
