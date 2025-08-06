@@ -1,5 +1,7 @@
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement } from "react";
+import { useDispatch } from "react-redux";
 import { PreparedExcelView } from "../../types/data.types";
+import { toggleCombinationChecked } from "../../store/slices/slice.wasm";
 
 interface TableRowProps {
 	floorData: PreparedExcelView;
@@ -7,80 +9,56 @@ interface TableRowProps {
 }
 
 export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement => {
-	console.log(floorData,"GGG");
-	
-	// Состояние для отслеживания выбранных checkbox'ов
-	const [selectedCombinations, setSelectedCombinations] = useState<Set<string>>(new Set());
-	
+	const dispatch = useDispatch();
+
 	// Подсчитываем общее количество строк для этого этажа
 	const totalRows = floorData.values.reduce((sum, armature) => sum + armature.combinations.length, 0);
 
-	// Инициализация состояния checkbox'ов при загрузке компонента
-	// Используем готовое поле is_default_checked из WASM
-	useEffect(() => {
-		const defaultSelected = new Set<string>();
-		floorData.values.forEach((armature) => {
-			armature.combinations.forEach((combination, index) => {
-				if (combination.is_default_checked) {
-					const key = `${floorData.level}-${armature.function_name}-${index}`;
-					defaultSelected.add(key);
-				}
-			});
-		});
-		setSelectedCombinations(defaultSelected);
-	}, [floorData.level, floorData.values]);
-
 	// Обработчик клика по checkbox'у
-	const handleCheckboxChange = (key: string) => {
-		setSelectedCombinations(prev => {
-			const newSet = new Set(prev);
-			if (newSet.has(key)) {
-				newSet.delete(key);
-			} else {
-				newSet.add(key);
-			}
-			return newSet;
-		});
+	const handleCheckboxChange = (armatureIndex: number, combinationIndex: number) => {
+		dispatch(toggleCombinationChecked({
+			floorIndex,
+			armatureIndex,
+			combinationIndex
+		}));
 	};
 	let currentRowIndex = 0;
 
 	return (
 		<>
-			{floorData.values.map((armature) => (
+			{floorData.values.map((armature, armatureIndex) => (
 				armature.combinations.map((combination, combinationIndex) => {
 					const isFirstRowOfFloor = currentRowIndex === 0;
 					const isFirstRowOfFunction = combinationIndex === 0;
 					const key = `${floorData.level}-${armature.function_name}-${combinationIndex}`;
-					const isChecked = selectedCombinations.has(key);
+					const isChecked = combination.is_default_checked;
 					const isMinDeviation = combination.is_min_deviation;
 					currentRowIndex++;
 
 					return (
-						<tr 
+						<tr
 							key={key}
-							className={`${
-								floorIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
-							} ${isChecked ? 'ring-2 ring-green-300 bg-green-50' : ''} hover:bg-blue-50 transition-colors`}
+							className={`${floorIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+								} ${isChecked ? 'ring-2 ring-green-300 bg-green-50' : ''} hover:bg-blue-50 transition-colors`}
 						>
 							{/* Checkbox для выбора */}
 							<td className="px-4 py-2 text-center">
-								<input 
-									type="checkbox" 
+								<input
+									type="checkbox"
 									checked={isChecked}
-									onChange={() => handleCheckboxChange(key)}
-									className={`w-4 h-4 rounded border-gray-300 cursor-pointer ${
-										isChecked 
-											? 'text-green-600 focus:ring-green-500' 
+									onChange={() => handleCheckboxChange(armatureIndex, combinationIndex)}
+									className={`w-4 h-4 rounded border-gray-300 cursor-pointer ${isChecked
+											? 'text-green-600 focus:ring-green-500'
 											: 'text-gray-400 hover:text-gray-600'
-									}`}
+										}`}
 									title={isMinDeviation ? 'Оптимальный вариант (минимальное отклонение)' : 'Кликните для выбора'}
 								/>
 							</td>
 
 							{/* Этаж - показываем только в первой строке этажа */}
 							{isFirstRowOfFloor && (
-								<td 
-									rowSpan={totalRows} 
+								<td
+									rowSpan={totalRows}
 									className="px-4 py-2 text-sm text-gray-900 border-r border-gray-200 align-top font-medium"
 								>
 									{floorData.level}
@@ -88,8 +66,8 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 							)}
 							{/* Название - показываем только в первой строке этажа */}
 							{isFirstRowOfFloor && (
-								<td 
-									rowSpan={totalRows} 
+								<td
+									rowSpan={totalRows}
 									className="px-4 py-2 text-sm text-gray-900 border-r border-gray-200 align-top"
 								>
 									{floorData.title || '-'}
@@ -98,8 +76,8 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 
 							{/* Функция - показываем только в первой строке функции */}
 							{isFirstRowOfFunction && (
-								<td 
-									rowSpan={armature.combinations.length} 
+								<td
+									rowSpan={armature.combinations.length}
 									className="px-4 py-2 text-sm text-gray-900 border-r border-gray-200 align-top font-medium"
 								>
 									{armature.function_name.toUpperCase()}
@@ -108,8 +86,8 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 
 							{/* Целевая площадь - показываем только в первой строке функции */}
 							{isFirstRowOfFunction && (
-								<td 
-									rowSpan={armature.combinations.length} 
+								<td
+									rowSpan={armature.combinations.length}
 									className="px-4 py-2 text-sm text-gray-900 border-r border-gray-200 align-top"
 								>
 									{armature.as_target_value.toFixed(2)}
@@ -132,15 +110,14 @@ export const TableRow = ({ floorData, floorIndex }: TableRowProps): ReactElement
 							</td>
 
 							{/* Отклонение */}
-							<td className={`px-4 py-2 text-sm font-medium ${
-								isChecked 
-									? 'text-green-700 bg-green-100' 
-									: Math.abs(combination.deviation) <= 5 
-										? 'text-green-600' 
-										: Math.abs(combination.deviation) <= 10 
-											? 'text-yellow-600' 
+							<td className={`px-4 py-2 text-sm font-medium ${isChecked
+									? 'text-green-700 bg-green-100'
+									: Math.abs(combination.deviation) <= 5
+										? 'text-green-600'
+										: Math.abs(combination.deviation) <= 10
+											? 'text-yellow-600'
 											: 'text-red-600'
-							}`}>
+								}`}>
 								{combination.deviation > 0 ? '+' : ''}{combination.deviation.toFixed(1)}%
 								{isMinDeviation && (
 									<span className="ml-2 text-xs bg-blue-200 text-blue-800 px-1 rounded">

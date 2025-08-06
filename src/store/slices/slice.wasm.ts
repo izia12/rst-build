@@ -118,7 +118,13 @@ export const wasmSlice = createSlice({
 		setPriceForArmItem:(state, action:PayloadAction<{area:number, price:number}>)=>{
 			const found = state.specifiedFitParams.find(el=>el.area===action.payload.area);
 			found.price = action.payload.price
-			found.isSpecified=true
+		},
+		toggleCombinationChecked: (state, action: PayloadAction<{floorIndex: number, armatureIndex: number, combinationIndex: number}>) => {
+			const { floorIndex, armatureIndex, combinationIndex } = action.payload;
+			const combination = state.excelViewData[floorIndex]?.values[armatureIndex]?.combinations[combinationIndex];
+			if (combination) {
+				combination.is_default_checked = !combination.is_default_checked;
+			}
 		},
 		setDefaultForArmItem:(state, action:PayloadAction<number>)=>{
 			const found = state.specifiedFitParams.find(el=>el.area===action.payload);
@@ -193,7 +199,8 @@ export const {
 	selectToUniqueGroup,
 	unSelectToUniqueGroup,
 	setPriceForArmItem,
-	setDefaultForArmItem
+	setDefaultForArmItem,
+	toggleCombinationChecked
 } = wasmSlice.actions
 
 export default wasmSlice.reducer
