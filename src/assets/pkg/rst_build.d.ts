@@ -1,13 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-export function get_horizontal_elements_object_js(): any;
 export function log_data(x: number, y: number): void;
 export function str_log_data(str: string): void;
 export function parse_data(sli_data: string, txt_data: string, xlsx_data: Uint8Array): void;
+export function initialize_gpu_renderer(): Promise<void>;
 export function convert_sli_xsl_to_json_string(): string;
 export function convert_data_to_js_order_byz(): string;
-export function create_docx(sli_data: string, txt_data: string, xlsx_data: Uint8Array): Uint8Array;
-export function create_png_in_memory(): Uint8Array;
+export function create_docx(sli_data: string, txt_data: string, xlsx_data: Uint8Array): Promise<Uint8Array>;
 export function process_files(sli_data: string, txt_data: string, xlsx_data: Uint8Array): string;
 export function get_changed_row_data(planes: any): Uint8Array;
 export function get_sortament_data(): any;
@@ -16,22 +15,23 @@ export function create_csv_from_all_parsed_entities(): Uint8Array;
 export function get_excell_report_for_arms(): Uint8Array;
 export function get_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 export function get_table_data_for_frontend(available_diameters: Uint32Array, floors_data_json: string): string;
+export function create_docx_for_selected_combinations(selected_floors_json: string): Promise<Uint8Array>;
 export function get_optimized_canvas_data_wasm(max_shapes_per_level: number, max_total_shapes: number, start_z?: number | null, end_z?: number | null): string;
 export function get_canvas_statistics_wasm(): string;
 export function create_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
+export function get_horizontal_elements_object_js(): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly get_horizontal_elements_object_js: () => any;
   readonly log_data: (a: number, b: number) => void;
   readonly str_log_data: (a: number, b: number) => void;
   readonly parse_data: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+  readonly initialize_gpu_renderer: () => any;
   readonly convert_sli_xsl_to_json_string: () => [number, number];
   readonly convert_data_to_js_order_byz: () => [number, number];
-  readonly create_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
-  readonly create_png_in_memory: () => [number, number];
+  readonly create_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
   readonly process_files: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
   readonly get_changed_row_data: (a: any) => [number, number];
   readonly get_sortament_data: () => any;
@@ -40,16 +40,21 @@ export interface InitOutput {
   readonly get_excell_report_for_arms: () => [number, number];
   readonly get_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly get_table_data_for_frontend: (a: number, b: number, c: number, d: number) => [number, number, number, number];
+  readonly create_docx_for_selected_combinations: (a: number, b: number) => any;
   readonly get_optimized_canvas_data_wasm: (a: number, b: number, c: number, d: number) => [number, number];
   readonly get_canvas_statistics_wasm: () => [number, number];
   readonly create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
+  readonly get_horizontal_elements_object_js: () => any;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_4: WebAssembly.Table;
+  readonly __wbindgen_export_5: WebAssembly.Table;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __externref_table_dealloc: (a: number) => void;
+  readonly closure260_externref_shim: (a: number, b: number, c: any) => void;
+  readonly closure552_externref_shim: (a: number, b: number, c: any, d: any) => void;
   readonly __wbindgen_start: () => void;
 }
 

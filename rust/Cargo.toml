@@ -3,6 +3,17 @@ name = "rst-build"
 version = "0.1.0"
 edition = "2021"
 
+# OPTIMIZATION: Настройки для оптимизации производительности WASM
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+
+# OPTIMIZATION: Настройки для разработки с быстрой компиляцией
+[profile.dev]
+opt-level = 1
+
 [dependencies]
 rust_xlsxwriter = { version = "0.89.0", features = ["wasm"] }
 serde-wasm-bindgen = "0.4"
@@ -11,7 +22,7 @@ map-macro= "0.3.0"
 image = "0.24"
 wasm-bindgen = "0.2"
 docx-rs = "0.4.17"
-web-sys = { version = "0.3.77", features = ["Blob", "Window", "Document", "console"] }
+web-sys = { version = "0.3.77", features = ["Blob", "Window", "Document", "console", "Performance"] }
 js-sys = "0.3.77"
 imageproc = "0.23"
 rusttype = "0.9"
@@ -24,10 +35,33 @@ uuid = { version = "1.14", features = ["js"] }
 # getrandom = { version = "0.3.1", features = ["js"] }
 calamine = "0.26.1"
 xml = "0.8.20"
+rayon = "1.8"
+wgpu = "26.0.0"
+wgpu-core = "26.0.0"
+wgpu-types = "26.0.0"
+pollster = "0.3"
+bytemuck = { version = "1.14", features = ["derive"] }
+futures-channel = "0.3"
+wasm-bindgen-futures = "0.4"
+futures = "0.3"
+once_cell = "1.19"
+# OPTIMIZATION: Добавляем tokio для асинхронной обработки
+tokio = { version = "1.0", features = ["rt", "macros", "time"] }
+# OPTIMIZATION: Добавляем wasm-bindgen-rayon для параллелизма
+wasm-bindgen-rayon = "1.0"
+# OPTIMIZATION: Добавляем console_error_panic_hook для лучшей отладки
+console_error_panic_hook = "0.1"
 [lib]
 crate-type = ["cdylib", "rlib"]
 [package.metadata.wasm-pack]
 wasm-opt = false
+# OPTIMIZATION: Настройки для оптимизации WASM
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ["-O3", "--enable-simd"]
+
+# OPTIMIZATION: Настройки памяти для WASM
+[package.metadata.wasm-pack.profile.release.wasm-bindgen]
+extra-args = ["--memory-init-priority=high"]
 [[bin]]
 # [[bin]]
 name = "lira_parse"

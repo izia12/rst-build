@@ -9,13 +9,13 @@ use imageproc::point::Point;
 use wasm_bindgen::prelude::*;
 use docx_rs::{Docx, Paragraph, Pic, Run};
 use serde::{Serialize, Deserialize};
-use libs::drawItem::DrawItemZ;
+use crate::libs::drawItem::DrawItemZ;
 use ordered_float::OrderedFloat;
 use libs::{ 
 	arm_combination::SORTAMENT,
 	parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, 
 	unification_data::unification_data,
-
+	gpu_renderer::init_gpu_renderer,
 };
 
 
@@ -47,6 +47,12 @@ pub fn parse_data(sli_data: &str,txt_data:&str, xlsx_data: &[u8]) {
     GLOBAL_ENTITIES.with(|cell| *cell.borrow_mut() = Some(parsed));
 }
 
+#[wasm_bindgen]
+pub async fn initialize_gpu_renderer() -> Result<(), JsValue> {
+    init_gpu_renderer().await
+        .map_err(|e| JsValue::from_str(&format!("Failed to initialize GPU: {}", e)))
+}
+
 
 #[wasm_bindgen]
 pub fn convert_sli_xsl_to_json_string() -> String {
@@ -69,116 +75,18 @@ pub fn convert_data_to_js_order_byz() -> String {
 }
 
 #[wasm_bindgen]
-pub fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
-    let mut doc = Docx::new().add_paragraph(Paragraph::new().add_run(Run::new().add_text("Hello, world!")));
-	let entities = GLOBAL_ENTITIES.with(|cell| {
+pub async fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
+    let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
             .as_ref()
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-	let hash = sort_by_z(entities);
-	let width_cm = 140;
-    let height_cm = 105;
-	for (key, item_z) in hash{
-		let item = item_z;
-		let imgs =  item.draw_all_images();
-		let run = Run::new()
-			.add_text(format!("Высота {}",&key.to_string()))
-			.bold() // Жирный шрифт
-			.size(22);
-		doc = doc.add_paragraph(Paragraph::new().add_run(run));
-		for img in imgs{
-			doc=doc
-				.page_size(width_cm * 290,  height_cm * 280)
-				.page_orient(docx_rs::PageOrientationType::Landscape)
-				.add_paragraph(
-					Paragraph::new().add_run(
-						Run::new().add_image(Pic::new(&img))
-					)
-			);
-		}
-	}
-	let mut buffer = Cursor::new(Vec::new());
-	match doc.build().pack( &mut buffer) {
-		Ok(_) => (),
-	    Err(e) => println!("Ошибка: {}", e),
-	}
-
-	process_files(sli_data, txt_data, &xlsx_data);
-	buffer.into_inner()
-}
-
-#[wasm_bindgen]
-pub fn create_png_in_memory() -> Vec<u8> {
-    // 1. Создаем белый холст 400x400 пикселей
-	let full_width =800;
-	let full_height =400;
-    let mut img = ImageBuffer::from_fn(full_width, full_height, |_, _| Rgb([255u8, 255u8, 255u8]));
-
-    // 2. Параметры сетки
-    let grid_step = 100; // 10 делений (0-10) на 400px
-    let grid_color = Rgb([200u8, 200u8, 200u8]);
-    let text_color = Rgb([0u8, 0u8, 0u8]);
-    let font_size = 15.0;
-    // 3. Загружаем шрифт (файл arial.ttf должен быть в корне проекта!)
-    let font_data = include_bytes!("Roboto_Condensed-Black.ttf");
-    let font = Font::try_from_bytes(font_data).unwrap();
-    let scale = Scale::uniform(font_size);
-    // 4. Рисуем горизонтальные линии (ось Y)
-    for y in (0..=full_height).step_by(grid_step) {
-        draw_line_segment_mut(
-            &mut img,
-            (50.0, y as f32),
-            (full_width as f32, y as f32),
-            grid_color,
-        );
-    }
-
-    // 5. Рисуем вертикальные линии (ось X)
-    for x in (0..=full_width).step_by(grid_step) {
-        draw_line_segment_mut(
-            &mut img,
-            (x as f32, 50.0),
-            (x as f32, 800.0-50.0),
-            grid_color,
-        );
-    }
-
-    // 6. Числа по горизонтальной оси (0-10)
-    for (i, x) in (0..=full_height).step_by(grid_step).enumerate() {
-        let number = i.to_string();
-        draw_text_mut(
-            &mut img,
-            text_color,
-            x as i32 - 7, // Центрирование текста
-            390,          // Позиция внизу
-            scale,
-            &font,
-            &number,
-        );
-    }
-
-    // 7. Числа по вертикальной оси (10-0 сверху вниз)
-	
-    for (i, y) in (0..=400).step_by(grid_step).enumerate() {
-        let number = (10 - i).to_string();
-        draw_text_mut(
-            &mut img,
-            text_color,
-            5,             // Позиция слева
-            y as i32 - 5,  // Центрирование
-            scale,
-            &font,
-            &number,
-        );
-    }
-
-    // 8. Сохраняем в буфер
-    let mut buffer = Vec::new();
-    img.write_to(&mut Cursor::new(&mut buffer), ImageOutputFormat::Png)
-        .unwrap();
-    buffer
+    
+    process_files(sli_data, txt_data, &xlsx_data);
+    
+    // Используем новый модуль для создания DOCX
+    libs::generate_documents::docx_generator::create_docx_document(entities, "Hello, world!").await
 }
 
 pub fn create_docx_with_image(image_data: &[u8], doc: Docx) -> Result<Docx, Box<dyn std::error::Error>> {
@@ -229,34 +137,7 @@ pub fn new_draw_polygon(data: Vec<EntityWithXlsx>) -> Vec<u8> {
     img.write_to(&mut Cursor::new(&mut buffer), ImageOutputFormat::Png).unwrap();
     buffer
 }
-// fn sort_by_z(data: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>,  Draw_Item_Z> {
-//     let mut map: HashMap<OrderedFloat<f32>, Draw_Item_Z> = HashMap::new();
-//     for item in data {
-//         let z = item.vertices[0].z ;
-//         // Получаем или создаем вектор для текущего z и добавляем вершины
-//         map.entry(OrderedFloat(z as f32)).or_insert_with(||
-// 			Draw_Item_Z{
-// 			data:item
-// 		});
-//     }
-//     map
-// }
-
-fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
-    let mut map: HashMap<OrderedFloat<f32>, DrawItemZ> = HashMap::new();
-	let mut _map1:HashMap<String, String> = HashMap::new();
-	// map1.
-    for item in data1.into_iter() {
-		let z0 = item.vertices[0].z;
-		if item.vertices.iter().all(|v| v.z == z0) {
-			let z = OrderedFloat(z0 as f32);
-			map.entry(z)
-				.or_insert_with(|| DrawItemZ { data: Vec::new() })
-				.data.push(item); // Здесь теперь item перемещается, а не заимствуется
-		}
-	}
-    map
-}
+// Функция sort_by_z перенесена в модуль libs::docx_generator
 
 fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
     let mut map: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> = HashMap::new();
@@ -436,6 +317,30 @@ pub fn get_table_data_for_frontend(
     
     serde_json::to_string(&excel_data)
         .map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
+}
+
+#[wasm_bindgen]
+pub async fn create_docx_for_selected_combinations(selected_floors_json: &str) -> Vec<u8> {
+    use serde_json;
+    
+    // Десериализация JSON с выбранными этажами и комбинациями
+    let selected_floors: Vec<f32> = serde_json::from_str(selected_floors_json)
+        .expect("Failed to parse selected floors JSON");
+    
+    // Получаем все сущности из глобального хранилища
+    let entities = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    // Используем новый модуль для создания DOCX
+    libs::generate_documents::docx_generator::create_docx_for_selected_floors(
+        entities,
+        selected_floors,
+        "Документ с выбранными комбинациями арматуры"
+    ).await
 }
 
 // ... existing code ...

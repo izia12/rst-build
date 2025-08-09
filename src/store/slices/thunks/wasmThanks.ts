@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import { ArmDiameters, PreparedExcelView, PureWASMJsData,  WASMDataType } from "../../../types/data.types"
-import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, get_table_data_for_frontend, parse_data } from "../../../assets/pkg/rst_build"
+import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, get_table_data_for_frontend, parse_data, create_docx_for_selected_combinations } from "../../../assets/pkg/rst_build"
 import { getPureWASMJsData } from "../../../helpers/getPureWASMJsData"
 export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:string, txtData:string, xlsxData:Uint8Array}>(
 	'users/fetchByIdStatus',
@@ -54,6 +54,23 @@ export const fetchExcelViewData = createAsyncThunk<PreparedExcelView[], {diamete
             const result = get_table_data_for_frontend(diameters, floorsJson);
             if (!result) throw new Error('WASM data not ready');
             return JSON.parse(result) as PreparedExcelView[];
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
+        }
+    }
+);
+
+export const generateDocumentForSelectedCombinations = createAsyncThunk<Uint8Array, string[]>(
+	'data/generateDocument',
+	async (selectedFloors, thunkAPI) => {
+        try {
+            await init();
+            // Конвертируем массив этажей в JSON строку
+            const floorsJson = JSON.stringify(selectedFloors.map(floor => parseFloat(floor)));
+            // Вызываем WASM функцию для генерации документа
+            const result = create_docx_for_selected_combinations(floorsJson);
+            if (!result) throw new Error('Failed to generate document');
+            return result;
         } catch (error) {
             return thunkAPI.rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
         }

@@ -604,7 +604,7 @@ pub fn get_indexes(
                     _ => {}
                 }
             }
-            Ok(XmlEvent::EndElement { name }) => {}
+            Ok(XmlEvent::EndElement { name: _ }) => {}
             Err(e) => {
                 eprintln!("Error: {e}");
                 break;

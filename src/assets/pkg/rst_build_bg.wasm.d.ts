@@ -1,14 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export const get_horizontal_elements_object_js: () => any;
 export const log_data: (a: number, b: number) => void;
 export const str_log_data: (a: number, b: number) => void;
 export const parse_data: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+export const initialize_gpu_renderer: () => any;
 export const convert_sli_xsl_to_json_string: () => [number, number];
 export const convert_data_to_js_order_byz: () => [number, number];
-export const create_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
-export const create_png_in_memory: () => [number, number];
+export const create_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
 export const process_files: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
 export const get_changed_row_data: (a: any) => [number, number];
 export const get_sortament_data: () => any;
@@ -17,14 +16,19 @@ export const create_csv_from_all_parsed_entities: () => [number, number];
 export const get_excell_report_for_arms: () => [number, number];
 export const get_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
 export const get_table_data_for_frontend: (a: number, b: number, c: number, d: number) => [number, number, number, number];
+export const create_docx_for_selected_combinations: (a: number, b: number) => any;
 export const get_optimized_canvas_data_wasm: (a: number, b: number, c: number, d: number) => [number, number];
 export const get_canvas_statistics_wasm: () => [number, number];
 export const create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
+export const get_horizontal_elements_object_js: () => any;
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 export const __wbindgen_exn_store: (a: number) => void;
 export const __externref_table_alloc: () => number;
 export const __wbindgen_export_4: WebAssembly.Table;
+export const __wbindgen_export_5: WebAssembly.Table;
 export const __wbindgen_free: (a: number, b: number, c: number) => void;
 export const __externref_table_dealloc: (a: number) => void;
+export const closure260_externref_shim: (a: number, b: number, c: any) => void;
+export const closure552_externref_shim: (a: number, b: number, c: any, d: any) => void;
 export const __wbindgen_start: () => void;

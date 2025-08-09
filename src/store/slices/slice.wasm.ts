@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ArmDiameters, MaxAsFn, PreparedExcelView, PureWASMJsData, SpecifiedFitParamsType, StepArmType, WASMDataType } from '../../types/data.types'
-import {  fetchExcelViewData, fetchWasmData, fetchWasmJSData } from './thunks/wasmThanks';
+import {  fetchExcelViewData, fetchWasmData, fetchWasmJSData, generateDocumentForSelectedCombinations } from './thunks/wasmThanks';
 import { stepVariantsToState } from '../../constants/stepConstants';
 
 
@@ -40,7 +40,12 @@ export interface WasmDataState {
 	error: null | Error
 	specifiedFitParams:SpecifiedFitParamsType[],
 	maxAsFns:MaxAsFn[],
-	excelViewData:PreparedExcelView[]
+	excelViewData:PreparedExcelView[],
+	documentGeneration: {
+		loading: boolean,
+		data: Uint8Array | null,
+		error: string | null
+	}
 }
 
 const initialState: WasmDataState = {
@@ -58,6 +63,11 @@ const initialState: WasmDataState = {
 	groupUniqueItems: [],
 	error: null,
 	excelViewData:[],
+	documentGeneration: {
+		loading: false,
+		data: null,
+		error: null
+	}
 }
 
 export const wasmSlice = createSlice({
@@ -168,6 +178,18 @@ export const wasmSlice = createSlice({
 		builder.addCase(fetchExcelViewData.rejected, (state, action)=>{
 			state.error = action.payload as Error;
 			state.loading=false;
+		})
+		builder.addCase(generateDocumentForSelectedCombinations.pending, (state) => {
+			state.documentGeneration.loading = true;
+			state.documentGeneration.error = null;
+		})
+		builder.addCase(generateDocumentForSelectedCombinations.fulfilled, (state, action) => {
+			state.documentGeneration.data = action.payload;
+			state.documentGeneration.loading = false;
+		})
+		builder.addCase(generateDocumentForSelectedCombinations.rejected, (state, action) => {
+			state.documentGeneration.error = action.payload as string;
+			state.documentGeneration.loading = false;
 		})
 		// builder.addCase(fetchArmDimeters.pending, (state) => {
 		// 	state.loading = true;

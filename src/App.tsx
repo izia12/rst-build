@@ -12,6 +12,7 @@ import ArmSettings from './components/Additional information for fittings/ArmSet
 import {Canvas} from './components/Canvas.tsx';
 import { ToastProvider } from './components/custom-components/Toast.tsx';
 import CreateNewGroupPlanesButton from './components/CreateNewGroupPlanesButton.tsx';
+import { DocumentGenerator } from './components/DocumentGenerator';
 import { ExcelView } from './components/Excel/ExcelView.tsx';
 
 
@@ -239,6 +240,11 @@ function App() {
 						</svg>
 						Сохранить DXF
 					</button>
+					
+					<div className="w-full sm:w-auto">
+						<DocumentGenerator />
+					</div>
+					
 					<div className="w-full sm:w-auto">
 						<ArmSettings/>
 					</div>
