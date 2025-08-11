@@ -6,7 +6,7 @@
 pub mod docx_generator;
 pub mod performance;
 pub mod image_generation;
-pub mod test_optimization;
+
 pub mod wasm_time;
 
 // Реэкспорт основных функций для удобства использования

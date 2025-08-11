@@ -28,8 +28,8 @@ impl Default for PerformanceConfig {
     fn default() -> Self {
         Self {
             enable_parallel_rendering: true,
-            enable_gpu_acceleration: true, // Включено для лучшей производительности
-            max_image_size: (6000, 4500),
+            enable_gpu_acceleration: false, // Отключено по умолчанию для стабильности
+            max_image_size: (1200, 900), // Уменьшенные размеры для быстрой генерации
             compression_quality: 85,
             enable_caching: true,
         }

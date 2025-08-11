@@ -76,6 +76,12 @@ pub fn convert_data_to_js_order_byz() -> String {
 
 #[wasm_bindgen]
 pub async fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
+    // Используем CPU-based генерацию документов
+    crate::libs::docx_generator::create_enhanced_docx(sli_data, txt_data, xlsx_data).await
+}
+
+#[wasm_bindgen]
+pub async fn create_docx_legacy(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
     let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
             .as_ref()
@@ -85,7 +91,7 @@ pub async fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Ve
     
     process_files(sli_data, txt_data, &xlsx_data);
     
-    // Используем новый модуль для создания DOCX
+    // Используем старый модуль для создания DOCX (с GPU)
     libs::generate_documents::docx_generator::create_docx_document(entities, "Hello, world!").await
 }
 

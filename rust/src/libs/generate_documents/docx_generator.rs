@@ -38,8 +38,8 @@ pub async fn create_docx_document_optimized(
     
     // Устанавливаем размеры страницы в твипах (1/20 точки)
     // A4 landscape: 297mm x 210mm = 11.69" x 8.27" = 16838 x 11906 твипов
-    let page_width = 140;  // A4 landscape width
-    let page_height = 105; // A4 landscape height
+    let page_width = 200;  // Увеличенная ширина страницы
+    let page_height = 150; // Увеличенная высота страницы
     
     // Размеры изображения должны быть равны размерам страницы с небольшими отступами
     let img_width = (page_width * 290 * 90 / 100) as u32; // 90% от размера страницы
@@ -123,8 +123,8 @@ pub async fn create_docx_document_legacy(
     
     // Устанавливаем размеры страницы в твипах (1/20 точки)
     // A4 landscape: 297mm x 210mm = 11.69" x 8.27" = 16838 x 11906 твипов
-    let page_width = 140;  // A4 landscape width
-    let page_height = 105; // A4 landscape height
+    let page_width = 200;  // Увеличенная ширина страницы
+    let page_height = 150; // Увеличенная высота страницы
     
     // Размеры изображения в твипах (максимально увеличенные)
     let img_width = 20000000;   // Очень большой размер для видимости
@@ -185,12 +185,14 @@ pub async fn create_docx_for_selected_floors(
     
     // Устанавливаем размеры страницы в твипах (1/20 точки)
     // A4 landscape: 297mm x 210mm = 11.69" x 8.27" = 16838 x 11906 твипов
-    let page_width = 16838;  // A4 landscape width
-    let page_height = 11906; // A4 landscape height
+    let page_width = 25000;  // Увеличенная ширина страницы
+    let page_height = 20000; // Увеличенная высота страницы
     
-    // Размеры изображения в твипах (большие размеры для лучшей видимости)
-    let img_width = 30000;   // Большой размер для максимальной видимости
-    let img_height = 22000;  // Большой размер для максимальной видимости
+    // Размеры изображения в EMU (English Metric Units)
+    // 1 дюйм = 914400 EMU, 1 см = 360000 EMU
+    // Увеличиваем размер для отображения всей картинки без обрезки
+    let img_width = 10800000u32;  // ~30 см (30 * 360000 EMU)
+    let img_height = 9000000u32;  // ~25 см (25 * 360000 EMU)
     
     let monitor = PerformanceMonitor::new(PerformanceConfig::default());
     
@@ -205,8 +207,7 @@ pub async fn create_docx_for_selected_floors(
             // Добавляем заголовок этажа
             let run = Run::new()
                 .add_text(format!("Высота {}", selected_floor))
-                .bold()
-                .size(22);
+                .size(40);
             doc = doc.add_paragraph(Paragraph::new().add_run(run));
             
             // Добавляем изображения в документ
@@ -237,7 +238,7 @@ pub async fn create_docx_for_selected_floors(
 }
 
 /// Группирует сущности по Z-координате (этажам)
-fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
+pub fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
     let mut map: HashMap<OrderedFloat<f32>, DrawItemZ> = HashMap::new();
 	let mut _map1:HashMap<String, String> = HashMap::new();
 	// map1.

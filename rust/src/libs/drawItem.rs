@@ -39,6 +39,55 @@ impl DrawItemZ {
 		}
 	}
 
+	// Функция диагностики координат
+	pub fn diagnose_coordinates(&self) {
+		let mut negative_count = 0;
+		let mut min_x = f64::INFINITY;
+		let mut max_x = f64::NEG_INFINITY;
+		let mut min_y = f64::INFINITY;
+		let mut max_y = f64::NEG_INFINITY;
+		let mut negative_coords = Vec::new();
+
+		for (item_idx, item) in self.data.iter().enumerate() {
+			for (vertex_idx, vertex) in item.vertices.iter().enumerate() {
+				min_x = min_x.min(vertex.x);
+				max_x = max_x.max(vertex.x);
+				min_y = min_y.min(vertex.y);
+				max_y = max_y.max(vertex.y);
+
+				if vertex.x < 0.0 || vertex.y < 0.0 {
+					negative_count += 1;
+					negative_coords.push((item_idx, vertex_idx, vertex.x, vertex.y));
+				}
+			}
+		}
+
+		console::log_1(&format!(
+			"=== ДИАГНОСТИКА КООРДИНАТ ===\n\
+			Всего объектов: {}\n\
+			Отрицательных координат: {}\n\
+			Границы: X({:.2} до {:.2}), Y({:.2} до {:.2})\n\
+			Размеры: {}x{}",
+			self.data.len(),
+			negative_count,
+			min_x, max_x, min_y, max_y,
+			max_x - min_x, max_y - min_y
+		).into());
+
+		if !negative_coords.is_empty() {
+			console::log_1(&"=== ОТРИЦАТЕЛЬНЫЕ КООРДИНАТЫ ===".into());
+			for (item_idx, vertex_idx, x, y) in negative_coords.iter().take(10) {
+				console::log_1(&format!(
+					"Объект {}, точка {}: ({:.2}, {:.2})",
+					item_idx, vertex_idx, x, y
+				).into());
+			}
+			if negative_coords.len() > 10 {
+				console::log_1(&format!("... и еще {} координат", negative_coords.len() - 10).into());
+			}
+		}
+	}
+
 	pub fn add_entity(&mut self, entity: EntityWithXlsx) {
 		self.data.push(entity);
 	}
@@ -111,14 +160,24 @@ impl DrawItemZ {
 		
 		// Если контент пустой, возвращаем размеры из конфигурации
 		if content_width <= 0.0 || content_height <= 0.0 {
-			return (min_x, min_y, max_x, max_y, config.max_image_size.0, config.max_image_size.1);
+			return (min_x, min_y, max_x, max_y, (config.max_image_size.0 as f64 * 3.0) as u32, (config.max_image_size.1 as f64 * 3.0) as u32);
 		}
 		
-		// Размеры изображения равны размерам страницы (из конфигурации)
-		let img_width = config.max_image_size.0;
-		let img_height = config.max_image_size.1;
+		// Добавляем отступы вокруг контента
+		let padding_x = content_width * 0.15;
+		let padding_y = content_height * 0.15;
 		
-		(min_x, min_y, max_x, max_y, img_width, img_height)
+		// Расширяем границы с учетом отступов
+		let padded_min_x = min_x - padding_x;
+		let padded_max_x = max_x + padding_x;
+		let padded_min_y = min_y - padding_y;
+		let padded_max_y = max_y + padding_y;
+		
+		// Фиксированные размеры изображения для качества
+		let img_width = (config.max_image_size.0 as f64 * 2.5) as u32;
+		let img_height = (config.max_image_size.1 as f64 * 2.5) as u32;
+		
+		(padded_min_x, padded_min_y, padded_max_x, padded_max_y, img_width, img_height)
 	}
 
 
@@ -169,7 +228,7 @@ impl DrawItemZ {
 				if points.len() >= 2 {
 					let text_x = ((points[1].x + points[0].x) / 2.0) as i32;
 					let text_y = if item.vertices.len() == 3 {
-						(((points[1].y + points[0].y) / 2.0) - 5.0) as i32
+						(((points[1].y + points[0].y) / 2.0) - 2.0) as i32
 					} else {
 						((points[1].y + points[0].y) / 2.0) as i32
 					};
@@ -185,6 +244,9 @@ impl DrawItemZ {
 	}
 
 	pub async fn draw_image_as1_optimized(&self, field: &str, config: &PerformanceConfig) -> Vec<u8> {
+		// Диагностика координат
+		self.diagnose_coordinates();
+		
 		let (min_x, min_y, max_x, max_y, img_width, img_height) = self.calculate_image_bounds_with_config(config);
 		
 		// Проверяем использование GPU ускорения
@@ -214,23 +276,17 @@ impl DrawItemZ {
 		
 		let mut img = ImageBuffer::from_fn(img_width, img_height, |_, _| Rgb([255u8, 255u8, 255u8]));
 		
-		// Вычисляем размеры контента
+		// Вычисляем размеры контента (используем расширенные границы с отступами)
 		let content_width = max_x - min_x;
 		let content_height = max_y - min_y;
 		
-		// Доступная область для рисования (95% от размера изображения)
-		let available_width = img_width as f64 * 0.95;
-		let available_height = img_height as f64 * 0.95;
+		// Простое масштабирование 1:1 с размером изображения + 15% увеличение
+		let coord_scale = (img_width as f64 / content_width).min(img_height as f64 / content_height) * 1.15;
 		
-		// Вычисляем масштаб для помещения контента в доступную область
-		let scale_x = if content_width > 0.0 { available_width / content_width } else { 1.0 };
-		let scale_y = if content_height > 0.0 { available_height / content_height } else { 1.0 };
-		let coord_scale = scale_x.min(scale_y); // Используем меньший масштаб для сохранения пропорций
-		
-		// Вычисляем смещения для центрирования контента
+		// Центрируем контент в изображении
 		let offset_x = (img_width as f64 - content_width * coord_scale) / 2.0 - min_x * coord_scale;
 		let offset_y = (img_height as f64 - content_height * coord_scale) / 2.0 - min_y * coord_scale;
-		let font_size = 12.0;
+		let font_size = 25.0; 
 		let text_color = Rgb([0u8, 0u8, 0u8]);
 		// Используем кэшированный шрифт
 	    let font_scale = Scale::uniform(font_size);
@@ -531,21 +587,25 @@ impl DrawItemZ {
 
 			// Собираем линии для этого изображения
 			let mut lines_for_image = Vec::new();
+			let content_width = max_x - min_x;
+			let content_height = max_y - min_y;
+			let coord_scale = (width as f64 / content_width).min(height as f64 / content_height) * 1.15;
+			let offset_x = (width as f64 - content_width * coord_scale) / 2.0 - min_x * coord_scale;
+			let offset_y = (height as f64 - content_height * coord_scale) / 2.0 - min_y * coord_scale;
+			
 			for item in &self.data {
 				if item.entity_type == *field && item.vertices.len() == 4 {
 					// Добавляем линии для прямоугольника
 					let v = &item.vertices;
-					let scale_x = width as f64 / (max_x - min_x);
-					let scale_y = height as f64 / (max_y - min_y);
 					
-					let x1 = ((v[0].x - min_x) * scale_x) as f32;
-					let y1 = ((v[0].y - min_y) * scale_y) as f32;
-					let x2 = ((v[1].x - min_x) * scale_x) as f32;
-					let y2 = ((v[1].y - min_y) * scale_y) as f32;
-					let x3 = ((v[2].x - min_x) * scale_x) as f32;
-					let y3 = ((v[2].y - min_y) * scale_y) as f32;
-					let x4 = ((v[3].x - min_x) * scale_x) as f32;
-					let y4 = ((v[3].y - min_y) * scale_y) as f32;
+					let x1 = (v[0].x * coord_scale + offset_x) as f32;
+					let y1 = (v[0].y * coord_scale + offset_y) as f32;
+					let x2 = (v[1].x * coord_scale + offset_x) as f32;
+					let y2 = (v[1].y * coord_scale + offset_y) as f32;
+					let x3 = (v[2].x * coord_scale + offset_x) as f32;
+					let y3 = (v[2].y * coord_scale + offset_y) as f32;
+					let x4 = (v[3].x * coord_scale + offset_x) as f32;
+					let y4 = (v[3].y * coord_scale + offset_y) as f32;
 					
 					lines_for_image.push((x1, y1, x2, y2));
 					lines_for_image.push((x2, y2, x3, y3));
@@ -559,11 +619,6 @@ impl DrawItemZ {
 			colors.push([0, 0, 0, 255]); // Черный цвет
 		}
 
-		// OPTIMIZATION: Добавляем детальные замеры времени для диагностики
-		web_sys::console::time_with_label("Total GPU Rendering");
-		
-		// OPTIMIZATION: Замеряем время анализа метода рендеринга
-		web_sys::console::time_with_label("Render Method Analysis");
 		
 		// Выполняем рендеринг с автоматическим выбором метода
 		if let Some(gpu_renderer) = crate::libs::gpu_renderer::get_gpu_renderer() {

@@ -5,6 +5,7 @@ pub mod createDxf;
 pub mod getTransformedObject;
 pub mod unification_data;
 pub mod arm_combination;
+pub mod docx_generator;
 
 pub mod generate_documents;
 pub mod gpu_renderer;

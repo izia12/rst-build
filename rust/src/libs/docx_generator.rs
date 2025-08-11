@@ -1,0 +1,167 @@
+use std::io::Cursor;
+use docx_rs::{Docx, Paragraph, Pic, Run, PageSize, PageOrientationType};
+use crate::libs::drawItem::DrawItemZ;
+use crate::libs::parse::EntityWithXlsx;
+use std::collections::HashMap;
+use wasm_bindgen::prelude::*;
+use web_sys::console;
+use ordered_float::OrderedFloat;
+
+/// Модуль для генерации DOCX документов с изображениями
+pub struct DocxGenerator {
+    doc: Docx,
+    width_cm: u32,
+    height_cm: u32,
+}
+
+impl DocxGenerator {
+    /// Создает новый генератор DOCX документов
+    pub fn new() -> Self {
+        let doc = Docx::new();
+        Self {
+            doc,
+            width_cm: 140, // A4 landscape width
+            height_cm: 105, // A4 landscape height
+        }
+    }
+
+    /// Устанавливает размер страницы
+    pub fn set_page_size(&mut self, width_cm: u32, height_cm: u32) {
+        self.width_cm = width_cm;
+        self.height_cm = height_cm;
+    }
+
+    /// Добавляет заголовок в документ
+    pub fn add_title(&mut self, title: &str) {
+        let run = Run::new()
+            .add_text(title)
+            .bold()
+            .size(24);
+        self.doc = self.doc.clone().add_paragraph(Paragraph::new().add_run(run));
+    }
+
+    /// Добавляет подзаголовок в документ
+    pub fn add_subtitle(&mut self, subtitle: &str) {
+        let run = Run::new()
+            .add_text(subtitle)
+            .bold()
+            .size(18);
+        self.doc = self.doc.clone().add_paragraph(Paragraph::new().add_run(run));
+    }
+
+    /// Добавляет обычный текст в документ
+    pub fn add_text(&mut self, text: &str) {
+        let run = Run::new()
+            .add_text(text)
+            .size(12);
+        self.doc = self.doc.clone().add_paragraph(Paragraph::new().add_run(run));
+    }
+
+    /// Добавляет изображение в документ
+    pub fn add_image(&mut self, image_data: &[u8]) {
+        // Устанавливаем фиксированные размеры изображения в twips (большие размеры)
+        let img_width = 12000u32; // Большая ширина
+        let img_height = 9000u32;  // Большая высота
+        
+        self.doc = self.doc.clone().add_paragraph(
+            Paragraph::new().add_run(
+                Run::new().add_image(
+                    Pic::new(image_data)
+                        .size(img_width, img_height)
+                )
+            )
+        );
+    }
+
+    /// Добавляет группу изображений с заголовком
+    pub fn add_image_group(&mut self, title: &str, images: Vec<Vec<u8>>) {
+        // Добавляем заголовок группы
+        self.add_subtitle(title);
+        
+        // Добавляем все изображения
+        for image_data in images {
+            self.add_image(&image_data);
+        }
+    }
+
+    /// Генерирует документ из данных по высотам
+    pub async fn generate_from_height_data(&mut self, height_data: HashMap<OrderedFloat<f32>, DrawItemZ>) {
+        self.add_title("Отчет по арматурным конструкциям");
+        
+        // Сортируем ключи от минимального к максимальному
+        let mut sorted_heights: Vec<_> = height_data.keys().collect();
+        sorted_heights.sort();
+        
+        for height in sorted_heights {
+            if let Some(item_z) = height_data.get(height) {
+                // Проверяем, что есть данные для отрисовки
+                if !item_z.data.is_empty() {
+                    let images = item_z.draw_all_images().await;
+                    let title = format!("Высота {} (элементов: {})", height, item_z.data.len());
+                    self.add_image_group(&title, images);
+                }
+            }
+        }
+    }
+
+    /// Финализирует документ и возвращает его в виде байтов
+    pub fn build(self) -> Result<Vec<u8>, String> {
+        let mut buffer = Cursor::new(Vec::new());
+        match self.doc.build().pack(&mut buffer) {
+            Ok(_) => Ok(buffer.into_inner()),
+            Err(e) => Err(format!("Ошибка создания документа: {:?}", e)),
+        }
+    }
+}
+
+/// Создает DOCX документ с изображениями на основе данных
+#[wasm_bindgen]
+pub async fn create_enhanced_docx(sli_data: &str, txt_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
+    use crate::{GLOBAL_ENTITIES, process_files};
+    use crate::libs::generate_documents::docx_generator::sort_by_z;
+    
+    let mut generator = DocxGenerator::new();
+    
+    // Получаем данные из глобального хранилища
+    let entities = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    // Сортируем по высоте
+    let height_data = sort_by_z(entities);
+    
+    // Генерируем документ
+    generator.generate_from_height_data(height_data).await;
+    
+    // Обрабатываем дополнительные файлы
+    process_files(sli_data, txt_data, xlsx_data);
+    
+    // Возвращаем готовый документ
+    match generator.build() {
+        Ok(doc_bytes) => doc_bytes,
+        Err(e) => {
+            web_sys::console::log_1(&format!("Ошибка генерации DOCX: {}", e).into());
+            Vec::new()
+        }
+    }
+}
+
+/// Создает простой DOCX документ с пользовательским содержимым
+#[wasm_bindgen]
+pub fn create_custom_docx(title: &str, content: &str) -> Vec<u8> {
+    let mut generator = DocxGenerator::new();
+    
+    generator.add_title(title);
+    generator.add_text(content);
+    
+    match generator.build() {
+        Ok(doc_bytes) => doc_bytes,
+        Err(e) => {
+            web_sys::console::log_1(&format!("Ошибка генерации DOCX: {}", e).into());
+            Vec::new()
+        }
+    }
+}
