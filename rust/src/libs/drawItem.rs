@@ -164,8 +164,8 @@ impl DrawItemZ {
 		}
 		
 		// Добавляем отступы вокруг контента
-		let padding_x = content_width * 0.15;
-		let padding_y = content_height * 0.15;
+		let padding_x = content_width * 0.1;
+		let padding_y = content_height * 0.1;
 		
 		// Расширяем границы с учетом отступов
 		let padded_min_x = min_x - padding_x;
