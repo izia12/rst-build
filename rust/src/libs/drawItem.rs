@@ -19,6 +19,34 @@ pub enum AsFunctions  {
 	As4
 }
 
+// Структура для хранения размеров контента и границ
+#[derive(Debug, Clone, Copy)]
+pub struct ContentDimensions {
+	pub min_x: f64,
+	pub min_y: f64,
+	pub max_x: f64,
+	pub max_y: f64,
+	pub content_width: f64,
+	pub content_height: f64,
+	pub img_width: u32,
+	pub img_height: u32,
+}
+
+impl ContentDimensions {
+	pub fn new(min_x: f64, min_y: f64, max_x: f64, max_y: f64, img_width: u32, img_height: u32) -> Self {
+		Self {
+			min_x,
+			min_y,
+			max_x,
+			max_y,
+			content_width: max_x - min_x,
+			content_height: max_y - min_y,
+			img_width,
+			img_height,
+		}
+	}
+}
+
 // Кэшированный шрифт для повторного использования
 lazy_static::lazy_static! {
     static ref CACHED_FONT: Arc<Font<'static>> = {
@@ -93,7 +121,7 @@ impl DrawItemZ {
 	}
 
 	// Функция для автоматического расчета границ изображения
-	fn calculate_image_bounds(&self) -> (f64, f64, f64, f64, u32, u32) {
+	fn calculate_image_bounds(&self) -> ContentDimensions {
 		let mut min_x = f64::INFINITY;
 		let mut max_x = f64::NEG_INFINITY;
 		let mut min_y = f64::INFINITY;
@@ -110,7 +138,7 @@ impl DrawItemZ {
 		}
 
 		// Добавляем отступы
-		let padding = 50.0;
+		let padding = 10.0;
 		
 		// Вычисляем реальные размеры контента (без масштабирования)
 		let content_width = max_x - min_x;
@@ -125,7 +153,7 @@ impl DrawItemZ {
 		let scale_y = if content_height > 0.0 { (target_height - padding * 2.0) / content_height } else { 1.0 };
 		
 		// Используем меньший масштаб, чтобы все поместилось
-		let scale = scale_x.min(scale_y);
+		let scale = scale_x.max(scale_y)*1.5;
 		
 		// Вычисляем финальные размеры изображения
 		let width = (content_width * scale + padding * 2.0) as u32;
@@ -135,10 +163,10 @@ impl DrawItemZ {
 		let width = width.max(400);
 		let height = height.max(300);
 		
-		(min_x, min_y, max_x, max_y, width, height)
+		ContentDimensions::new(min_x, min_y, max_x, max_y, width, height)
 	}
 
-	fn calculate_image_bounds_with_config(&self, config: &PerformanceConfig) -> (f64, f64, f64, f64, u32, u32) {
+	fn calculate_image_bounds_with_config(&self, config: &PerformanceConfig) -> ContentDimensions {
 		let mut min_x = f64::INFINITY;
 		let mut max_x = f64::NEG_INFINITY;
 		let mut min_y = f64::INFINITY;
@@ -160,12 +188,12 @@ impl DrawItemZ {
 		
 		// Если контент пустой, возвращаем размеры из конфигурации
 		if content_width <= 0.0 || content_height <= 0.0 {
-			return (min_x, min_y, max_x, max_y, (config.max_image_size.0 as f64 * 3.0) as u32, (config.max_image_size.1 as f64 * 3.0) as u32);
+			return ContentDimensions::new(min_x, min_y, max_x, max_y, (config.max_image_size.0 as f64 * 3.0) as u32, (config.max_image_size.1 as f64 * 3.0) as u32);
 		}
 		
 		// Добавляем отступы вокруг контента
-		let padding_x = content_width * 0.1;
-		let padding_y = content_height * 0.1;
+		let padding_x = content_width * 0.01;
+		let padding_y = content_height * 0.01;
 		
 		// Расширяем границы с учетом отступов
 		let padded_min_x = min_x - padding_x;
@@ -177,7 +205,7 @@ impl DrawItemZ {
 		let img_width = (config.max_image_size.0 as f64 * 2.5) as u32;
 		let img_height = (config.max_image_size.1 as f64 * 2.5) as u32;
 		
-		(padded_min_x, padded_min_y, padded_max_x, padded_max_y, img_width, img_height)
+		ContentDimensions::new(padded_min_x, padded_min_y, padded_max_x, padded_max_y, img_width, img_height)
 	}
 
 
@@ -247,7 +275,7 @@ impl DrawItemZ {
 		// Диагностика координат
 		self.diagnose_coordinates();
 		
-		let (min_x, min_y, max_x, max_y, img_width, img_height) = self.calculate_image_bounds_with_config(config);
+		let dimensions = self.calculate_image_bounds_with_config(config);
 		
 		// Проверяем использование GPU ускорения
 		let monitor = PerformanceMonitor::new(config.clone());
@@ -274,18 +302,23 @@ impl DrawItemZ {
 			web_sys::console::log_1(&"💻 CPU rendering mode".into());
 		}
 		
-		let mut img = ImageBuffer::from_fn(img_width, img_height, |_, _| Rgb([255u8, 255u8, 255u8]));
+		let mut img = ImageBuffer::from_fn(dimensions.img_width, dimensions.img_height, |_, _| Rgb([255u8, 255u8, 255u8]));
 		
-		// Вычисляем размеры контента (используем расширенные границы с отступами)
-		let content_width = max_x - min_x;
-		let content_height = max_y - min_y;
+		// Оптимальное масштабирование для максимального заполнения изображения
+		// Оставляем небольшие отступы (5% от размера изображения) для качества отображения
+		let margin_x = dimensions.img_width as f64 * 0.05;
+		let margin_y = dimensions.img_height as f64 * 0.05;
+		let available_width = dimensions.img_width as f64 - 2.0 * margin_x;
+		let available_height = dimensions.img_height as f64 - 2.0 * margin_y;
 		
-		// Простое масштабирование 1:1 с размером изображения + 15% увеличение
-		let coord_scale = (img_width as f64 / content_width).min(img_height as f64 / content_height) * 1.15;
+		let coord_scale = (available_width / dimensions.content_width).min(available_height / dimensions.content_height)*1.5;
 		
-		// Центрируем контент в изображении
-		let offset_x = (img_width as f64 - content_width * coord_scale) / 2.0 - min_x * coord_scale;
-		let offset_y = (img_height as f64 - content_height * coord_scale) / 2.0 - min_y * coord_scale;
+		// Центрируем контент в доступной области с учетом отступов
+		let scaled_content_width = dimensions.content_width * coord_scale;
+		let scaled_content_height = dimensions.content_height * coord_scale;
+		
+		let offset_x = margin_x + (available_width - scaled_content_width) / 2.0 - dimensions.min_x * coord_scale;
+		let offset_y = margin_y + (available_height - scaled_content_height) / 2.0 - dimensions.min_y * coord_scale;
 		let font_size = 25.0; 
 		let text_color = Rgb([0u8, 0u8, 0u8]);
 		// Используем кэшированный шрифт
@@ -487,8 +520,8 @@ impl DrawItemZ {
 			// OPTIMIZATION: Замеряем время отдельного изображения
 			web_sys::console::time_with_label(&format!("CPU Sync Image: {}", field));
 			
-			let (min_x, min_y, max_x, max_y, width, height) = self.calculate_image_bounds_with_config(config);
-			let mut img = ImageBuffer::new(width, height);
+			let dimensions = self.calculate_image_bounds_with_config(config);
+			let mut img = ImageBuffer::new(dimensions.img_width, dimensions.img_height);
 			
 			// OPTIMIZATION: Замеряем время инициализации фона
 			web_sys::console::time_with_label("CPU Sync Background Fill");
@@ -501,21 +534,21 @@ impl DrawItemZ {
 			// OPTIMIZATION: Замеряем время рисования линий
 			web_sys::console::time_with_label("CPU Sync Line Drawing");
 			// Рендерим линии для этого поля
-			let scale_x = width as f64 / (max_x - min_x);
-			let scale_y = height as f64 / (max_y - min_y);
+			let scale_x = dimensions.img_width as f64 / dimensions.content_width;
+			let scale_y = dimensions.img_height as f64 / dimensions.content_height;
 			
 			for item in &self.data {
 				if item.entity_type == *field {
 					if item.vertices.len() == 4 {
 						let v = &item.vertices;
-						let x1 = ((v[0].x - min_x) * scale_x) as f32;
-						let y1 = ((v[0].y - min_y) * scale_y) as f32;
-						let x2 = ((v[1].x - min_x) * scale_x) as f32;
-						let y2 = ((v[1].y - min_y) * scale_y) as f32;
-						let x3 = ((v[2].x - min_x) * scale_x) as f32;
-						let y3 = ((v[2].y - min_y) * scale_y) as f32;
-						let x4 = ((v[3].x - min_x) * scale_x) as f32;
-						let y4 = ((v[3].y - min_y) * scale_y) as f32;
+						let x1 = ((v[0].x - dimensions.min_x) * scale_x) as f32;
+						let y1 = ((v[0].y - dimensions.min_y) * scale_y) as f32;
+						let x2 = ((v[1].x - dimensions.min_x) * scale_x) as f32;
+						let y2 = ((v[1].y - dimensions.min_y) * scale_y) as f32;
+						let x3 = ((v[2].x - dimensions.min_x) * scale_x) as f32;
+						let y3 = ((v[2].y - dimensions.min_y) * scale_y) as f32;
+						let x4 = ((v[3].x - dimensions.min_x) * scale_x) as f32;
+						let y4 = ((v[3].y - dimensions.min_y) * scale_y) as f32;
 						
 						// Рисуем линии прямоугольника
 						imageproc::drawing::draw_line_segment_mut(&mut img, (x1, y1), (x2, y2), Rgba([255, 0, 0, 255]));
@@ -524,12 +557,12 @@ impl DrawItemZ {
 						imageproc::drawing::draw_line_segment_mut(&mut img, (x4, y4), (x1, y1), Rgba([255, 0, 0, 255]));
 					} else if item.vertices.len() == 3 {
 						let v = &item.vertices;
-						let x1 = ((v[0].x - min_x) * scale_x) as f32;
-						let y1 = ((v[0].y - min_y) * scale_y) as f32;
-						let x2 = ((v[1].x - min_x) * scale_x) as f32;
-						let y2 = ((v[1].y - min_y) * scale_y) as f32;
-						let x3 = ((v[2].x - min_x) * scale_x) as f32;
-						let y3 = ((v[2].y - min_y) * scale_y) as f32;
+						let x1 = ((v[0].x - dimensions.min_x) * scale_x) as f32;
+						let y1 = ((v[0].y - dimensions.min_y) * scale_y) as f32;
+						let x2 = ((v[1].x - dimensions.min_x) * scale_x) as f32;
+						let y2 = ((v[1].y - dimensions.min_y) * scale_y) as f32;
+						let x3 = ((v[2].x - dimensions.min_x) * scale_x) as f32;
+						let y3 = ((v[2].y - dimensions.min_y) * scale_y) as f32;
 						
 						// Рисуем линии треугольника
 						imageproc::drawing::draw_line_segment_mut(&mut img, (x1, y1), (x2, y2), Rgba([255, 0, 0, 255]));
@@ -577,8 +610,8 @@ impl DrawItemZ {
 
 		// Подготавливаем все изображения и данные для батчевого рендеринга
 		for field in &fields {
-			let (min_x, min_y, max_x, max_y, width, height) = self.calculate_image_bounds_with_config(config);
-			let mut img = ImageBuffer::new(width, height);
+			let dimensions = self.calculate_image_bounds_with_config(config);
+			let mut img = ImageBuffer::new(dimensions.img_width, dimensions.img_height);
 			
 			// Заполняем белым фоном
 			for pixel in img.pixels_mut() {
@@ -587,11 +620,9 @@ impl DrawItemZ {
 
 			// Собираем линии для этого изображения
 			let mut lines_for_image = Vec::new();
-			let content_width = max_x - min_x;
-			let content_height = max_y - min_y;
-			let coord_scale = (width as f64 / content_width).min(height as f64 / content_height) * 1.15;
-			let offset_x = (width as f64 - content_width * coord_scale) / 2.0 - min_x * coord_scale;
-			let offset_y = (height as f64 - content_height * coord_scale) / 2.0 - min_y * coord_scale;
+			let coord_scale = (dimensions.img_width as f64 / dimensions.content_width).min(dimensions.img_height as f64 / dimensions.content_height) * 1.15;
+			let offset_x = (dimensions.img_width as f64 - dimensions.content_width * coord_scale) / 2.0 - dimensions.min_x * coord_scale;
+			let offset_y = (dimensions.img_height as f64 - dimensions.content_height * coord_scale) / 2.0 - dimensions.min_y * coord_scale;
 			
 			for item in &self.data {
 				if item.entity_type == *field && item.vertices.len() == 4 {
