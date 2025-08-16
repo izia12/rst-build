@@ -59,15 +59,14 @@ impl DocxGenerator {
 
     /// Добавляет изображение в документ
     pub fn add_image(&mut self, image_data: &[u8]) {
-        // Устанавливаем фиксированные размеры изображения в twips (большие размеры)
-        let img_width = 12000u32; // Большая ширина
-        let img_height = 9000u32;  // Большая высота
+        // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
+        use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS};
         
         self.doc = self.doc.clone().add_paragraph(
             Paragraph::new().add_run(
                 Run::new().add_image(
                     Pic::new(image_data)
-                        .size(img_width, img_height)
+                        .size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS)
                 )
             )
         );

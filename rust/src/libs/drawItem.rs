@@ -12,6 +12,27 @@ use super::parse::EntityWithXlsx;
 use super::generate_documents::performance::{PerformanceConfig, PerformanceMonitor};
 use super::gpu_renderer::{init_gpu_renderer, get_gpu_renderer, is_gpu_available};
 
+// ЕДИНЫЕ КОНСТАНТЫ A4 ДЛЯ ВСЕГО ПРОЕКТА - ПРАВИЛЬНЫЕ ПРОПОРЦИИ!
+const A4_WIDTH_MM: f64 = 210.0;  // Ширина A4 в миллиметрах
+const A4_HEIGHT_MM: f64 = 297.0; // Высота A4 в миллиметрах (БОЛЬШЕ ширины!)
+const IMAGE_COVERAGE_PERCENT: f64 = 0.9; // Изображение занимает 90% страницы
+const MARGIN_MM: f64 = 5.0; // Отступы 0.5 см = 5 мм
+const DPI: f64 = 300.0; // Разрешение для печати
+const MM_TO_PIXELS: f64 = DPI / 25.4; // Конвертация мм в пиксели (25.4 мм = 1 дюйм)
+
+// ЕДИНЫЕ РАЗМЕРЫ DOCX - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4 (высота > ширины)!
+// УМЕНЬШЕНО: Размеры изображения для лучшего размещения с отступами
+pub const DOCX_IMAGE_WIDTH_TWIPS: u32 = 9500;   // Уменьшено для отступов
+pub const DOCX_IMAGE_HEIGHT_TWIPS: u32 = 13430; // Уменьшено пропорционально (соотношение 0.707)
+// ИСПРАВЛЕНО: Правильные размеры страницы A4 PORTRAIT (высота > ширины)!
+pub const DOCX_PAGE_WIDTH_TWIPS: u32 = 11906;   // A4 portrait ширина (МЕНЬШЕ)
+pub const DOCX_PAGE_HEIGHT_TWIPS: u32 = 16838;  // A4 portrait высота (БОЛЬШЕ)
+
+// ЕДИНЫЕ РАЗМЕРЫ В EMU - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
+// УМЕНЬШЕНО: Размеры в EMU для лучшего размещения с отступами
+pub const DOCX_IMAGE_WIDTH_EMU: u32 = 6804000;   // ~18.9 см (уменьшено для отступов)
+pub const DOCX_IMAGE_HEIGHT_EMU: u32 = 9627000;  // ~26.7 см (уменьшено пропорционально)
+
 pub enum AsFunctions  {
 	As1,
 	As2,
@@ -19,7 +40,7 @@ pub enum AsFunctions  {
 	As4
 }
 
-// Структура для хранения размеров контента и границ
+// Упрощенная структура для хранения размеров контента и границ
 #[derive(Debug, Clone, Copy)]
 pub struct ContentDimensions {
 	pub min_x: f64,
@@ -33,6 +54,26 @@ pub struct ContentDimensions {
 }
 
 impl ContentDimensions {
+	/// Простой конструктор с фиксированными размерами A4
+	pub fn new_a4_simple(min_x: f64, min_y: f64, max_x: f64, max_y: f64) -> Self {
+		// ПРАВИЛЬНЫЕ размеры A4 - ПОЛНЫЕ размеры без процентов!
+		// Отступы 5мм будут учтены в алгоритме масштабирования
+		let img_width = (A4_WIDTH_MM * MM_TO_PIXELS) as u32;  // 210мм
+		let img_height = (A4_HEIGHT_MM * MM_TO_PIXELS) as u32; // 297мм
+		
+		Self {
+			min_x,
+			min_y,
+			max_x,
+			max_y,
+			content_width: max_x - min_x,
+			content_height: max_y - min_y,
+			img_width,
+			img_height,
+		}
+	}
+	
+	/// Старый конструктор для обратной совместимости
 	pub fn new(min_x: f64, min_y: f64, max_x: f64, max_y: f64, img_width: u32, img_height: u32) -> Self {
 		Self {
 			min_x,
@@ -45,6 +86,7 @@ impl ContentDimensions {
 			img_height,
 		}
 	}
+
 }
 
 // Кэшированный шрифт для повторного использования
@@ -120,7 +162,7 @@ impl DrawItemZ {
 		self.data.push(entity);
 	}
 
-	// Функция для автоматического расчета границ изображения
+	// Функция для автоматического расчета границ изображения с оптимальной ориентацией
 	fn calculate_image_bounds(&self) -> ContentDimensions {
 		let mut min_x = f64::INFINITY;
 		let mut max_x = f64::NEG_INFINITY;
@@ -137,33 +179,8 @@ impl DrawItemZ {
 			}
 		}
 
-		// Добавляем отступы
-		let padding = 10.0;
-		
-		// Вычисляем реальные размеры контента (без масштабирования)
-		let content_width = max_x - min_x;
-		let content_height = max_y - min_y;
-		
-		// Определяем желаемый размер изображения (разумные значения)
-		let target_width = 1200.0;
-		let target_height = 900.0;
-		
-		// Вычисляем масштаб на основе реальных размеров контента
-		let scale_x = if content_width > 0.0 { (target_width - padding * 2.0) / content_width } else { 1.0 };
-		let scale_y = if content_height > 0.0 { (target_height - padding * 2.0) / content_height } else { 1.0 };
-		
-		// Используем меньший масштаб, чтобы все поместилось
-		let scale = scale_x.max(scale_y)*1.5;
-		
-		// Вычисляем финальные размеры изображения
-		let width = (content_width * scale + padding * 2.0) as u32;
-		let height = (content_height * scale + padding * 2.0) as u32;
-		
-		// Применяем минимальные ограничения
-		let width = width.max(400);
-		let height = height.max(300);
-		
-		ContentDimensions::new(min_x, min_y, max_x, max_y, width, height)
+		// Используем простой конструктор с фиксированными размерами A4
+		ContentDimensions::new_a4_simple(min_x, min_y, max_x, max_y)
 	}
 
 	fn calculate_image_bounds_with_config(&self, config: &PerformanceConfig) -> ContentDimensions {
@@ -186,26 +203,17 @@ impl DrawItemZ {
 		let content_width = max_x - min_x;
 		let content_height = max_y - min_y;
 		
-		// Если контент пустой, возвращаем размеры из конфигурации
+		// Если контент пустой, возвращаем размеры по умолчанию
 		if content_width <= 0.0 || content_height <= 0.0 {
-			return ContentDimensions::new(min_x, min_y, max_x, max_y, (config.max_image_size.0 as f64 * 3.0) as u32, (config.max_image_size.1 as f64 * 3.0) as u32);
+			return ContentDimensions::new(
+				min_x, min_y, max_x, max_y, 
+				(A4_WIDTH_MM * IMAGE_COVERAGE_PERCENT * MM_TO_PIXELS) as u32,
+				(A4_HEIGHT_MM * IMAGE_COVERAGE_PERCENT * MM_TO_PIXELS) as u32
+			);
 		}
 		
-		// Добавляем отступы вокруг контента
-		let padding_x = content_width * 0.01;
-		let padding_y = content_height * 0.01;
-		
-		// Расширяем границы с учетом отступов
-		let padded_min_x = min_x - padding_x;
-		let padded_max_x = max_x + padding_x;
-		let padded_min_y = min_y - padding_y;
-		let padded_max_y = max_y + padding_y;
-		
-		// Фиксированные размеры изображения для качества
-		let img_width = (config.max_image_size.0 as f64 * 2.5) as u32;
-		let img_height = (config.max_image_size.1 as f64 * 2.5) as u32;
-		
-		ContentDimensions::new(padded_min_x, padded_min_y, padded_max_x, padded_max_y, img_width, img_height)
+		// Используем простой конструктор с фиксированными размерами A4
+		ContentDimensions::new_a4_simple(min_x, min_y, max_x, max_y)
 	}
 
 
@@ -213,10 +221,12 @@ impl DrawItemZ {
 	// CPU fallback функция
 	fn render_item_cpu_fallback(&self, item: &EntityWithXlsx, img: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, 
 								coord_scale: f64, offset_x: f64, offset_y: f64, field: &str, 
-								font_scale: Scale, text_color: Rgb<u8>) {
+								font_scale: Scale, text_color: Rgb<u8>, dimensions: &ContentDimensions) {
 		if item.vertices.len() == 4 {
 			let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
-				Point::new((v.x * coord_scale) + offset_x, (v.y * coord_scale) + offset_y)
+				let normalized_x = v.x - dimensions.min_x;
+				let normalized_y = v.y - dimensions.min_y;
+				Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
 			}).collect();
 			
 			for i in 0..4 {
@@ -228,7 +238,9 @@ impl DrawItemZ {
 			}
 		} else if item.vertices.len() == 3 {
 			let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
-				Point::new((v.x * coord_scale) + offset_x, (v.y * coord_scale) + offset_y)
+				let normalized_x = v.x - dimensions.min_x;
+				let normalized_y = v.y - dimensions.min_y;
+				Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
 			}).collect();
 			
 			for i in 0..3 {
@@ -240,17 +252,19 @@ impl DrawItemZ {
 			}
 		}
 		
-		self.render_text_cpu(item, img, coord_scale, offset_x, offset_y, field, font_scale, text_color);
+		self.render_text_cpu(item, img, coord_scale, offset_x, offset_y, field, font_scale, text_color, dimensions);
 	}
 	
 	// Функция рендеринга текста на CPU
 	fn render_text_cpu(&self, item: &EntityWithXlsx, img: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, 
 					   coord_scale: f64, offset_x: f64, offset_y: f64, field: &str, 
-					   font_scale: Scale, text_color: Rgb<u8>) {
+					   font_scale: Scale, text_color: Rgb<u8>, dimensions: &ContentDimensions) {
 		if let Some(values) = item.get_value(field) {
 			if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
 				let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
-					Point::new((v.x * coord_scale) + offset_x, (v.y * coord_scale) + offset_y)
+					let normalized_x = v.x - dimensions.min_x;
+					let normalized_y = v.y - dimensions.min_y;
+					Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
 				}).collect();
 				
 				if points.len() >= 2 {
@@ -304,21 +318,77 @@ impl DrawItemZ {
 		
 		let mut img = ImageBuffer::from_fn(dimensions.img_width, dimensions.img_height, |_, _| Rgb([255u8, 255u8, 255u8]));
 		
-		// Оптимальное масштабирование для максимального заполнения изображения
-		// Оставляем небольшие отступы (5% от размера изображения) для качества отображения
-		let margin_x = dimensions.img_width as f64 * 0.05;
-		let margin_y = dimensions.img_height as f64 * 0.05;
-		let available_width = dimensions.img_width as f64 - 2.0 * margin_x;
-		let available_height = dimensions.img_height as f64 - 2.0 * margin_y;
+		// ПРАВИЛЬНАЯ логика масштабирования с фиксированными отступами 5мм
+		// Фиксированные отступы 5мм от всех краев (НЕ проценты!)
+		let margin_pixels = MARGIN_MM * MM_TO_PIXELS; // 5мм в пикселях
 		
-		let coord_scale = (available_width / dimensions.content_width).min(available_height / dimensions.content_height)*1.5;
+		// Доступная область для рисования (вся картинка минус отступы)
+		let available_width_pixels = dimensions.img_width as f64 - 2.0 * margin_pixels;
+		let available_height_pixels = dimensions.img_height as f64 - 2.0 * margin_pixels;
 		
-		// Центрируем контент в доступной области с учетом отступов
+		// ПРАВИЛЬНЫЙ расчет единого масштаба для X и Y
+		// Вычисляем отдельные масштабы
+		let scale_x = available_width_pixels / dimensions.content_width;
+		let scale_y = available_height_pixels / dimensions.content_height;
+		
+		// Выбираем МИНИМАЛЬНЫЙ масштаб - это гарантирует:
+		// 1. Одинаковый масштаб для X и Y (сохранение пропорций)
+		// 2. Весь контент поместится без обрезки
+		let coord_scale = scale_x.min(scale_y);
+		
+		// Вычисляем реальные размеры масштабированного контента
 		let scaled_content_width = dimensions.content_width * coord_scale;
 		let scaled_content_height = dimensions.content_height * coord_scale;
 		
-		let offset_x = margin_x + (available_width - scaled_content_width) / 2.0 - dimensions.min_x * coord_scale;
-		let offset_y = margin_y + (available_height - scaled_content_height) / 2.0 - dimensions.min_y * coord_scale;
+		// ПРАВИЛЬНОЕ центрирование масштабированного контента
+		// Центрируем в доступной области (между отступами)
+		let offset_x = margin_pixels + (available_width_pixels - scaled_content_width) / 2.0;
+		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0;
+		
+		// Проверки границ
+		let content_fits_x = scaled_content_width <= available_width_pixels;
+		let content_fits_y = scaled_content_height <= available_height_pixels;
+		
+		if !content_fits_x || !content_fits_y {
+			web_sys::console::warn_1(&format!(
+				"⚠️ ОБРЕЗКА: Размер: {:.1}x{:.1}, Доступно: {:.1}x{:.1}",
+				scaled_content_width, scaled_content_height, available_width_pixels, available_height_pixels
+			).into());
+		}
+		// 📊 АНАЛИЗ ФИГУР - проверяем правильность алгоритма
+		web_sys::console::log_1(&"=== АНАЛИЗ ФИГУР ДЛЯ ПРОВЕРКИ АЛГОРИТМА ===".into());
+		
+		// Берем первые 15 фигур для анализа
+		let sample_size = 15.min(self.data.len());
+		for (i, item) in self.data.iter().take(sample_size).enumerate() {
+			if item.vertices.len() == 4 {
+				// Вычисляем стороны четырехугольника в исходных координатах
+				let v = &item.vertices;
+				let side1 = ((v[1].x - v[0].x).powi(2) + (v[1].y - v[0].y).powi(2)).sqrt(); // Горизонтальная
+				let side2 = ((v[2].x - v[1].x).powi(2) + (v[2].y - v[1].y).powi(2)).sqrt(); // Вертикальная
+				let side3 = ((v[3].x - v[2].x).powi(2) + (v[3].y - v[2].y).powi(2)).sqrt(); // Горизонтальная
+				let side4 = ((v[0].x - v[3].x).powi(2) + (v[0].y - v[3].y).powi(2)).sqrt(); // Вертикальная
+				
+				let horizontal_avg = (side1 + side3) / 2.0;
+				let vertical_avg = (side2 + side4) / 2.0;
+				let ratio = horizontal_avg / vertical_avg;
+				
+				web_sys::console::log_1(&format!(
+					"📐 Фигура {}: гориз={:.2}, верт={:.2}, соотношение={:.3} {}",
+					i + 1, horizontal_avg, vertical_avg, ratio,
+					if (ratio - 1.0).abs() < 0.1 { "✅ КВАДРАТ" } 
+					else if ratio > 1.1 { "📏 ШИРЕ" } 
+					else { "📏 ВЫШЕ" }
+				).into());
+			}
+		}
+		
+		web_sys::console::log_1(&format!(
+			"🎯 МАСШТАБ: единый коэффициент={:.3} для всех X и Y координат",
+			coord_scale
+		).into());
+		
+
 		let font_size = 25.0; 
 		let text_color = Rgb([0u8, 0u8, 0u8]);
 		// Используем кэшированный шрифт
@@ -330,8 +400,14 @@ impl DrawItemZ {
 			
 			for item in &self.data {
 				if item.vertices.len() == 4 {
+					// Правильное преобразование координат: нормализация -> масштабирование -> центрирование
 					let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
-						Point::new((v.x * coord_scale) + offset_x, (v.y * coord_scale) + offset_y)
+						let normalized_x = v.x - dimensions.min_x; // Нормализация
+						let normalized_y = v.y - dimensions.min_y;
+						Point::new(
+							normalized_x * coord_scale + offset_x, // Масштабирование + центрирование
+							normalized_y * coord_scale + offset_y
+						)
 					}).collect();
 					
 					// Добавляем линии четырехугольника
@@ -346,7 +422,9 @@ impl DrawItemZ {
 					}
 				} else if item.vertices.len() == 3 {
 					let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
-						Point::new((v.x * coord_scale) + offset_x, (v.y * coord_scale) + offset_y)
+						let normalized_x = v.x - dimensions.min_x;
+						let normalized_y = v.y - dimensions.min_y;
+						Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
 					}).collect();
 					
 					// Добавляем линии треугольника
@@ -374,7 +452,7 @@ impl DrawItemZ {
 					web_sys::console::log_1(&format!("GPU rendering error: {}, falling back to CPU", e).into());
 					// Fallback на CPU рендеринг
 					for item in &self.data {
-						self.render_item_cpu_fallback(item, &mut img, coord_scale, offset_x, offset_y, field, font_scale, text_color);
+						self.render_item_cpu_fallback(item, &mut img, coord_scale, offset_x, offset_y, field, font_scale, text_color, &dimensions);
 					}
 				} else {
 					// Конвертируем обратно в RGB
@@ -384,7 +462,7 @@ impl DrawItemZ {
 					
 					// Рендерим текст на CPU после GPU рендеринга линий
 					for item in &self.data {
-						self.render_text_cpu(item, &mut img, coord_scale, offset_x, offset_y, field, font_scale, text_color);
+						self.render_text_cpu(item, &mut img, coord_scale, offset_x, offset_y, field, font_scale, text_color, &dimensions);
 					}
 				}
 			}
@@ -392,10 +470,11 @@ impl DrawItemZ {
 			// Обычный CPU рендеринг
 			for item in &self.data{
 			if item.vertices.len()==4{
-				let point_a = Point::new((item.vertices[0].x * coord_scale) + offset_x, (item.vertices[0].y * coord_scale) + offset_y);
-				let point_b = Point::new((item.vertices[1].x * coord_scale) + offset_x, (item.vertices[1].y * coord_scale) + offset_y);
-				let point_c = Point::new((item.vertices[2].x * coord_scale) + offset_x, (item.vertices[2].y * coord_scale) + offset_y);
-				let point_d = Point::new((item.vertices[3].x * coord_scale) + offset_x, (item.vertices[3].y * coord_scale) + offset_y);
+				// ПРАВИЛЬНОЕ преобразование координат с нормализацией
+				let point_a = Point::new((item.vertices[0].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[0].y - dimensions.min_y) * coord_scale + offset_y);
+				let point_b = Point::new((item.vertices[1].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[1].y - dimensions.min_y) * coord_scale + offset_y);
+				let point_c = Point::new((item.vertices[2].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[2].y - dimensions.min_y) * coord_scale + offset_y);
+				let point_d = Point::new((item.vertices[3].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[3].y - dimensions.min_y) * coord_scale + offset_y);
 
 				draw_line_segment_mut(&mut img, (point_a.x as f32, point_a.y as f32), (point_b.x as f32, point_b.y as f32), Rgb([255, 0, 0]));
 				draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
@@ -412,9 +491,10 @@ impl DrawItemZ {
 				);
 			}
 			else if item.vertices.len()==3 {
-				let point_a = Point::new((item.vertices[0].x * coord_scale) + offset_x, (item.vertices[0].y * coord_scale) + offset_y);
-				let point_b = Point::new((item.vertices[1].x * coord_scale) + offset_x, (item.vertices[1].y * coord_scale) + offset_y);
-				let point_c = Point::new((item.vertices[2].x * coord_scale) + offset_x, (item.vertices[2].y * coord_scale) + offset_y);
+				// ПРАВИЛЬНОЕ преобразование координат с нормализацией
+				let point_a = Point::new((item.vertices[0].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[0].y - dimensions.min_y) * coord_scale + offset_y);
+				let point_b = Point::new((item.vertices[1].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[1].y - dimensions.min_y) * coord_scale + offset_y);
+				let point_c = Point::new((item.vertices[2].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[2].y - dimensions.min_y) * coord_scale + offset_y);
 				// let point_d = Point::new((item.vertices[3].x * 17.0)+150.0, (item.vertices[3].y * 17.0)+80.0);
 				draw_line_segment_mut(&mut img, (point_a.x as f32, point_a.y as f32), (point_b.x as f32, point_b.y as f32), Rgb([255, 0, 0]));
 				draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
@@ -618,25 +698,37 @@ impl DrawItemZ {
 				*pixel = Rgba([255, 255, 255, 255]);
 			}
 
-			// Собираем линии для этого изображения
+			// Собираем линии для этого изображения с ПРАВИЛЬНЫМ масштабированием
 			let mut lines_for_image = Vec::new();
-			let coord_scale = (dimensions.img_width as f64 / dimensions.content_width).min(dimensions.img_height as f64 / dimensions.content_height) * 1.15;
-			let offset_x = (dimensions.img_width as f64 - dimensions.content_width * coord_scale) / 2.0 - dimensions.min_x * coord_scale;
-			let offset_y = (dimensions.img_height as f64 - dimensions.content_height * coord_scale) / 2.0 - dimensions.min_y * coord_scale;
+			
+			// ПРАВИЛЬНЫЙ расчет масштаба с фиксированными отступами 5мм
+			let margin_pixels = MARGIN_MM * MM_TO_PIXELS;
+			let available_width = dimensions.img_width as f64 - 2.0 * margin_pixels;
+			let available_height = dimensions.img_height as f64 - 2.0 * margin_pixels;
+			let scale_x = available_width / dimensions.content_width;
+			let scale_y = available_height / dimensions.content_height;
+			let coord_scale = scale_x.min(scale_y); // ЕДИНЫЙ масштаб!
+			
+			// ПРАВИЛЬНОЕ центрирование
+			let scaled_content_width = dimensions.content_width * coord_scale;
+			let scaled_content_height = dimensions.content_height * coord_scale;
+			let offset_x = margin_pixels + (available_width - scaled_content_width) / 2.0;
+			let offset_y = margin_pixels + (available_height - scaled_content_height) / 2.0;
 			
 			for item in &self.data {
 				if item.entity_type == *field && item.vertices.len() == 4 {
-					// Добавляем линии для прямоугольника
+					// Добавляем линии для прямоугольника с ПРАВИЛЬНОЙ нормализацией
 					let v = &item.vertices;
 					
-					let x1 = (v[0].x * coord_scale + offset_x) as f32;
-					let y1 = (v[0].y * coord_scale + offset_y) as f32;
-					let x2 = (v[1].x * coord_scale + offset_x) as f32;
-					let y2 = (v[1].y * coord_scale + offset_y) as f32;
-					let x3 = (v[2].x * coord_scale + offset_x) as f32;
-					let y3 = (v[2].y * coord_scale + offset_y) as f32;
-					let x4 = (v[3].x * coord_scale + offset_x) as f32;
-					let y4 = (v[3].y * coord_scale + offset_y) as f32;
+					// ПРАВИЛЬНОЕ преобразование: нормализация -> масштаб -> центр
+					let x1 = ((v[0].x - dimensions.min_x) * coord_scale + offset_x) as f32;
+					let y1 = ((v[0].y - dimensions.min_y) * coord_scale + offset_y) as f32;
+					let x2 = ((v[1].x - dimensions.min_x) * coord_scale + offset_x) as f32;
+					let y2 = ((v[1].y - dimensions.min_y) * coord_scale + offset_y) as f32;
+					let x3 = ((v[2].x - dimensions.min_x) * coord_scale + offset_x) as f32;
+					let y3 = ((v[2].y - dimensions.min_y) * coord_scale + offset_y) as f32;
+					let x4 = ((v[3].x - dimensions.min_x) * coord_scale + offset_x) as f32;
+					let y4 = ((v[3].y - dimensions.min_y) * coord_scale + offset_y) as f32;
 					
 					lines_for_image.push((x1, y1, x2, y2));
 					lines_for_image.push((x2, y2, x3, y3));

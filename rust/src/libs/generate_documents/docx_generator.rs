@@ -36,14 +36,8 @@ pub async fn create_docx_document_optimized(
     let hash = sort_by_z(entities);
     let floors_count = hash.len();
     
-    // Устанавливаем размеры страницы в твипах (1/20 точки)
-    // A4 landscape: 297mm x 210mm = 11.69" x 8.27" = 16838 x 11906 твипов
-    let page_width = 200;  // Увеличенная ширина страницы
-    let page_height = 150; // Увеличенная высота страницы
-    
-    // Размеры изображения должны быть равны размерам страницы с небольшими отступами
-    let img_width = (page_width * 290 * 90 / 100) as u32; // 90% от размера страницы
-    let img_height = (page_height * 280 * 90 / 100) as u32; // 90% от размера страницы
+    // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
+    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
     
     monitor.start_image_generation();
     let mut total_images = 0;
@@ -70,13 +64,13 @@ pub async fn create_docx_document_optimized(
                 img_index + 1, images.len(), key.to_string()).into());
                 
             doc = doc
-                .page_size(page_width*290, page_height*280)
+                .page_size(DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS)
                 .page_orient(docx_rs::PageOrientationType::Landscape)
                 .add_paragraph(
                     Paragraph::new().add_run(
                         Run::new().add_image(
-                            Pic::new(img)
-                                .size(img_width, img_height)
+                            Pic::new(img.as_slice())
+                                .size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS)
                         )
                     )
                 );
@@ -121,14 +115,8 @@ pub async fn create_docx_document_legacy(
     
     let hash = sort_by_z(entities);
     
-    // Устанавливаем размеры страницы в твипах (1/20 точки)
-    // A4 landscape: 297mm x 210mm = 11.69" x 8.27" = 16838 x 11906 твипов
-    let page_width = 200;  // Увеличенная ширина страницы
-    let page_height = 150; // Увеличенная высота страницы
-    
-    // Размеры изображения в твипах (максимально увеличенные)
-    let img_width = 20000000;   // Очень большой размер для видимости
-    let img_height = 15000000;  // Очень большой размер для видимости
+    // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
+    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
     
     let monitor = PerformanceMonitor::new(PerformanceConfig::default());
     
@@ -145,13 +133,13 @@ pub async fn create_docx_document_legacy(
         // Добавляем изображения в документ
         for img in imgs.iter() {
             doc = doc
-                .page_size(page_width*290, page_height*280)
+                .page_size(DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS)
                 .page_orient(docx_rs::PageOrientationType::Landscape)
                 .add_paragraph(
                     Paragraph::new().add_run(
                         Run::new().add_image(
                             Pic::new(img.as_slice())
-                                .size(img_width, img_height)
+                                .size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS)
                         )
                     )
                 );
@@ -183,16 +171,8 @@ pub async fn create_docx_for_selected_floors(
     // Группируем по Z-координате (этажам)
     let hash = sort_by_z(entities);
     
-    // Устанавливаем размеры страницы в твипах (1/20 точки)
-    // A4 landscape: 297mm x 210mm = 11.69" x 8.27" = 16838 x 11906 твипов
-    let page_width = 25000;  // Увеличенная ширина страницы
-    let page_height = 20000; // Увеличенная высота страницы
-    
-    // Размеры изображения в EMU (English Metric Units)
-    // 1 дюйм = 914400 EMU, 1 см = 360000 EMU
-    // Увеличиваем размер для отображения всей картинки без обрезки
-    let img_width = 10800000u32;  // ~30 см (30 * 360000 EMU)
-    let img_height = 9000000u32;  // ~25 см (25 * 360000 EMU)
+    // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
+    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
     
     let monitor = PerformanceMonitor::new(PerformanceConfig::default());
     
@@ -213,13 +193,13 @@ pub async fn create_docx_for_selected_floors(
             // Добавляем изображения в документ
             for img in imgs.iter() {
                 doc = doc
-                    .page_size(page_width, page_height)
+                    .page_size(DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS)
                     .page_orient(docx_rs::PageOrientationType::Landscape)
                     .add_paragraph(
                         Paragraph::new().add_run(
                             Run::new().add_image(
                                 Pic::new(img.as_slice())
-                                    .size(img_width, img_height)
+                                    .size(DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU)
                             )
                         )
                     );

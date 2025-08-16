@@ -98,16 +98,14 @@ pub async fn create_docx_legacy(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]
 pub fn create_docx_with_image(image_data: &[u8], doc: Docx) -> Result<Docx, Box<dyn std::error::Error>> {
     let mut doc = doc;
     
-    // Определяем стандартные размеры изображения для DOCX в твипах
-    // Используем размер A4 landscape с отступами: ~15000x10000 твипов
-    let docx_width_twips = 15000u32;
-    let docx_height_twips = 10000u32;
+    // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
+    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS};
     
 	doc = doc.add_paragraph(
 		Paragraph::new().add_run(
 			Run::new().add_image(
 			    Pic::new(image_data)
-			        .size(docx_width_twips, docx_height_twips)
+			        .size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS)
 			)
 		)
 	);
