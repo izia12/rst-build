@@ -268,12 +268,17 @@ impl DrawItemZ {
 				}).collect();
 				
 				if points.len() >= 2 {
-					let text_x = ((points[1].x + points[0].x) / 2.0) as i32;
-					let text_y = if item.vertices.len() == 3 {
-						(((points[1].y + points[0].y) / 2.0) - 2.0) as i32
-					} else {
-						((points[1].y + points[0].y) / 2.0) as i32
-					};
+					// Вычисляем границы фигуры
+					let min_x = points.iter().map(|p| p.x).fold(f64::INFINITY, f64::min);
+					let max_x = points.iter().map(|p| p.x).fold(f64::NEG_INFINITY, f64::max);
+					let min_y = points.iter().map(|p| p.y).fold(f64::INFINITY, f64::min);
+					let max_y = points.iter().map(|p| p.y).fold(f64::NEG_INFINITY, f64::max);
+					
+					// Отступы 10% от размеров фигуры
+					let width = max_x - min_x;
+					let height = max_y - min_y;
+					let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
+					let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
 					
 					draw_text_mut(img, text_color, text_x, text_y, font_scale, &CACHED_FONT, &max_value.to_string());
 				}
@@ -480,11 +485,23 @@ impl DrawItemZ {
 				draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
 				draw_line_segment_mut(&mut img, (point_c.x as f32, point_c.y as f32), (point_d.x as f32, point_d.y as f32), Rgb([255, 0, 0]));
 				draw_line_segment_mut(&mut img, (point_d.x as f32, point_d.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
+				// Вычисляем границы четырехугольника для правильного позиционирования текста
+				let min_x = [point_a.x, point_b.x, point_c.x, point_d.x].iter().fold(f64::INFINITY, |a, &b| a.min(b));
+				let max_x = [point_a.x, point_b.x, point_c.x, point_d.x].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
+				let min_y = [point_a.y, point_b.y, point_c.y, point_d.y].iter().fold(f64::INFINITY, |a, &b| a.min(b));
+				let max_y = [point_a.y, point_b.y, point_c.y, point_d.y].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
+				
+				// Отступы 10% от размеров фигуры
+				let width = max_x - min_x;
+				let height = max_y - min_y;
+				let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
+				let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
+				
 				draw_text_mut(
 					&mut img,
 					text_color,
-					((point_b.x+point_a.x)/2.0) as i32, // Центрирование текста
-					((point_b.y+point_a.y)/2.0) as i32,          // Позиция внизу
+					text_x, // 10% отступ слева
+					text_y, // 10% отступ сверху
 					font_scale,
 					&CACHED_FONT,
 					&item.get_value(field).unwrap().iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap().to_string(),
@@ -500,11 +517,23 @@ impl DrawItemZ {
 				draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
 				draw_line_segment_mut(&mut img, (point_c.x as f32, point_c.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
 				// draw_line_segment_mut(&mut img, (point_d.x as f32, point_d.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
+				// Вычисляем границы треугольника для правильного позиционирования текста
+				let min_x = [point_a.x, point_b.x, point_c.x].iter().fold(f64::INFINITY, |a, &b| a.min(b));
+				let max_x = [point_a.x, point_b.x, point_c.x].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
+				let min_y = [point_a.y, point_b.y, point_c.y].iter().fold(f64::INFINITY, |a, &b| a.min(b));
+				let max_y = [point_a.y, point_b.y, point_c.y].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
+				
+				// Отступы 10% от размеров фигуры
+				let width = max_x - min_x;
+				let height = max_y - min_y;
+				let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
+				let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
+				
 				draw_text_mut(
 					&mut img,
 					text_color,
-					((point_b.x+point_a.x)/2.0) as i32, // Центрирование текста
-					(((point_b.y+point_a.y)/2.0)-5.0) as i32,          // Позиция внизу
+					text_x, // 10% отступ слева
+					text_y, // 10% отступ сверху
 					font_scale,
 					&CACHED_FONT,
 					// &item.row.as1.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap().to_string(),
