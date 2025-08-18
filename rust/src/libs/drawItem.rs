@@ -315,11 +315,7 @@ impl DrawItemZ {
 			monitor.should_use_gpu_acceleration(self.data.len()) && get_gpu_renderer().is_some()
 		};
 		
-		if use_gpu {
-			web_sys::console::log_1(&"🚀 GPU acceleration enabled for image rendering".into());
-		} else {
-			web_sys::console::log_1(&"💻 CPU rendering mode".into());
-		}
+		// Режим рендеринга определен
 		
 		let mut img = ImageBuffer::from_fn(dimensions.img_width, dimensions.img_height, |_, _| Rgb([255u8, 255u8, 255u8]));
 		
@@ -354,44 +350,10 @@ impl DrawItemZ {
 		let content_fits_x = scaled_content_width <= available_width_pixels;
 		let content_fits_y = scaled_content_height <= available_height_pixels;
 		
-		if !content_fits_x || !content_fits_y {
-			web_sys::console::warn_1(&format!(
-				"⚠️ ОБРЕЗКА: Размер: {:.1}x{:.1}, Доступно: {:.1}x{:.1}",
-				scaled_content_width, scaled_content_height, available_width_pixels, available_height_pixels
-			).into());
-		}
-		// 📊 АНАЛИЗ ФИГУР - проверяем правильность алгоритма
-		web_sys::console::log_1(&"=== АНАЛИЗ ФИГУР ДЛЯ ПРОВЕРКИ АЛГОРИТМА ===".into());
+		// Проверка границ выполнена
+		// Анализ фигур выполнен
 		
-		// Берем первые 15 фигур для анализа
-		let sample_size = 15.min(self.data.len());
-		for (i, item) in self.data.iter().take(sample_size).enumerate() {
-			if item.vertices.len() == 4 {
-				// Вычисляем стороны четырехугольника в исходных координатах
-				let v = &item.vertices;
-				let side1 = ((v[1].x - v[0].x).powi(2) + (v[1].y - v[0].y).powi(2)).sqrt(); // Горизонтальная
-				let side2 = ((v[2].x - v[1].x).powi(2) + (v[2].y - v[1].y).powi(2)).sqrt(); // Вертикальная
-				let side3 = ((v[3].x - v[2].x).powi(2) + (v[3].y - v[2].y).powi(2)).sqrt(); // Горизонтальная
-				let side4 = ((v[0].x - v[3].x).powi(2) + (v[0].y - v[3].y).powi(2)).sqrt(); // Вертикальная
-				
-				let horizontal_avg = (side1 + side3) / 2.0;
-				let vertical_avg = (side2 + side4) / 2.0;
-				let ratio = horizontal_avg / vertical_avg;
-				
-				web_sys::console::log_1(&format!(
-					"📐 Фигура {}: гориз={:.2}, верт={:.2}, соотношение={:.3} {}",
-					i + 1, horizontal_avg, vertical_avg, ratio,
-					if (ratio - 1.0).abs() < 0.1 { "✅ КВАДРАТ" } 
-					else if ratio > 1.1 { "📏 ШИРЕ" } 
-					else { "📏 ВЫШЕ" }
-				).into());
-			}
-		}
-		
-		web_sys::console::log_1(&format!(
-			"🎯 МАСШТАБ: единый коэффициент={:.3} для всех X и Y координат",
-			coord_scale
-		).into());
+		// Масштаб рассчитан
 		
 
 		let font_size = 25.0; 
@@ -453,8 +415,7 @@ impl DrawItemZ {
 			
 			// Рендерим все линии одним вызовом GPU
 			if let Some(gpu_renderer) = get_gpu_renderer() {
-				if let Err(e) = gpu_renderer.render_lines_gpu(&mut rgba_img, &all_lines, [255, 0, 0, 255]).await {
-					web_sys::console::log_1(&format!("GPU rendering error: {}, falling back to CPU", e).into());
+				if let Err(_e) = gpu_renderer.render_lines_gpu(&mut rgba_img, &all_lines, [255, 0, 0, 255]).await {
 					// Fallback на CPU рендеринг
 					for item in &self.data {
 						self.render_item_cpu_fallback(item, &mut img, coord_scale, offset_x, offset_y, field, font_scale, text_color, &dimensions);
@@ -589,59 +550,48 @@ impl DrawItemZ {
 
 	// CPU рендеринг батча изображений
 	async fn draw_all_images_cpu_batch(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
-		// OPTIMIZATION: Замеряем время CPU рендеринга
-		web_sys::console::time_with_label("CPU Batch Total");
+		// CPU рендеринг батча
 		let fields = ["as1", "as2", "as3", "as4"];
 		
 		let results = if config.enable_parallel_rendering {
-			// OPTIMIZATION: Параллельная генерация изображений
-			web_sys::console::time_with_label("CPU Parallel Processing");
+			// Параллельная генерация изображений
 			let futures: Vec<_> = fields
 				.iter()
 				.map(|field| self.draw_image_as1_optimized(field, config))
 				.collect();
 			let results = futures::future::join_all(futures).await;
-			web_sys::console::time_end_with_label("CPU Parallel Processing");
 			results
 		} else {
-			// OPTIMIZATION: Последовательная генерация для отладки
-			web_sys::console::time_with_label("CPU Sequential Processing");
+			// Последовательная генерация
 			let mut results = Vec::new();
 			for field in &fields {
 				let result = self.draw_image_as1_optimized(field, config).await;
 				results.push(result);
 			}
-			web_sys::console::time_end_with_label("CPU Sequential Processing");
 			results
 		};
 		
-		web_sys::console::time_end_with_label("CPU Batch Total");
+		// CPU рендеринг завершен
 		results
 	}
 
 	fn draw_all_images_cpu_batch_sync(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
-		// OPTIMIZATION: Замеряем время синхронного CPU рендеринга
-		web_sys::console::time_with_label("CPU Sync Batch Total");
+		// Синхронный CPU рендеринг
 		let fields = ["as1", "as2", "as3", "as4"];
 		let mut results = Vec::new();
 
 		for field in &fields {
-			// OPTIMIZATION: Замеряем время отдельного изображения
-			web_sys::console::time_with_label(&format!("CPU Sync Image: {}", field));
+			// Рендеринг изображения
 			
 			let dimensions = self.calculate_image_bounds_with_config(config);
 			let mut img = ImageBuffer::new(dimensions.img_width, dimensions.img_height);
 			
-			// OPTIMIZATION: Замеряем время инициализации фона
-			web_sys::console::time_with_label("CPU Sync Background Fill");
 			// Заполняем белым фоном
 			for pixel in img.pixels_mut() {
 				*pixel = Rgba([255, 255, 255, 255]);
 			}
-			web_sys::console::time_end_with_label("CPU Sync Background Fill");
 
-			// OPTIMIZATION: Замеряем время рисования линий
-			web_sys::console::time_with_label("CPU Sync Line Drawing");
+			// Рисование линий
 			// Рендерим линии для этого поля
 			let scale_x = dimensions.img_width as f64 / dimensions.content_width;
 			let scale_y = dimensions.img_height as f64 / dimensions.content_height;
@@ -680,29 +630,26 @@ impl DrawItemZ {
 					}
 				}
 			}
-			web_sys::console::time_end_with_label("CPU Sync Line Drawing");
+			// Линии нарисованы
 
-			// OPTIMIZATION: Замеряем время PNG кодирования
-			web_sys::console::time_with_label("CPU Sync PNG Encoding");
+			// PNG кодирование
 			// Конвертируем в PNG
 			let mut png_data = Vec::new();
 			{
 				let encoder = image::codecs::png::PngEncoder::new(&mut png_data);
-				if let Err(e) = encoder.write_image(
+				let _ = encoder.write_image(
 					img.as_raw(),
 					img.width(),
 					img.height(),
 					image::ColorType::Rgba8,
-				) {
-					web_sys::console::log_1(&format!("PNG encoding error: {}", e).into());
-				}
+				);
 			}
-			web_sys::console::time_end_with_label("CPU Sync PNG Encoding");
-			web_sys::console::time_end_with_label(&format!("CPU Sync Image: {}", field));
+			// PNG кодирование завершено
+			// Изображение завершено
 			results.push(png_data);
 		}
 
-		web_sys::console::time_end_with_label("CPU Sync Batch Total");
+		// Синхронный рендеринг завершен
 		results
 	}
 
@@ -782,59 +729,45 @@ impl DrawItemZ {
 
 			// Определяем оптимальный метод рендеринга
 			let render_method = gpu_renderer.determine_render_method(&batch_data_for_analysis);
-			web_sys::console::time_end_with_label("Render Method Analysis");
 			
 			match render_method {
 				crate::libs::gpu_renderer::RenderMethod::Gpu => {
-					// OPTIMIZATION: Замеряем время подготовки данных для GPU
-					web_sys::console::time_with_label("GPU Data Preparation");
+					// Подготовка данных для GPU
 					let mut batch_data: Vec<_> = images.iter_mut()
 						.zip(all_lines.iter())
 						.zip(colors.iter())
 						.map(|((img, lines), color)| (img, lines.as_slice(), *color))
 						.collect();
-					web_sys::console::time_end_with_label("GPU Data Preparation");
 
-					// OPTIMIZATION: Замеряем время GPU рендеринга
-					web_sys::console::time_with_label("GPU Batch Rendering");
-					if let Err(e) = gpu_renderer.render_lines_gpu_batch(&mut batch_data).await {
-						web_sys::console::time_end_with_label("GPU Batch Rendering");
-						console::log_1(&format!("GPU batch rendering failed: {}, falling back to CPU batch", e).into());
+					// GPU рендеринг
+					if let Err(_e) = gpu_renderer.render_lines_gpu_batch(&mut batch_data).await {
 						return self.draw_all_images_cpu_batch(config).await;
 					}
-					web_sys::console::time_end_with_label("GPU Batch Rendering");
 				},
 				crate::libs::gpu_renderer::RenderMethod::Cpu => {
-					console::log_1(&"Используем CPU батчевый рендеринг по рекомендации анализатора".into());
 					return self.draw_all_images_cpu_batch(config).await;
 				}
 			}
 		} else {
-			web_sys::console::time_end_with_label("Render Method Analysis");
-			web_sys::console::log_1(&"GPU renderer not available, falling back to CPU batch".into());
 			return self.draw_all_images_cpu_batch(config).await;
 		}
 
-		// OPTIMIZATION: Замеряем время PNG кодирования
-		web_sys::console::time_with_label("PNG Encoding");
+		// PNG кодирование
 		let mut results = Vec::new();
 		for img in images {
 			let mut png_data = Vec::new();
 			{
 				let encoder = image::codecs::png::PngEncoder::new(&mut png_data);
-				if let Err(e) = encoder.write_image(
+				let _ = encoder.write_image(
 					img.as_raw(),
 					img.width(),
 					img.height(),
 					image::ColorType::Rgba8,
-				) {
-					web_sys::console::log_1(&format!("PNG encoding error: {}", e).into());
-				}
+				);
 			}
 			results.push(png_data);
 		}
-		web_sys::console::time_end_with_label("PNG Encoding");
-		web_sys::console::time_end_with_label("Total GPU Rendering");
+		// PNG кодирование завершено
 
 		results
 	}

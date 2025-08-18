@@ -220,16 +220,15 @@ pub async fn create_docx_for_selected_floors(
 /// Группирует сущности по Z-координате (этажам)
 pub fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawItemZ> {
     let mut map: HashMap<OrderedFloat<f32>, DrawItemZ> = HashMap::new();
-	let mut _map1:HashMap<String, String> = HashMap::new();
-	// map1.
+    
     for item in data1.into_iter() {
-		let z0 = item.vertices[0].z;
-		if item.vertices.iter().all(|v| v.z == z0) {
-			let z = OrderedFloat(z0 as f32);
-			map.entry(z)
-				.or_insert_with(|| DrawItemZ { data: Vec::new() })
-				.data.push(item); // Здесь теперь item перемещается, а не заимствуется
-		}
-	}
+        let z0 = item.vertices[0].z;
+        if item.vertices.iter().all(|v| v.z == z0) {
+            let z = OrderedFloat(z0 as f32);
+            map.entry(z)
+                .or_insert_with(|| DrawItemZ { data: Vec::new() })
+                .data.push(item);
+        }
+    }
     map
 }

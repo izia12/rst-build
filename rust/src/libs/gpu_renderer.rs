@@ -33,7 +33,6 @@ pub struct GpuRenderer {
 
 impl GpuRenderer {
     pub async fn new() -> Result<Self, Box<dyn std::error::Error>> {
-        console::log_1(&"Creating wgpu instance...".into());
         // Создаем экземпляр wgpu
         let instance = Instance::new(&InstanceDescriptor {
             backends: Backends::all(),
@@ -41,27 +40,16 @@ impl GpuRenderer {
             memory_budget_thresholds: Default::default(),
             backend_options: Default::default(),
         });
-        console::log_1(&"wgpu instance created successfully".into());
 
         // Получаем адаптер
-        console::log_1(&"Requesting GPU adapter...".into());
-        let adapter = match instance
+        let adapter = instance
             .request_adapter(&RequestAdapterOptions {
                 power_preference: PowerPreference::HighPerformance,
                 compatible_surface: None,
                 force_fallback_adapter: false,
             })
-            .await {
-                Ok(adapter) => {
-                    console::log_1(&"GPU adapter obtained successfully".into());
-                    adapter
-                },
-                Err(e) => {
-                    let error_msg = format!("Failed to request GPU adapter: {:?}", e);
-                    console::log_1(&error_msg.clone().into());
-                    return Err(error_msg.into());
-                }
-            };
+            .await
+            .map_err(|e| format!("Failed to request GPU adapter: {:?}", e))?;
 
         // Получаем устройство и очередь с увеличенными лимитами буферов
         console::log_1(&"Requesting GPU device...".into());
@@ -77,7 +65,7 @@ impl GpuRenderer {
                 trace: Default::default(),
             })
             .await?;
-        console::log_1(&"GPU device obtained successfully".into());
+        // GPU устройство получено
 
         // Создаем шейдер модуль один раз при инициализации
         let shader_source = r#"
@@ -169,14 +157,6 @@ impl GpuRenderer {
             img_size + lines_size
         }).sum::<u64>();
         
-        console::log_1(&format!(
-            "Анализ данных: {} изображений, {} линий, {} пикселей, ~{}MB данных",
-            num_images,
-            total_lines,
-            total_pixels,
-            estimated_buffer_size / 1_000_000
-        ).into());
-        
         // Более строгие условия для использования GPU
         // GPU эффективен только при действительно больших объемах данных
         let meets_image_threshold = num_images >= GPU_THRESHOLD_IMAGES;
@@ -184,20 +164,10 @@ impl GpuRenderer {
         let meets_buffer_threshold = estimated_buffer_size >= GPU_THRESHOLD_BUFFER_SIZE;
         let meets_pixels_threshold = total_pixels >= GPU_THRESHOLD_PIXELS;
         
-        console::log_1(&format!(
-            "Пороги: изображения {}/{}, линии {}/{}, буфер {}MB/{}MB, пиксели {}/{}",
-            num_images, GPU_THRESHOLD_IMAGES,
-            total_lines, GPU_THRESHOLD_LINES,
-            estimated_buffer_size / 1_000_000, GPU_THRESHOLD_BUFFER_SIZE / 1_000_000,
-            total_pixels, GPU_THRESHOLD_PIXELS
-        ).into());
-        
         // Требуем выполнения ВСЕХ условий для использования GPU
         if meets_image_threshold && meets_lines_threshold && meets_buffer_threshold && meets_pixels_threshold {
-            console::log_1(&"✅ Выбран GPU рендеринг (все пороги превышены)".into());
             RenderMethod::Gpu
         } else {
-            console::log_1(&"❌ Выбран CPU рендеринг (не все пороги превышены)".into());
             RenderMethod::Cpu
         }
     }
@@ -216,12 +186,7 @@ impl GpuRenderer {
         &mut self,
         images_data: &mut [(&mut ImageBuffer<Rgba<u8>, Vec<u8>>, &[(f32, f32, f32, f32)], [u8; 4])],
     ) -> Result<(), String> {
-        // OPTIMIZATION: Детальные замеры времени для диагностики
-        web_sys::console::time_with_label("GPU Batch Total");
-        console::log_1(&format!("Starting TRUE GPU batch rendering for {} images", images_data.len()).into());
-        
         if images_data.is_empty() {
-            web_sys::console::time_end_with_label("GPU Batch Total");
             return Ok(());
         }
         
@@ -233,33 +198,21 @@ impl GpuRenderer {
         let batch_count = images_data.len() as u64;
         let total_buffer_size = single_img_size * batch_count;
         
-        // OPTIMIZATION: Замеряем время анализа размера буфера
-        web_sys::console::time_with_label("Buffer Size Analysis");
-        console::log_1(&format!("Batch processing {} images of {}x{}, total buffer size: {} bytes", 
-            batch_count, img_width, img_height, total_buffer_size).into());
-        
         // Проверяем, не превышает ли размер батча безопасный лимит
         const MAX_SAFE_BUFFER_SIZE: u64 = 1_073_741_824; // 1GB (оставляем запас от 2GB лимита)
         
         if total_buffer_size > MAX_SAFE_BUFFER_SIZE {
             // Разбиваем большой батч на меньшие части
             let max_images_per_batch = (MAX_SAFE_BUFFER_SIZE / single_img_size) as usize;
-            console::log_1(&format!("Large batch detected. Splitting {} images into chunks of {} images each", 
-                images_data.len(), max_images_per_batch).into());
-            web_sys::console::time_end_with_label("Buffer Size Analysis");
             
             for chunk in images_data.chunks_mut(max_images_per_batch) {
                 self.render_lines_gpu_batch_internal(chunk).await?;
             }
-            web_sys::console::time_end_with_label("GPU Batch Total");
             return Ok(());
         }
-        web_sys::console::time_end_with_label("Buffer Size Analysis");
         
         // Если размер батча приемлемый, обрабатываем как обычно
-        let result = self.render_lines_gpu_batch_internal(images_data).await;
-        web_sys::console::time_end_with_label("GPU Batch Total");
-        result
+        self.render_lines_gpu_batch_internal(images_data).await
     }
     
     // Внутренний метод для обработки батча без проверки размера
@@ -267,8 +220,6 @@ impl GpuRenderer {
         &mut self,
         images_data: &mut [(&mut ImageBuffer<Rgba<u8>, Vec<u8>>, &[(f32, f32, f32, f32)], [u8; 4])],
     ) -> Result<(), String> {
-        web_sys::console::time_with_label("GPU Batch Internal");
-        
         let (first_img, _, _) = &images_data[0];
         let img_width = first_img.width();
         let img_height = first_img.height();
@@ -283,9 +234,6 @@ impl GpuRenderer {
             "Combined Batch Buffer"
         );
         
-        // OPTIMIZATION: Замеряем время подготовки данных
-        web_sys::console::time_with_label("Data Preparation");
-        
         // Загружаем все изображения в один буфер
         let mut combined_data = Vec::with_capacity((total_buffer_size / 4) as usize);
         for (img, _, _) in images_data.iter() {
@@ -296,14 +244,9 @@ impl GpuRenderer {
                 combined_data.push(abgr);
             }
         }
-        web_sys::console::time_end_with_label("Data Preparation");
-        
-        // OPTIMIZATION: Замеряем время записи в буфер
-        web_sys::console::time_with_label("Buffer Write");
         
         // Записываем данные в буфер
         self.queue.write_buffer(&combined_buffer, 0, bytemuck::cast_slice(&combined_data));
-        web_sys::console::time_end_with_label("Buffer Write");
         
         // Создаем буфер для всех линий
         let mut all_lines_data = Vec::new();
@@ -371,9 +314,6 @@ impl GpuRenderer {
                 ],
             });
             
-            // OPTIMIZATION: Замеряем время выполнения GPU вычислений
-            web_sys::console::time_with_label("GPU Compute");
-            
             // Выполняем compute shader для всех изображений одновременно
             let mut encoder = self.device.create_command_encoder(&CommandEncoderDescriptor {
                 label: Some("Batch Compute Encoder"),
@@ -407,8 +347,7 @@ impl GpuRenderer {
                 let total_lines: usize = line_counts.iter().map(|&count| count as usize).sum();
                 let workgroup_count = (total_lines + 63) / 64; // 64 threads per workgroup
                 
-                console::log_1(&format!("Dispatching {} workgroups for {} total lines across {} images", 
-                    workgroup_count, total_lines, batch_count).into());
+                // Dispatching workgroups for batch processing
                 compute_pass.dispatch_workgroups(workgroup_count as u32, 1, 1);
             }
             
@@ -421,11 +360,6 @@ impl GpuRenderer {
             
             encoder.copy_buffer_to_buffer(&combined_buffer, 0, &output_buffer, 0, total_buffer_size);
             self.queue.submit(std::iter::once(encoder.finish()));
-            web_sys::console::time_end_with_label("GPU Compute");
-            
-            // OPTIMIZATION: Замеряем время чтения результатов
-            web_sys::console::time_with_label("GPU Read Results");
-            console::log_1(&"Reading batch results from GPU".into());
             
             // Читаем результаты обратно
             let buffer_slice = output_buffer.slice(..);
@@ -462,8 +396,6 @@ impl GpuRenderer {
                     
                     drop(data);
                     output_buffer.unmap();
-                    web_sys::console::time_end_with_label("GPU Read Results");
-                    console::log_1(&"Batch GPU processing completed successfully".into());
                 },
                 Ok(Err(e)) => {
                     return Err(format!("Batch buffer mapping failed: {:?}", e));
@@ -482,7 +414,6 @@ impl GpuRenderer {
             // }
         }
         
-        web_sys::console::time_end_with_label("GPU Batch Internal");
         Ok(())
     }
 
@@ -492,15 +423,11 @@ impl GpuRenderer {
         lines: &[(f32, f32, f32, f32)],
         color: [u8; 4],
     ) -> Result<(), String> {
-        console::log_1(&format!("GPU rendering {} lines on {}x{} image", lines.len(), img.width(), img.height()).into());
-        
         // Создаем буфер для данных изображения (как u32 для RGBA пикселей)
         let img_width = img.width() as usize;
         let img_height = img.height() as usize;
         let pixel_count = img_width * img_height;
         let buffer_size = (pixel_count * std::mem::size_of::<u32>()) as u64;
-        
-        console::log_1(&format!("Creating image buffer: {}x{} = {} pixels", img_width, img_height, pixel_count).into());
         
         // Создаем буфер для изображения
         let buffer = self.device.create_buffer(&BufferDescriptor {
@@ -522,7 +449,7 @@ impl GpuRenderer {
             pixel_data.push(pixel);
         }
         
-        console::log_1(&"Image data converted to u32".into());
+        // Данные изображения конвертированы
         
         // Записываем данные изображения в буфер
         self.queue.write_buffer(&buffer, 0, bytemuck::cast_slice(&pixel_data));
@@ -646,9 +573,9 @@ impl GpuRenderer {
             compute_pass.set_bind_group(0, &bind_group, &[]);
             
             let workgroup_count = (lines.len() as u32 + 63) / 64; // Округляем вверх
-            console::log_1(&format!("Dispatching {} workgroups for {} lines", workgroup_count, lines.len()).into());
-            compute_pass.dispatch_workgroups(workgroup_count, 1, 1);
-            console::log_1(&"Compute dispatch completed".into());
+            // Dispatching workgroups
+            compute_pass.dispatch_workgroups(workgroup_count as u32, 1, 1);
+            // Compute dispatch completed
         }
 
         // ОПТИМИЗАЦИЯ: Создаем буфер для чтения результата с минимальным размером
@@ -659,14 +586,10 @@ impl GpuRenderer {
             mapped_at_creation: false,
         });
 
-        console::log_1(&"Copying buffer and submitting commands".into());
         encoder.copy_buffer_to_buffer(&buffer, 0, &output_buffer, 0, buffer_size);
         
         // ОПТИМИЗАЦИЯ: Отправляем команды без ожидания
         self.queue.submit(std::iter::once(encoder.finish()));
-        console::log_1(&"Commands submitted to GPU queue".into());
-
-        console::log_1(&"Reading result back from GPU".into());
         // Читаем результат обратно - ОПТИМИЗИРОВАННАЯ ВЕРСИЯ
         let buffer_slice = output_buffer.slice(..);
         let (sender, receiver) = futures_channel::oneshot::channel();
@@ -696,7 +619,6 @@ impl GpuRenderer {
                 
                 drop(data);
                 output_buffer.unmap();
-                console::log_1(&"GPU data read completed".into());
             },
             Ok(Err(e)) => {
                 return Err(format!("Buffer mapping failed: {:?}", e).into());
@@ -718,18 +640,11 @@ impl GpuRenderer {
         // Проверяем, не превышает ли размер буфера максимальный лимит
         const MAX_BUFFER_SIZE: u64 = 1_073_741_824; // 1GB - безопасный лимит (запас от 2GB)
         
-        if size > MAX_BUFFER_SIZE {
-            console::log_1(&format!("Warning: Requested buffer size ({} bytes) exceeds safe limit ({} bytes). Consider splitting the batch.", size, MAX_BUFFER_SIZE).into());
-        }
-        
         if let Some(buffers) = self.buffer_pool.get_mut(&size) {
             if let Some(buffer) = buffers.pop() {
-                console::log_1(&format!("Reusing buffer from pool: {} bytes", size).into());
                 return buffer;
             }
         }
-        
-        console::log_1(&format!("Creating new buffer: {} bytes", size).into());
         self.device.create_buffer(&BufferDescriptor {
             label: Some(label),
             size,
@@ -742,7 +657,6 @@ impl GpuRenderer {
         let buffers = self.buffer_pool.entry(size).or_insert_with(Vec::new);
         if buffers.len() < 10 { // Ограничиваем размер пула
             buffers.push(buffer);
-            console::log_1(&format!("Buffer returned to pool: {} bytes", size).into());
         }
     }
 }
@@ -753,19 +667,14 @@ static mut GPU_RENDERER: Option<GpuRenderer> = None;
 pub async fn init_gpu_renderer() -> Result<(), Box<dyn std::error::Error>> {
     unsafe {
         if GPU_RENDERER.is_none() {
-            console::log_1(&"Attempting to initialize GPU renderer...".into());
             match GpuRenderer::new().await {
                 Ok(renderer) => {
                     GPU_RENDERER = Some(renderer);
-                    console::log_1(&"GPU renderer initialized successfully".into());
                 },
                 Err(e) => {
-                    console::log_1(&format!("Failed to initialize GPU renderer: {}", e).into());
                     return Err(e);
                 }
             }
-        } else {
-            console::log_1(&"GPU renderer already initialized".into());
         }
     }
     Ok(())
