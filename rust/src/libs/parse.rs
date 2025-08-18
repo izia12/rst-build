@@ -29,12 +29,12 @@ pub struct SerializableEntity1 {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RowData {
     pub id: usize,
-    pub as1: Vec<f64>,
-    pub as2: Vec<f64>,
-    pub as3: Vec<f64>,
-    pub as4: Vec<f64>,
-    pub asw1: Vec<f64>,
-    pub asw2: Vec<f64>,
+    pub as1: Vec<f32>,
+    pub as2: Vec<f32>,
+    pub as3: Vec<f32>,
+    pub as4: Vec<f32>,
+    pub asw1: Vec<f32>,
+    pub asw2: Vec<f32>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -55,7 +55,7 @@ pub struct EntityWithXlsx {
     pub material: Option<Material>,
 }
 impl EntityWithXlsx {
-    pub fn get_value(&self, field: &str) -> Option<Vec<f64>> {
+    pub fn get_value(&self, field: &str) -> Option<Vec<f32>> {
         match field {
             "as1" => Some(self.row.clone().unwrap().as1),
             "as2" => Some(self.row.clone().unwrap().as2),
@@ -356,23 +356,23 @@ fn parse_xlsx_from_bytes(data: &[u8]) -> Result<Vec<RowData>, String> {
 // }
 
 // Функция для парсинга столбцов с учетом ячейки ниже
-fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize) -> Vec<f64> {
-    let mut result = Vec::new();
+fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize) -> Vec<f32> {
+    let mut result:Vec<f32> = Vec::with_capacity(4);
 
     // Получаем значение из текущей ячейки
     if let Some(row) = rows.get(row_index) {
         if let Some(cell) = row.get(col_index) {
             match cell {
                 Data::Float(f) => {
-                    result.push(*f);
+                    result.push(*f as f32);
                 }
                 Data::Int(i) => {
-                    result.push(*i as f64);
+                    result.push(*i as f32);
                 }
                 Data::String(s) => {
                     // ЗАМЕНА ТОЛЬКО ЭТОГО БЛОКА!
                     let normalized = s.replace(',', ".");
-                    match normalized.parse::<f64>() {
+                    match normalized.parse::<f32>() {
                         Ok(val) => {
                             result.push(val);
                         }
@@ -398,15 +398,15 @@ fn parse_column_with_below(rows: &[&[Data]], row_index: usize, col_index: usize)
         if let Some(cell) = row.get(col_index) {
             match cell {
                 Data::Float(f) => {
-                    result.push(*f);
+                    result.push(*f as f32);
                 }
                 Data::Int(i) => {
-                    result.push(*i as f64);
+                    result.push(*i as f32);
                 }
                 Data::String(s) => {
                     // ЗАМЕНА ТОЛЬКО ЭТОГО БЛОКА!
                     let normalized = s.replace(',', ".");
-                    match normalized.parse::<f64>() {
+                    match normalized.parse::<f32>() {
                         Ok(val) => {
                             result.push(val);
                         }

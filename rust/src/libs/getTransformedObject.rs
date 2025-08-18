@@ -71,28 +71,28 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 		if let Some(plates) = plates_map.get(&OrderedFloat(z)) {
 			
 			let js_plates = Array::new();
-			let mut max_as1 = f64::NEG_INFINITY;
-			let mut max_as2 = f64::NEG_INFINITY;
-			let mut max_as3 = f64::NEG_INFINITY;
-			let mut max_as4 = f64::NEG_INFINITY;
-			let mut max_asw1 = f64::NEG_INFINITY;
-			let mut max_asw2 = f64::NEG_INFINITY;
+			let mut max_as1 = f32::NEG_INFINITY;
+			let mut max_as2 = f32::NEG_INFINITY;
+			let mut max_as3 = f32::NEG_INFINITY;
+			let mut max_as4 = f32::NEG_INFINITY;
+			let mut max_asw1 = f32::NEG_INFINITY;
+			let mut max_asw2 = f32::NEG_INFINITY;
 
 		for plate in plates.iter() {
 			if let Some(row) = &plate.row {
 				// Безопасное получение значений (используем 0.0 если элемента нет)
-				let as1_0 = *row.as1.get(0).unwrap_or(&0.0);
-				let as1_1 = *row.as1.get(1).unwrap_or(&0.0);
-				let as2_0 = *row.as2.get(0).unwrap_or(&0.0);
-				let as2_1 = *row.as2.get(1).unwrap_or(&0.0);
-				let as3_0 = *row.as3.get(0).unwrap_or(&0.0);
-				let as3_1 = *row.as3.get(1).unwrap_or(&0.0);
-				let as4_0 = *row.as4.get(0).unwrap_or(&0.0);
-				let as4_1 = *row.as4.get(1).unwrap_or(&0.0);
-				let asw1_0 = *row.asw1.get(0).unwrap_or(&0.0);
-				let asw1_1 = *row.asw1.get(1).unwrap_or(&0.0);
-				let asw2_0 = *row.asw2.get(0).unwrap_or(&0.0);
-				let asw2_1 = *row.asw2.get(1).unwrap_or(&0.0);
+				let as1_0 = *row.as1.get(0).unwrap_or(&0.0f32);
+				let as1_1 = *row.as1.get(1).unwrap_or(&0.0f32);
+				let as2_0 = *row.as2.get(0).unwrap_or(&0.0f32);
+				let as2_1 = *row.as2.get(1).unwrap_or(&0.0f32);
+				let as3_0 = *row.as3.get(0).unwrap_or(&0.0f32);
+				let as3_1 = *row.as3.get(1).unwrap_or(&0.0f32);
+				let as4_0 = *row.as4.get(0).unwrap_or(&0.0f32);
+				let as4_1 = *row.as4.get(1).unwrap_or(&0.0f32);
+				let asw1_0 = *row.asw1.get(0).unwrap_or(&0.0f32);
+				let asw1_1 = *row.asw1.get(1).unwrap_or(&0.0f32);
+				let asw2_0 = *row.asw2.get(0).unwrap_or(&0.0f32);
+				let asw2_1 = *row.asw2.get(1).unwrap_or(&0.0f32);
 				// Вычисляем текущие максимумы
 				let current_as1 = if as1_0 > as1_1 { as1_0 } else { as1_1 };
 				let current_as2 = if as2_0 > as2_1 { as2_0 } else { as2_1 };
@@ -111,30 +111,35 @@ pub fn get_horizontal_elements_object_js() -> JsValue {
 		}
 
 			// Заменяем невалидные значения на 0.0
-			if max_as1 == f64::NEG_INFINITY { max_as1 = 0.0; }
-			if max_as2 == f64::NEG_INFINITY { max_as2 = 0.0; }
-			if max_as3 == f64::NEG_INFINITY { max_as3 = 0.0; }
-			if max_as4 == f64::NEG_INFINITY { max_as4 = 0.0; }
-			if max_asw1 == f64::NEG_INFINITY { max_asw1 = 0.0; }
-			if max_asw2 == f64::NEG_INFINITY { max_asw2 = 0.0; }
+			if max_as1 == f32::NEG_INFINITY { max_as1 = 0.0f32; }
+			if max_as2 == f32::NEG_INFINITY { max_as2 = 0.0f32; }
+			if max_as3 == f32::NEG_INFINITY { max_as3 = 0.0f32; }
+			if max_as4 == f32::NEG_INFINITY { max_as4 = 0.0f32; }
+			if max_asw1 == f32::NEG_INFINITY { max_asw1 = 0.0f32; }
+			if max_asw2 == f32::NEG_INFINITY { max_asw2 = 0.0f32; }
 
-				// Устанавливаем значения
-			Reflect::set(&level_obj, &"maxAs1".into(), &JsValue::from_f64(max_as1)).unwrap_or_default();
-			Reflect::set(&level_obj, &"maxAs2".into(), &JsValue::from_f64(max_as2)).unwrap_or_default();
-			Reflect::set(&level_obj, &"maxAs3".into(), &JsValue::from_f64(max_as3)).unwrap_or_default();
-			Reflect::set(&level_obj, &"maxAs4".into(), &JsValue::from_f64(max_as4)).unwrap_or_default();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAsw1"), &JsValue::from_f64(max_asw1)).unwrap();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAsw2"), &JsValue::from_f64(max_asw2)).unwrap();
+				// Функция округления для устранения погрешностей f32
+			let round_f32 = |val: f32| -> f64 {
+				(val as f64 * 1000.0).round() / 1000.0 // Округляем до 3 знаков
+			};
+			
+			// Устанавливаем значения
+			Reflect::set(&level_obj, &"maxAs1".into(), &JsValue::from_f64(round_f32(max_as1))).unwrap_or_default();
+			Reflect::set(&level_obj, &"maxAs2".into(), &JsValue::from_f64(round_f32(max_as2))).unwrap_or_default();
+			Reflect::set(&level_obj, &"maxAs3".into(), &JsValue::from_f64(round_f32(max_as3))).unwrap_or_default();
+			Reflect::set(&level_obj, &"maxAs4".into(), &JsValue::from_f64(round_f32(max_as4))).unwrap_or_default();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAsw1"), &JsValue::from_f64(round_f32(max_asw1))).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAsw2"), &JsValue::from_f64(round_f32(max_asw2))).unwrap();
 			for plate in plates {
 				js_plates.push(&entity_to_js(plate));
 				current_z_material.insert(plate.material.clone().unwrap().material_num.unwrap());
 			}
-			Reflect::set(&level_obj, &JsValue::from_str("maxAs1"), &JsValue::from_f64(max_as1)).unwrap();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAs2"), &JsValue::from_f64(max_as2)).unwrap();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAs3"), &JsValue::from_f64(max_as3)).unwrap();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAs4"), &JsValue::from_f64(max_as4)).unwrap();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAsw1"), &JsValue::from_f64(max_asw1)).unwrap();
-			Reflect::set(&level_obj, &JsValue::from_str("maxAsw2"), &JsValue::from_f64(max_asw2)).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAs1"), &JsValue::from_f64(round_f32(max_as1))).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAs2"), &JsValue::from_f64(round_f32(max_as2))).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAs3"), &JsValue::from_f64(round_f32(max_as3))).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAs4"), &JsValue::from_f64(round_f32(max_as4))).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAsw1"), &JsValue::from_f64(round_f32(max_asw1))).unwrap();
+			Reflect::set(&level_obj, &JsValue::from_str("maxAsw2"), &JsValue::from_f64(round_f32(max_asw2))).unwrap();
 			Reflect::set(&level_obj, &"plates".into(), &js_plates).unwrap();
 		}
 
@@ -173,10 +178,12 @@ fn entity_to_js(entity: &EntityWithXlsx) -> JsValue {
 	if let Some(row) = &entity.row {
 		let row_obj = Object::new();
 		// Для каждого массива as1/as2/as3/as4:
-		let convert_to_js_array = |data: &[f64]| {
+		let convert_to_js_array = |data: &[f32]| {
 			let arr = Array::new();
 			for &value in data {
-				arr.push(&JsValue::from_f64(value));
+				// Округляем до 3 знаков для устранения погрешностей f32
+				let rounded = (value as f64 * 1000.0).round() / 1000.0;
+				arr.push(&JsValue::from_f64(rounded));
 			}
 			arr
 		};

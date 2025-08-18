@@ -45,21 +45,21 @@ pub fn unification_data(
                     // Вычисление абсолютных максимумов
                     let (max_as1, max_as2, max_as3, max_as4) = group.iter()
                         .filter_map(|e| e.row.as_ref())
-                        .fold((f64::MIN, f64::MIN, f64::MIN, f64::MIN),
+                        .fold((f32::MIN, f32::MIN, f32::MIN, f32::MIN),
                             |(a1, a2, a3, a4), row| (
-                                row.as1.first().copied().unwrap_or(f64::MIN).max(a1),
-                                row.as2.first().copied().unwrap_or(f64::MIN).max(a2),
-                                row.as3.first().copied().unwrap_or(f64::MIN).max(a3),
-                                row.as4.first().copied().unwrap_or(f64::MIN).max(a4)
+                                row.as1.first().copied().unwrap_or(f32::MIN).max(a1),
+                                row.as2.first().copied().unwrap_or(f32::MIN).max(a2),
+                                row.as3.first().copied().unwrap_or(f32::MIN).max(a3),
+                                row.as4.first().copied().unwrap_or(f32::MIN).max(a4)
                             ));
                     for e in group {
                         let mut new_entity = (*e).clone();
                         new_entity.changed = true;
                         if let Some(row) = &mut new_entity.row {
-                            row.as1 = vec![max_as1.max(0.0)];
-                            row.as2 = vec![max_as2.max(0.0)];
-                            row.as3 = vec![max_as3.max(0.0)];
-                            row.as4 = vec![max_as4.max(0.0)];
+                            row.as1 = vec![max_as1.max(0.0f32)];
+                            row.as2 = vec![max_as2.max(0.0f32)];
+                            row.as3 = vec![max_as3.max(0.0f32)];
+                            row.as4 = vec![max_as4.max(0.0f32)];
                         }
                         processed.push(new_entity);
                     }

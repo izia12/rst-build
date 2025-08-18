@@ -27,10 +27,10 @@ pub struct ShapeData {
 
 #[derive(Serialize)]
 pub struct AsValues {
-    pub as1: Vec<f64>,
-    pub as2: Vec<f64>,
-    pub as3: Vec<f64>,
-    pub as4: Vec<f64>,
+    pub as1: Vec<f32>,
+    pub as2: Vec<f32>,
+    pub as3: Vec<f32>,
+    pub as4: Vec<f32>,
 }
 
 #[derive(Serialize)]
