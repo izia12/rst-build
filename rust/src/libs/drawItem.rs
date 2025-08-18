@@ -2,7 +2,7 @@ use std::io::Cursor;
 use std::sync::{Arc};
 
 use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
-use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut}, point::Point};
+use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, }, point::Point};
 use rusttype::{Font, Scale};
 use serde::Serialize;
 use web_sys::console;
@@ -505,7 +505,7 @@ impl DrawItemZ {
 				.collect();
 			futures::future::join_all(futures).await
 		} else {
-			let mut results = Vec::new();
+			let mut results = Vec::with_capacity(4); // 4 результата для полей
 			for field in fields.iter() {
 				let result = self.draw_image_as1_optimized(field, config).await;
 				results.push(result);
@@ -529,7 +529,7 @@ impl DrawItemZ {
 			results
 		} else {
 			// Последовательная генерация
-			let mut results = Vec::new();
+			let mut results = Vec::with_capacity(4); // 4 результата для полей
 			for field in &fields {
 				let result = self.draw_image_as1_optimized(field, config).await;
 				results.push(result);
@@ -548,9 +548,9 @@ impl DrawItemZ {
 		}
 
 		let fields = ["as1", "as2", "as3", "as4"];
-		let mut images = Vec::new();
-		let mut all_lines = Vec::new();
-		let mut colors = Vec::new();
+		let mut images = Vec::with_capacity(4); // 4 изображения для полей
+		let mut all_lines = Vec::with_capacity(100000); // Примерная оценка линий
+		let mut colors = Vec::with_capacity(4); // 4 цвета для полей
 
 		// Подготавливаем все изображения и данные для батчевого рендеринга
 		for field in &fields {
@@ -563,7 +563,7 @@ impl DrawItemZ {
 			}
 
 			// Собираем линии для этого изображения с ПРАВИЛЬНЫМ масштабированием
-			let mut lines_for_image = Vec::new();
+			let mut lines_for_image = Vec::with_capacity(250); // Примерно 1000/4 линий на изображение
 			
 			// ПРАВИЛЬНЫЙ расчет масштаба с фиксированными отступами 5мм
 			let margin_pixels = MARGIN_MM * MM_TO_PIXELS;
@@ -641,7 +641,7 @@ impl DrawItemZ {
 		}
 
 		// PNG кодирование
-		let mut results = Vec::new();
+		let mut results = Vec::with_capacity(4); // 4 результата для полей
 		for img in images {
 			let mut png_data = Vec::new();
 			{
@@ -669,7 +669,7 @@ impl DrawItemZ {
 	{
 		let fields = ["as1", "as2", "as3", "as4"];
 		let total = fields.len();
-		let mut results = Vec::new();
+		let mut results = Vec::with_capacity(4); // 4 результата для полей
 		
 		for (index, field) in fields.iter().enumerate() {
 			let result = self.draw_image_as1(field).await;

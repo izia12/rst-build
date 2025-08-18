@@ -91,7 +91,7 @@ pub fn get_optimized_canvas_data(
     }
     
     let total_levels = sorted_data.len();
-    let mut levels = Vec::new();
+    let mut levels = Vec::with_capacity(z_keys.len());
     let mut total_shapes = 0;
     let mut visible_levels = 0;
     
@@ -101,7 +101,7 @@ pub fn get_optimized_canvas_data(
         }
         
         if let Some(entities) = sorted_data.get(z_key) {
-            let mut shapes = Vec::new();
+            let mut shapes = Vec::with_capacity(entities.len().min(max_shapes_per_level));
             let mut level_shape_count = 0;
             
             for entity in entities {
