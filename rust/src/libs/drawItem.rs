@@ -1,7 +1,7 @@
 use std::io::Cursor;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 
-use image::{ImageBuffer, ImageOutputFormat, ImageFormat, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
+use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
 use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut}, point::Point};
 use rusttype::{Font, Scale};
 use serde::Serialize;
@@ -162,28 +162,8 @@ impl DrawItemZ {
 		self.data.push(entity);
 	}
 
-	// Функция для автоматического расчета границ изображения с оптимальной ориентацией
-	fn calculate_image_bounds(&self) -> ContentDimensions {
-		let mut min_x = f64::INFINITY;
-		let mut max_x = f64::NEG_INFINITY;
-		let mut min_y = f64::INFINITY;
-		let mut max_y = f64::NEG_INFINITY;
 
-		// Находим границы всех объектов
-		for item in &self.data {
-			for vertex in &item.vertices {
-				min_x = min_x.min(vertex.x);
-				max_x = max_x.max(vertex.x);
-				min_y = min_y.min(vertex.y);
-				max_y = max_y.max(vertex.y);
-			}
-		}
-
-		// Используем простой конструктор с фиксированными размерами A4
-		ContentDimensions::new_a4_simple(min_x, min_y, max_x, max_y)
-	}
-
-	fn calculate_image_bounds_with_config(&self, config: &PerformanceConfig) -> ContentDimensions {
+	fn calculate_image_bounds_with_config(&self, _config: &PerformanceConfig) -> ContentDimensions {
 		let mut min_x = f64::INFINITY;
 		let mut max_x = f64::NEG_INFINITY;
 		let mut min_y = f64::INFINITY;
@@ -216,8 +196,6 @@ impl DrawItemZ {
 		ContentDimensions::new_a4_simple(min_x, min_y, max_x, max_y)
 	}
 
-
-	
 	// CPU fallback функция
 	fn render_item_cpu_fallback(&self, item: &EntityWithXlsx, img: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, 
 								coord_scale: f64, offset_x: f64, offset_y: f64, field: &str, 
@@ -345,16 +323,6 @@ impl DrawItemZ {
 		// Центрируем в доступной области (между отступами)
 		let offset_x = margin_pixels + (available_width_pixels - scaled_content_width) / 2.0;
 		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0;
-		
-		// Проверки границ
-		let content_fits_x = scaled_content_width <= available_width_pixels;
-		let content_fits_y = scaled_content_height <= available_height_pixels;
-		
-		// Проверка границ выполнена
-		// Анализ фигур выполнен
-		
-		// Масштаб рассчитан
-		
 
 		let font_size = 25.0; 
 		let text_color = Rgb([0u8, 0u8, 0u8]);
@@ -546,8 +514,6 @@ impl DrawItemZ {
 		}
 	}
 
-
-
 	// CPU рендеринг батча изображений
 	async fn draw_all_images_cpu_batch(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
 		// CPU рендеринг батча
@@ -572,84 +538,6 @@ impl DrawItemZ {
 		};
 		
 		// CPU рендеринг завершен
-		results
-	}
-
-	fn draw_all_images_cpu_batch_sync(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
-		// Синхронный CPU рендеринг
-		let fields = ["as1", "as2", "as3", "as4"];
-		let mut results = Vec::new();
-
-		for field in &fields {
-			// Рендеринг изображения
-			
-			let dimensions = self.calculate_image_bounds_with_config(config);
-			let mut img = ImageBuffer::new(dimensions.img_width, dimensions.img_height);
-			
-			// Заполняем белым фоном
-			for pixel in img.pixels_mut() {
-				*pixel = Rgba([255, 255, 255, 255]);
-			}
-
-			// Рисование линий
-			// Рендерим линии для этого поля
-			let scale_x = dimensions.img_width as f64 / dimensions.content_width;
-			let scale_y = dimensions.img_height as f64 / dimensions.content_height;
-			
-			for item in &self.data {
-				if item.entity_type == *field {
-					if item.vertices.len() == 4 {
-						let v = &item.vertices;
-						let x1 = ((v[0].x - dimensions.min_x) * scale_x) as f32;
-						let y1 = ((v[0].y - dimensions.min_y) * scale_y) as f32;
-						let x2 = ((v[1].x - dimensions.min_x) * scale_x) as f32;
-						let y2 = ((v[1].y - dimensions.min_y) * scale_y) as f32;
-						let x3 = ((v[2].x - dimensions.min_x) * scale_x) as f32;
-						let y3 = ((v[2].y - dimensions.min_y) * scale_y) as f32;
-						let x4 = ((v[3].x - dimensions.min_x) * scale_x) as f32;
-						let y4 = ((v[3].y - dimensions.min_y) * scale_y) as f32;
-						
-						// Рисуем линии прямоугольника
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x1, y1), (x2, y2), Rgba([255, 0, 0, 255]));
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x2, y2), (x3, y3), Rgba([255, 0, 0, 255]));
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x3, y3), (x4, y4), Rgba([255, 0, 0, 255]));
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x4, y4), (x1, y1), Rgba([255, 0, 0, 255]));
-					} else if item.vertices.len() == 3 {
-						let v = &item.vertices;
-						let x1 = ((v[0].x - dimensions.min_x) * scale_x) as f32;
-						let y1 = ((v[0].y - dimensions.min_y) * scale_y) as f32;
-						let x2 = ((v[1].x - dimensions.min_x) * scale_x) as f32;
-						let y2 = ((v[1].y - dimensions.min_y) * scale_y) as f32;
-						let x3 = ((v[2].x - dimensions.min_x) * scale_x) as f32;
-						let y3 = ((v[2].y - dimensions.min_y) * scale_y) as f32;
-						
-						// Рисуем линии треугольника
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x1, y1), (x2, y2), Rgba([255, 0, 0, 255]));
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x2, y2), (x3, y3), Rgba([255, 0, 0, 255]));
-						imageproc::drawing::draw_line_segment_mut(&mut img, (x3, y3), (x1, y1), Rgba([255, 0, 0, 255]));
-					}
-				}
-			}
-			// Линии нарисованы
-
-			// PNG кодирование
-			// Конвертируем в PNG
-			let mut png_data = Vec::new();
-			{
-				let encoder = image::codecs::png::PngEncoder::new(&mut png_data);
-				let _ = encoder.write_image(
-					img.as_raw(),
-					img.width(),
-					img.height(),
-					image::ColorType::Rgba8,
-				);
-			}
-			// PNG кодирование завершено
-			// Изображение завершено
-			results.push(png_data);
-		}
-
-		// Синхронный рендеринг завершен
 		results
 	}
 

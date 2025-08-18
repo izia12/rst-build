@@ -1,10 +1,10 @@
-use std::{cell::RefCell, collections::HashMap, io::Cursor};
+use std::{ collections::HashMap, io::Cursor};
 use docx_rs::{Docx, Paragraph, Pic, Run};
 use ordered_float::OrderedFloat;
 use crate::libs::drawItem::DrawItemZ;
 use crate::libs::parse::EntityWithXlsx;
 use crate::libs::generate_documents::performance::{
-    PerformanceMonitor, PerformanceConfig, PerformanceMetrics,
+    PerformanceMonitor, PerformanceConfig, 
     log_performance_metrics, get_optimization_recommendations
 };
 

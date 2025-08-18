@@ -1,10 +1,8 @@
 use std::io::Cursor;
-use docx_rs::{Docx, Paragraph, Pic, Run, PageSize, PageOrientationType};
+use docx_rs::{Docx, Paragraph, Pic, Run};
 use crate::libs::drawItem::DrawItemZ;
-use crate::libs::parse::EntityWithXlsx;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 use ordered_float::OrderedFloat;
 
 /// Модуль для генерации DOCX документов с изображениями

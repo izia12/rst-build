@@ -1,15 +1,13 @@
 pub mod libs;
 use std::{cell::RefCell, collections::HashMap};
 use image::{ImageBuffer, Rgb, ImageOutputFormat};
-use imageproc::drawing::{draw_line_segment_mut, draw_text_mut};
-use rusttype::{Font, Scale};
+use imageproc::drawing::{draw_line_segment_mut};
 use std::io::Cursor;
 use web_sys::console;
 use imageproc::point::Point;
 use wasm_bindgen::prelude::*;
 use docx_rs::{Docx, Paragraph, Pic, Run};
 use serde::{Serialize, Deserialize};
-use crate::libs::drawItem::DrawItemZ;
 use ordered_float::OrderedFloat;
 use libs::{ 
 	arm_combination::SORTAMENT,
