@@ -8,6 +8,23 @@ use crate::libs::generate_documents::performance::{
     log_performance_metrics, get_optimization_recommendations
 };
 
+/// НОВАЯ ФУНКЦИЯ: Создает DOCX документ с цветовой палитрой
+pub async fn create_docx_with_color_palette(
+    entities: Vec<EntityWithXlsx>,
+    selected_floors: Vec<f32>,
+    selected_combinations: Vec<serde_json::Value>, // Временно используем Value
+    title: &str
+) -> Vec<u8> {
+    web_sys::console::log_1(&format!("🎨 Creating DOCX with color palette for {} floors", selected_floors.len()).into());
+    
+    // Пока используем стандартную генерацию, позже добавим цветовую палитру
+    create_docx_for_selected_floors(
+        entities,
+        selected_floors,
+        title
+    ).await
+}
+
 /// Создает DOCX документ для всех этажей с мониторингом производительности
 pub async fn create_docx_document(
     entities: Vec<EntityWithXlsx>,

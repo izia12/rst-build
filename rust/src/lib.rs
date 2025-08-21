@@ -330,6 +330,60 @@ pub fn get_table_data_for_frontend(
         .map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
 
+// НОВАЯ ФУНКЦИЯ: Генерация DOCX с цветовой палитрой на основе выбранных комбинаций
+#[wasm_bindgen]
+pub async fn create_docx_with_selected_combinations(selected_combinations_json: &str) -> Result<Vec<u8>, JsValue> {
+    use serde_json;
+    
+    #[derive(serde::Deserialize)]
+    struct SelectedCombination {
+        floor_level: String,
+        function_name: String,
+        as_target_value: f32,
+        combination: CombinationItem,
+    }
+    
+    #[derive(serde::Deserialize)]
+    struct CombinationItem {
+        main_diameter: u32,
+        additional_diameter: u32,
+        total_area: f32,
+        deviation: f32,
+        result_scale: Option<String>,
+    }
+    
+    #[derive(serde::Deserialize)]
+    struct SelectedCombinationsData {
+        combinations: Vec<SelectedCombination>,
+        floors: Vec<String>,
+    }
+    
+    let selected_data: SelectedCombinationsData = serde_json::from_str(selected_combinations_json)
+        .map_err(|e| JsValue::from_str(&format!("Failed to parse selected combinations: {:?}", e)))?;
+    
+    web_sys::console::log_1(&format!("🎨 Generating DOCX with color palette for {} combinations on {} floors", 
+        selected_data.combinations.len(), selected_data.floors.len()).into());
+    
+    // Получаем все сущности из глобального хранилища
+    let entities = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    // Создаем DOCX с цветовой палитрой
+    let docx_data = libs::generate_documents::docx_generator::create_docx_with_color_palette(
+        entities,
+        selected_data.floors.iter().map(|f| f.parse::<f32>().unwrap_or(0.0)).collect(),
+        selected_data.combinations,
+        "Документ с цветовой палитрой арматуры"
+    ).await;
+    
+    Ok(docx_data)
+}
+
+// СТАРАЯ ФУНКЦИЯ (теперь только для fallback)
 #[wasm_bindgen]
 pub async fn create_docx_for_selected_combinations(selected_floors_json: &str) -> Vec<u8> {
     use serde_json;

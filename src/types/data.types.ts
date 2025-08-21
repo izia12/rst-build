@@ -102,6 +102,7 @@ export type CombinationItem={
 	additional_diameter: number;
 	total_area: number;
 	deviation: number;
+	result_scale?: string; // Итоговая шкала для этой комбинации
 }
 export type CustomSettingsForCombinationItem={
 	is_min_deviation:boolean;
@@ -119,4 +120,17 @@ export type PreparedExcelView = {
 	main_step: number;
 	additional_step: number;
 	values: PreparedArmatureCombination[];
+}
+
+// Новые типы для передачи выбранных комбинаций в WASM
+export type SelectedCombination = {
+	floor_level: string;
+	function_name: "as1" | "as2" | "as3" | "as4";
+	as_target_value: number;
+	combination: PreparedCombinationItem;
+}
+
+export type SelectedCombinationsData = {
+	combinations: SelectedCombination[];
+	floors: string[]; // Уникальные этажи для генерации
 }

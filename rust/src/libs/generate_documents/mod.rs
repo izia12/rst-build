@@ -8,6 +8,7 @@ pub mod performance;
 pub mod image_generation;
 
 pub mod wasm_time;
+pub mod color_palette;
 
 // Реэкспорт основных функций для удобства использования
 pub use docx_generator::{

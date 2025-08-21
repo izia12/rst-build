@@ -1,39 +1,55 @@
 import React from 'react';
 import { useAppSelector } from '../store/store';
 import { useAppDispatch } from '../store/store';
-import { generateDocumentForSelectedCombinations } from '../store/slices/thunks/wasmThanks';
+import { generateDocumentForSelectedCombinations, generateDocumentWithColorPalette } from '../store/slices/thunks/wasmThanks';
 import { Button } from './custom-components/Button';
+import { SelectedCombination, SelectedCombinationsData } from '../types/data.types';
 
 export const DocumentGenerator: React.FC = () => {
     const dispatch = useAppDispatch();
     const { excelViewData, documentGeneration } = useAppSelector(state => state.wasm);
     
     const handleGenerateDocument = async () => {
-        // Фильтруем данные по выбранным комбинациям (is_default_checked: true)
+        // Собираем выбранные комбинации с их данными
+        const selectedCombinations: SelectedCombination[] = [];
         const selectedFloors: string[] = [];
         
         excelViewData.forEach(floor => {
-            floor.values.forEach(combination => {
-                combination.combinations.forEach(item => {
+            floor.values.forEach(armatureCombination => {
+                armatureCombination.combinations.forEach(item => {
                     if (item.is_default_checked) {
-                        // Добавляем level этажа в список выбранных
-                        const floorLevel = floor.level;
-                        if (!selectedFloors.includes(floorLevel)) {
-                            selectedFloors.push(floorLevel);
+                        // Добавляем выбранную комбинацию
+                        selectedCombinations.push({
+                            floor_level: floor.level,
+                            function_name: armatureCombination.function_name,
+                            as_target_value: armatureCombination.as_target_value,
+                            combination: item
+                        });
+                        
+                        // Добавляем этаж в список если его еще нет
+                        if (!selectedFloors.includes(floor.level)) {
+                            selectedFloors.push(floor.level);
                         }
                     }
                 });
             });
         });
         
-        if (selectedFloors.length === 0) {
+        if (selectedCombinations.length === 0) {
             alert('Не выбрано ни одной комбинации для генерации документа');
             return;
         }
-        console.log(selectedFloors);
+        
+        const selectedData: SelectedCombinationsData = {
+            combinations: selectedCombinations,
+            floors: selectedFloors
+        };
+        
+        console.log('Selected combinations data:', selectedData);
 		
         try {
-            const result = await dispatch(generateDocumentForSelectedCombinations(selectedFloors)).unwrap();
+            // Используем новую функцию с цветовой палитрой
+            const result = await dispatch(generateDocumentWithColorPalette(selectedData)).unwrap();
             
             // Создаем blob и скачиваем файл
             const blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });

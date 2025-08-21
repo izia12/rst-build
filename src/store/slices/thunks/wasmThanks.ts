@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import { ArmDiameters, PreparedExcelView, PureWASMJsData,  WASMDataType } from "../../../types/data.types"
-import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, get_table_data_for_frontend, parse_data, create_docx_for_selected_combinations } from "../../../assets/pkg/rst_build"
+import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, get_table_data_for_frontend, parse_data, create_docx_for_selected_combinations, get_entities_json, create_docx_with_selected_combinations } from "../../../assets/pkg/rst_build"
 import { getPureWASMJsData } from "../../../helpers/getPureWASMJsData"
 export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:string, txtData:string, xlsxData:Uint8Array}>(
 	'users/fetchByIdStatus',
@@ -60,6 +60,31 @@ export const fetchExcelViewData = createAsyncThunk<PreparedExcelView[], {diamete
     }
 );
 
+// НОВАЯ ФУНКЦИЯ: Генерация документа с цветовой палитрой
+export const generateDocumentWithColorPalette = createAsyncThunk<Uint8Array, import('../../../types/data.types').SelectedCombinationsData>(
+	'data/generateDocumentWithColors',
+	async (selectedData, thunkAPI) => {
+        try {
+            await init();
+            
+            console.log('🎨 Generating document with color palette for:', selectedData);
+            
+            // Конвертируем данные в JSON строку
+            const selectedCombinationsJson = JSON.stringify(selectedData);
+            
+            // Вызываем новую WASM функцию для генерации с цветовой палитрой
+            const result = await create_docx_with_selected_combinations(selectedCombinationsJson);
+            
+            if (!result) throw new Error('Failed to generate document with color palette');
+            return new Uint8Array(result);
+        } catch (error) {
+            console.error('❌ Color palette generation failed:', error);
+            return thunkAPI.rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
+        }
+    }
+);
+
+// СТАРАЯ ФУНКЦИЯ: Генерация документа по этажам
 export const generateDocumentForSelectedCombinations = createAsyncThunk<Uint8Array, string[]>(
 	'data/generateDocument',
 	async (selectedFloors, thunkAPI) => {
