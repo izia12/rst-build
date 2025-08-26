@@ -16,7 +16,7 @@ use super::gpu_renderer::{init_gpu_renderer, get_gpu_renderer, is_gpu_available}
 const A4_WIDTH_MM: f64 = 210.0;  // Ширина A4 в миллиметрах
 const A4_HEIGHT_MM: f64 = 297.0; // Высота A4 в миллиметрах (БОЛЬШЕ ширины!)
 const IMAGE_COVERAGE_PERCENT: f64 = 0.9; // Изображение занимает 90% страницы
-const MARGIN_MM: f64 = 5.0; // Отступы 0.5 см = 5 мм
+const MARGIN_MM: f64 = 0.5; // Минимальные отступы 1.5 мм для максимального масштаба
 const DPI: f64 = 300.0; // Разрешение для печати
 const MM_TO_PIXELS: f64 = DPI / 25.4; // Конвертация мм в пиксели (25.4 мм = 1 дюйм)
 
@@ -292,15 +292,15 @@ impl DrawItemZ {
 		let available_width_pixels = dimensions.img_width as f64 - 2.0 * margin_pixels;
 		let available_height_pixels = dimensions.img_height as f64 - 2.0 * margin_pixels;
 		
-		// ПРАВИЛЬНЫЙ расчет единого масштаба для X и Y
+		// ОПТИМИЗИРОВАННЫЙ расчет масштаба для максимального использования пространства
 		// Вычисляем отдельные масштабы
 		let scale_x = available_width_pixels / dimensions.content_width;
 		let scale_y = available_height_pixels / dimensions.content_height;
 		
-		// Выбираем МИНИМАЛЬНЫЙ масштаб - это гарантирует:
-		// 1. Одинаковый масштаб для X и Y (сохранение пропорций)
-		// 2. Весь контент поместится без обрезки
-		let coord_scale = scale_x.min(scale_y);
+		// Используем МАКСИМАЛЬНЫЙ возможный масштаб с небольшим запасом для безопасности
+		// Это позволяет использовать все доступное пространство без магических чисел
+		let safety_margin = 0.95; // 5% запас для безопасности вместо больших отступов
+		let coord_scale = scale_x.min(scale_y) * safety_margin;
 		
 		// Вычисляем реальные размеры масштабированного контента
 		let scaled_content_width = dimensions.content_width * coord_scale;
