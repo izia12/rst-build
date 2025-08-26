@@ -61,11 +61,22 @@ pub async fn create_docx_document_optimized(
     
     web_sys::console::log_1(&format!("🚀 Starting DOCX generation for {} elements", elements_count).into());
     
-    let mut doc = Docx::new().add_paragraph(
-        Paragraph::new().add_run(
-            Run::new().add_text(title)
-        )
-    );
+    let mut doc = Docx::new()
+        // Устанавливаем минимальные отступы страницы для максимального использования пространства
+        .page_margin(docx_rs::PageMargin {
+            top: 200,    // 0.2 см (минимальный отступ)
+            right: 200,  // 0.2 см
+            bottom: 200, // 0.2 см  
+            left: 200,   // 0.2 см
+            header: 0,   // Без отступа для заголовка
+            footer: 0,   // Без отступа для подвала
+            gutter: 0,   // Без переплета
+        })
+        .add_paragraph(
+            Paragraph::new().add_run(
+                Run::new().add_text(title)
+            )
+        );
     
     let hash = sort_by_z(entities);
     let floors_count = hash.len();
@@ -141,11 +152,22 @@ pub async fn create_docx_document_legacy(
     entities: Vec<EntityWithXlsx>,
     title: &str
 ) -> Vec<u8> {
-    let mut doc = Docx::new().add_paragraph(
-        Paragraph::new().add_run(
-            Run::new().add_text(title)
-        )
-    );
+    let mut doc = Docx::new()
+        // Устанавливаем минимальные отступы страницы для максимального использования пространства
+        .page_margin(docx_rs::PageMargin {
+            top: 200,    // 0.2 см (минимальный отступ)
+            right: 200,  // 0.2 см
+            bottom: 200, // 0.2 см  
+            left: 200,   // 0.2 см
+            header: 0,   // Без отступа для заголовка
+            footer: 0,   // Без отступа для подвала
+            gutter: 0,   // Без переплета
+        })
+        .add_paragraph(
+            Paragraph::new().add_run(
+                Run::new().add_text(title)
+            )
+        );
     
     let hash = sort_by_z(entities);
     
@@ -196,11 +218,22 @@ pub async fn create_docx_for_selected_floors(
     selected_floors: Vec<f32>,
     title: &str
 ) -> Vec<u8> {
-    let mut doc = Docx::new().add_paragraph(
-        Paragraph::new().add_run(
-            Run::new().add_text(title)
-        )
-    );
+    let mut doc = Docx::new()
+        // Устанавливаем минимальные отступы страницы для максимального использования пространства
+        .page_margin(docx_rs::PageMargin {
+            top: 200,    // 0.2 см (минимальный отступ)
+            right: 200,  // 0.2 см
+            bottom: 200, // 0.2 см  
+            left: 200,   // 0.2 см
+            header: 0,   // Без отступа для заголовка
+            footer: 0,   // Без отступа для подвала
+            gutter: 0,   // Без переплета
+        })
+        .add_paragraph(
+            Paragraph::new().add_run(
+                Run::new().add_text(title)
+            )
+        );
     
     // Группируем по Z-координате (этажам)
     let hash = sort_by_z(entities);
