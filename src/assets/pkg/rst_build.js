@@ -526,6 +526,17 @@ export function get_table_data_for_frontend(available_diameters, floors_data_jso
 }
 
 /**
+ * @param {string} selected_combinations_json
+ * @returns {Promise<Uint8Array>}
+ */
+export function create_docx_with_selected_combinations(selected_combinations_json) {
+    const ptr0 = passStringToWasm0(selected_combinations_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.create_docx_with_selected_combinations(ptr0, len0);
+    return ret;
+}
+
+/**
  * @param {string} selected_floors_json
  * @returns {Promise<Uint8Array>}
  */
@@ -573,11 +584,11 @@ export function get_canvas_statistics_wasm() {
 }
 
 function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure220_externref_shim(arg0, arg1, arg2);
+    wasm.closure229_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_286(arg0, arg1, arg2, arg3) {
-    wasm.closure450_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_287(arg0, arg1, arg2, arg3) {
+    wasm.closure459_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_GpuBufferBindingType = ["uniform", "storage", "read-only-storage"];
@@ -820,7 +831,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_286(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_287(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -1121,8 +1132,8 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper1393 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 221, __wbg_adapter_40);
+    imports.wbg.__wbindgen_closure_wrapper1412 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 230, __wbg_adapter_40);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {

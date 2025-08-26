@@ -8,11 +8,28 @@ use crate::libs::generate_documents::performance::{
     log_performance_metrics, get_optimization_recommendations
 };
 
+#[derive(serde::Deserialize, Debug)]
+pub struct SelectedCombination {
+    pub floor_level: String,
+    pub function_name: String,
+    pub as_target_value: f32,
+    pub combination: CombinationItem,
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct CombinationItem {
+    pub main_diameter: u32,
+    pub additional_diameter: u32,
+    pub total_area: f32,
+    pub deviation: f32,
+    pub result_scale: Option<String>,
+}
+
 /// НОВАЯ ФУНКЦИЯ: Создает DOCX документ с цветовой палитрой
 pub async fn create_docx_with_color_palette(
     entities: Vec<EntityWithXlsx>,
     selected_floors: Vec<f32>,
-    selected_combinations: Vec<serde_json::Value>, // Временно используем Value
+    selected_combinations: Vec<SelectedCombination>,
     title: &str
 ) -> Vec<u8> {
     web_sys::console::log_1(&format!("🎨 Creating DOCX with color palette for {} floors", selected_floors.len()).into());

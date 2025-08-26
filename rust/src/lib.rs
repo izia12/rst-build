@@ -335,22 +335,7 @@ pub fn get_table_data_for_frontend(
 pub async fn create_docx_with_selected_combinations(selected_combinations_json: &str) -> Result<Vec<u8>, JsValue> {
     use serde_json;
     
-    #[derive(serde::Deserialize)]
-    struct SelectedCombination {
-        floor_level: String,
-        function_name: String,
-        as_target_value: f32,
-        combination: CombinationItem,
-    }
-    
-    #[derive(serde::Deserialize)]
-    struct CombinationItem {
-        main_diameter: u32,
-        additional_diameter: u32,
-        total_area: f32,
-        deviation: f32,
-        result_scale: Option<String>,
-    }
+    use crate::libs::generate_documents::docx_generator::{SelectedCombination, CombinationItem};
     
     #[derive(serde::Deserialize)]
     struct SelectedCombinationsData {
@@ -360,9 +345,7 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
     
     let selected_data: SelectedCombinationsData = serde_json::from_str(selected_combinations_json)
         .map_err(|e| JsValue::from_str(&format!("Failed to parse selected combinations: {:?}", e)))?;
-    
-    web_sys::console::log_1(&format!("🎨 Generating DOCX with color palette for {} combinations on {} floors", 
-        selected_data.combinations.len(), selected_data.floors.len()).into());
+  
     
     // Получаем все сущности из глобального хранилища
     let entities = GLOBAL_ENTITIES.with(|cell| {

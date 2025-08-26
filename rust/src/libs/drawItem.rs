@@ -2,7 +2,7 @@ use std::io::Cursor;
 use std::sync::{Arc};
 
 use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
-use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, }, point::Point};
+use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, draw_filled_rect_mut, draw_polygon_mut}, point::Point, rect::Rect};
 use rusttype::{Font, Scale};
 use serde::Serialize;
 use web_sys::console;
@@ -207,13 +207,13 @@ impl DrawItemZ {
 				Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
 			}).collect();
 			
-			for i in 0..4 {
-				let next = (i + 1) % 4;
-				draw_line_segment_mut(img, 
-					(points[i].x as f32, points[i].y as f32), 
-					(points[next].x as f32, points[next].y as f32), 
-					Rgb([255, 0, 0]));
-			}
+			// Преобразуем точки для функции заливки четырехугольника
+			let quad_points: Vec<Point<i32>> = points.iter().map(|p| {
+				Point::new(p.x as i32, p.y as i32)
+			}).collect();
+			
+			// Заливаем четырехугольник темно-желтым цветом
+			draw_polygon_mut(img, &quad_points, Rgb([204, 204, 0]));
 		} else if item.vertices.len() == 3 {
 			let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
 				let normalized_x = v.x - dimensions.min_x;
@@ -221,13 +221,13 @@ impl DrawItemZ {
 				Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
 			}).collect();
 			
-			for i in 0..3 {
-				let next = (i + 1) % 3;
-				draw_line_segment_mut(img,
-					(points[i].x as f32, points[i].y as f32),
-					(points[next].x as f32, points[next].y as f32),
-					Rgb([255, 0, 0]));
-			}
+			// Преобразуем точки для функции заливки треугольника
+			let triangle_points: Vec<Point<i32>> = points.iter().map(|p| {
+				Point::new(p.x as i32, p.y as i32)
+			}).collect();
+			
+			// Заливаем треугольник темно-желтым цветом
+			draw_polygon_mut(img, &triangle_points, Rgb([204, 204, 0]));
 		}
 		
 		self.render_text_cpu(item, img, coord_scale, offset_x, offset_y, field, font_scale, text_color, dimensions);
@@ -277,21 +277,8 @@ impl DrawItemZ {
 		// Проверяем использование GPU ускорения
 		let monitor = PerformanceMonitor::new(config.clone());
 		
-		// Проверяем доступность GPU и инициализируем если нужно
-		let use_gpu = if !is_gpu_available() {
-			match init_gpu_renderer().await {
-				Ok(()) => {
-					web_sys::console::log_1(&"GPU renderer initialized successfully".into());
-					monitor.should_use_gpu_acceleration(self.data.len()) && get_gpu_renderer().is_some()
-				},
-				Err(e) => {
-					web_sys::console::log_1(&format!("Failed to initialize GPU renderer: {}", e).into());
-					false
-				}
-			}
-		} else {
-			monitor.should_use_gpu_acceleration(self.data.len()) && get_gpu_renderer().is_some()
-		};
+		// ОТКЛЮЧАЕМ GPU - используем только CPU для быстрой генерации
+		let use_gpu = false;
 		
 		// Режим рендеринга определен
 		
@@ -401,74 +388,108 @@ impl DrawItemZ {
 				}
 			}
 		} else {
-			// Обычный CPU рендеринг
-			for item in &self.data{
-			if item.vertices.len()==4{
-				// ПРАВИЛЬНОЕ преобразование координат с нормализацией
-				let point_a = Point::new((item.vertices[0].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[0].y - dimensions.min_y) * coord_scale + offset_y);
-				let point_b = Point::new((item.vertices[1].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[1].y - dimensions.min_y) * coord_scale + offset_y);
-				let point_c = Point::new((item.vertices[2].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[2].y - dimensions.min_y) * coord_scale + offset_y);
-				let point_d = Point::new((item.vertices[3].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[3].y - dimensions.min_y) * coord_scale + offset_y);
-
-				draw_line_segment_mut(&mut img, (point_a.x as f32, point_a.y as f32), (point_b.x as f32, point_b.y as f32), Rgb([255, 0, 0]));
-				draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
-				draw_line_segment_mut(&mut img, (point_c.x as f32, point_c.y as f32), (point_d.x as f32, point_d.y as f32), Rgb([255, 0, 0]));
-				draw_line_segment_mut(&mut img, (point_d.x as f32, point_d.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
-				// Вычисляем границы четырехугольника для правильного позиционирования текста
-				let min_x = [point_a.x, point_b.x, point_c.x, point_d.x].iter().fold(f64::INFINITY, |a, &b| a.min(b));
-				let max_x = [point_a.x, point_b.x, point_c.x, point_d.x].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
-				let min_y = [point_a.y, point_b.y, point_c.y, point_d.y].iter().fold(f64::INFINITY, |a, &b| a.min(b));
-				let max_y = [point_a.y, point_b.y, point_c.y, point_d.y].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
-				
-				// Отступы 10% от размеров фигуры
-				let width = max_x - min_x;
-				let height = max_y - min_y;
-				let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
-				let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
-				
-				draw_text_mut(
-					&mut img,
-					text_color,
-					text_x, // 10% отступ слева
-					text_y, // 10% отступ сверху
-					font_scale,
-					&CACHED_FONT,
-					&item.get_value(field).unwrap().iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap().to_string(),
-				);
-			}
-			else if item.vertices.len()==3 {
-				// ПРАВИЛЬНОЕ преобразование координат с нормализацией
-				let point_a = Point::new((item.vertices[0].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[0].y - dimensions.min_y) * coord_scale + offset_y);
-				let point_b = Point::new((item.vertices[1].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[1].y - dimensions.min_y) * coord_scale + offset_y);
-				let point_c = Point::new((item.vertices[2].x - dimensions.min_x) * coord_scale + offset_x, (item.vertices[2].y - dimensions.min_y) * coord_scale + offset_y);
-				// let point_d = Point::new((item.vertices[3].x * 17.0)+150.0, (item.vertices[3].y * 17.0)+80.0);
-				draw_line_segment_mut(&mut img, (point_a.x as f32, point_a.y as f32), (point_b.x as f32, point_b.y as f32), Rgb([255, 0, 0]));
-				draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
-				draw_line_segment_mut(&mut img, (point_c.x as f32, point_c.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
-				// draw_line_segment_mut(&mut img, (point_d.x as f32, point_d.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
-				// Вычисляем границы треугольника для правильного позиционирования текста
-				let min_x = [point_a.x, point_b.x, point_c.x].iter().fold(f64::INFINITY, |a, &b| a.min(b));
-				let max_x = [point_a.x, point_b.x, point_c.x].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
-				let min_y = [point_a.y, point_b.y, point_c.y].iter().fold(f64::INFINITY, |a, &b| a.min(b));
-				let max_y = [point_a.y, point_b.y, point_c.y].iter().fold(f64::NEG_INFINITY, |a, &b| a.max(b));
-				
-				// Отступы 10% от размеров фигуры
-				let width = max_x - min_x;
-				let height = max_y - min_y;
-				let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
-				let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
-				
-				draw_text_mut(
-					&mut img,
-					text_color,
-					text_x, // 10% отступ слева
-					text_y, // 10% отступ сверху
-					font_scale,
-					&CACHED_FONT,
-					// &item.row.as1.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap().to_string(),
-					&item.get_value(field).unwrap().iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap().to_string(),
-				);
-			}
+			// Быстрый CPU рендеринг с заливкой и контурами
+			for item in &self.data {
+				if item.vertices.len() == 4 {
+					// Преобразуем координаты
+					let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
+						let normalized_x = v.x - dimensions.min_x;
+						let normalized_y = v.y - dimensions.min_y;
+						Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
+					}).collect();
+					
+					// Заливка четырехугольника
+					let quad_points: Vec<Point<i32>> = points.iter().map(|p| {
+						Point::new(p.x as i32, p.y as i32)
+					}).collect();
+					draw_polygon_mut(&mut img, &quad_points, Rgb([204, 204, 0]));
+					
+					// Контуры поверх заливки
+					for i in 0..4 {
+						let next = (i + 1) % 4;
+						draw_line_segment_mut(&mut img, 
+							(points[i].x as f32, points[i].y as f32), 
+							(points[next].x as f32, points[next].y as f32), 
+							Rgb([0, 0, 0])); // Черные контуры
+					}
+					
+					// Рендерим текст с правильными значениями из AS функций
+					if let Some(values) = item.get_value(field) {
+						if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
+							// Вычисляем границы четырехугольника для правильного позиционирования текста
+							let min_x = points.iter().map(|p| p.x).fold(f64::INFINITY, f64::min);
+							let max_x = points.iter().map(|p| p.x).fold(f64::NEG_INFINITY, f64::max);
+							let min_y = points.iter().map(|p| p.y).fold(f64::INFINITY, f64::min);
+							let max_y = points.iter().map(|p| p.y).fold(f64::NEG_INFINITY, f64::max);
+							
+							// Отступы 10% от размеров фигуры
+							let width = max_x - min_x;
+							let height = max_y - min_y;
+							let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
+							let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
+							
+							draw_text_mut(
+								&mut img,
+								text_color,
+								text_x,
+								text_y,
+								font_scale,
+								&CACHED_FONT,
+								&max_value.to_string(),
+							);
+						}
+					}
+				} else if item.vertices.len() == 3 {
+					// Преобразуем координаты
+					let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
+						let normalized_x = v.x - dimensions.min_x;
+						let normalized_y = v.y - dimensions.min_y;
+						Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
+					}).collect();
+					
+					// Заливка треугольника
+					let triangle_points: Vec<Point<i32>> = points.iter().map(|p| {
+						Point::new(p.x as i32, p.y as i32)
+					}).collect();
+					draw_polygon_mut(&mut img, &triangle_points, Rgb([204, 204, 0]));
+					
+					// Контуры поверх заливки
+					for i in 0..3 {
+						let next = (i + 1) % 3;
+						draw_line_segment_mut(&mut img,
+							(points[i].x as f32, points[i].y as f32),
+							(points[next].x as f32, points[next].y as f32),
+							Rgb([0, 0, 0])); // Черные контуры
+					}
+					
+					// Рендерим текст с правильными значениями из AS функций
+					if let Some(values) = item.get_value(field) {
+						if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
+							// Вычисляем границы треугольника для правильного позиционирования текста
+							let min_x = points.iter().map(|p| p.x).fold(f64::INFINITY, f64::min);
+							let max_x = points.iter().map(|p| p.x).fold(f64::NEG_INFINITY, f64::max);
+							let min_y = points.iter().map(|p| p.y).fold(f64::INFINITY, f64::min);
+							let max_y = points.iter().map(|p| p.y).fold(f64::NEG_INFINITY, f64::max);
+							
+							// Отступы 10% от размеров фигуры
+							let width = max_x - min_x;
+							let height = max_y - min_y;
+							let text_x = (min_x + width * 0.1) as i32;  // 10% отступ слева
+							let text_y = (min_y + height * 0.1) as i32; // 10% отступ сверху
+							
+							draw_text_mut(
+								&mut img,
+								text_color,
+								text_x,
+								text_y,
+								font_scale,
+								&CACHED_FONT,
+								&max_value.to_string(),
+							);
+						}
+					}
+				}
+				// Рендерим ТОЛЬКО правильные значения из AS функций
 			}
 		}
 		// Оптимизированное PNG кодирование
@@ -608,37 +629,8 @@ impl DrawItemZ {
 
 		
 		// Выполняем рендеринг с автоматическим выбором метода
-		if let Some(gpu_renderer) = crate::libs::gpu_renderer::get_gpu_renderer() {
-			let batch_data_for_analysis: Vec<_> = images.iter()
-				.zip(all_lines.iter())
-				.zip(colors.iter())
-				.map(|((img, lines), color)| (img.clone(), lines.clone(), *color))
-				.collect();
-
-			// Определяем оптимальный метод рендеринга
-			let render_method = gpu_renderer.determine_render_method(&batch_data_for_analysis);
-			
-			match render_method {
-				crate::libs::gpu_renderer::RenderMethod::Gpu => {
-					// Подготовка данных для GPU
-					let mut batch_data: Vec<_> = images.iter_mut()
-						.zip(all_lines.iter())
-						.zip(colors.iter())
-						.map(|((img, lines), color)| (img, lines.as_slice(), *color))
-						.collect();
-
-					// GPU рендеринг
-					if let Err(_e) = gpu_renderer.render_lines_gpu_batch(&mut batch_data).await {
-						return self.draw_all_images_cpu_batch(config).await;
-					}
-				},
-				crate::libs::gpu_renderer::RenderMethod::Cpu => {
-					return self.draw_all_images_cpu_batch(config).await;
-				}
-			}
-		} else {
-			return self.draw_all_images_cpu_batch(config).await;
-		}
+		// ПРИНУДИТЕЛЬНО используем CPU для быстрой генерации
+		return self.draw_all_images_cpu_batch(config).await;
 
 		// PNG кодирование
 		let mut results = Vec::with_capacity(4); // 4 результата для полей

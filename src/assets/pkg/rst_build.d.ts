@@ -26,6 +26,7 @@ export function create_csv_from_all_parsed_entities(): Uint8Array;
 export function get_excell_report_for_arms(): Uint8Array;
 export function get_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 export function get_table_data_for_frontend(available_diameters: Uint32Array, floors_data_json: string): string;
+export function create_docx_with_selected_combinations(selected_combinations_json: string): Promise<Uint8Array>;
 export function create_docx_for_selected_combinations(selected_floors_json: string): Promise<Uint8Array>;
 export function get_optimized_canvas_data_wasm(max_shapes_per_level: number, max_total_shapes: number, start_z?: number | null, end_z?: number | null): string;
 export function get_canvas_statistics_wasm(): string;
@@ -54,6 +55,7 @@ export interface InitOutput {
   readonly get_excell_report_for_arms: () => [number, number];
   readonly get_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly get_table_data_for_frontend: (a: number, b: number, c: number, d: number) => [number, number, number, number];
+  readonly create_docx_with_selected_combinations: (a: number, b: number) => any;
   readonly create_docx_for_selected_combinations: (a: number, b: number) => any;
   readonly get_optimized_canvas_data_wasm: (a: number, b: number, c: number, d: number) => [number, number];
   readonly get_canvas_statistics_wasm: () => [number, number];
@@ -65,8 +67,8 @@ export interface InitOutput {
   readonly __wbindgen_export_5: WebAssembly.Table;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __externref_table_dealloc: (a: number) => void;
-  readonly closure220_externref_shim: (a: number, b: number, c: any) => void;
-  readonly closure450_externref_shim: (a: number, b: number, c: any, d: any) => void;
+  readonly closure229_externref_shim: (a: number, b: number, c: any) => void;
+  readonly closure459_externref_shim: (a: number, b: number, c: any, d: any) => void;
   readonly __wbindgen_start: () => void;
 }
 
