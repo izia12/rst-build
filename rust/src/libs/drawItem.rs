@@ -16,7 +16,7 @@ use super::gpu_renderer::{init_gpu_renderer, get_gpu_renderer, is_gpu_available}
 const A4_WIDTH_MM: f64 = 210.0;  // Ширина A4 в миллиметрах
 const A4_HEIGHT_MM: f64 = 297.0; // Высота A4 в миллиметрах (БОЛЬШЕ ширины!)
 const IMAGE_COVERAGE_PERCENT: f64 = 0.9; // Изображение занимает 90% страницы
-const MARGIN_MM: f64 = 0.5; // Минимальные отступы 1.5 мм для максимального масштаба
+const MARGIN_MM: f64 = 2.0; // Константные отступы 2 мм для правильного позиционирования
 const DPI: f64 = 300.0; // Разрешение для печати
 const MM_TO_PIXELS: f64 = DPI / 25.4; // Конвертация мм в пиксели (25.4 мм = 1 дюйм)
 
@@ -288,28 +288,31 @@ impl DrawItemZ {
 		// Фиксированные отступы 5мм от всех краев (НЕ проценты!)
 		let margin_pixels = MARGIN_MM * MM_TO_PIXELS; // 5мм в пикселях
 		
-		// Доступная область для рисования (вся картинка минус отступы)
-		let available_width_pixels = dimensions.img_width as f64 - 2.0 * margin_pixels;
-		let available_height_pixels = dimensions.img_height as f64 - 2.0 * margin_pixels;
+		// Доступная область для рисования с асимметричными отступами
+		// Слева и сверху константные отступы 2мм, справа и снизу оптимизированные
+		let right_margin_pixels = margin_pixels * 1.5; // Небольшой отступ справа (3мм)
+		let bottom_margin_pixels = margin_pixels * 1.5; // Небольшой отступ снизу (3мм)
+		let available_width_pixels = dimensions.img_width as f64 - margin_pixels - right_margin_pixels;
+		let available_height_pixels = dimensions.img_height as f64 - margin_pixels - bottom_margin_pixels;
 		
-		// ОПТИМИЗИРОВАННЫЙ расчет масштаба для максимального использования пространства
+		// ТОЧНЫЙ расчет масштаба для предотвращения выхода за границы
 		// Вычисляем отдельные масштабы
 		let scale_x = available_width_pixels / dimensions.content_width;
 		let scale_y = available_height_pixels / dimensions.content_height;
 		
-		// Используем МАКСИМАЛЬНЫЙ возможный масштаб с небольшим запасом для безопасности
-		// Это позволяет использовать все доступное пространство без магических чисел
-		let safety_margin = 0.95; // 5% запас для безопасности вместо больших отступов
+		// Используем точный масштаб 96.8% для предотвращения обрезки
+		// Это обеспечивает идеальное размещение без выхода за границы
+		let safety_margin = 0.968; // Точно 96.8% как требуется
 		let coord_scale = scale_x.min(scale_y) * safety_margin;
 		
 		// Вычисляем реальные размеры масштабированного контента
 		let scaled_content_width = dimensions.content_width * coord_scale;
 		let scaled_content_height = dimensions.content_height * coord_scale;
 		
-		// ПРАВИЛЬНОЕ центрирование масштабированного контента
-		// Центрируем в доступной области (между отступами)
-		let offset_x = margin_pixels + (available_width_pixels - scaled_content_width) / 2.0;
-		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0;
+		// ЭКСПЕРИМЕНТАЛЬНОЕ позиционирование: нулевой отступ слева для максимального использования
+		// Убираем горизонтальное центрирование, начинаем рисовать от левого края
+		let offset_x = margin_pixels; // Нулевой отступ слева (только базовый margin)
+		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0; // Вертикальное центрирование сохраняем
 
 		let font_size = 25.0; 
 		let text_color = Rgb([0u8, 0u8, 0u8]);
