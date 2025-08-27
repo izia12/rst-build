@@ -308,7 +308,7 @@ pub async fn create_docx_for_selected_floors(
              web_sys::console::log_1(&format!("[STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor {}", selected_floor).into());
              web_sys::console::log_1(&"[STEP 8] ✅ FIXED: Now passing result_scales instead of None!".into());
              
-             let imgs = item_z.draw_all_images_with_colors(Some(&result_scales)).await;
+             let imgs = item_z.draw_all_images_with_colors_and_floor(Some(&result_scales), *selected_floor).await;
              
              web_sys::console::log_1(&format!("[STEP 8] draw_all_images_with_colors() returned {} images", imgs.len()).into());
             

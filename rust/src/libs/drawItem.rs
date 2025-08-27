@@ -1,6 +1,13 @@
 use std::io::Cursor;
 use std::sync::{Arc};
-
+use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
+use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, draw_filled_rect_mut, draw_polygon_mut}, point::Point, rect::Rect};
+use rusttype::{Font, Scale};
+use serde::Serialize;
+use web_sys::console;
+use super::parse::EntityWithXlsx;
+use super::generate_documents::performance::{PerformanceConfig, PerformanceMonitor};
+use super::gpu_renderer::{ get_gpu_renderer,};
 // Функция генерации цветовой палитры
 fn generate_color_palette(_scale: &str) -> Vec<Rgb<u8>> {
 	// Красивая палитра от светло-желтого до бордового
@@ -27,16 +34,7 @@ fn get_color_for_value(item: &EntityWithXlsx, field: &str, _scale: Option<&str>,
 	palette[0] // Дефолтный цвет
 }
 
-use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
-use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, draw_filled_rect_mut, draw_polygon_mut}, point::Point, rect::Rect};
-use rusttype::{Font, Scale};
-use serde::Serialize;
-use web_sys::console;
 
-use crate::string_log_two_params;
-use super::parse::EntityWithXlsx;
-use super::generate_documents::performance::{PerformanceConfig, PerformanceMonitor};
-use super::gpu_renderer::{init_gpu_renderer, get_gpu_renderer, is_gpu_available};
 
 // ЕДИНЫЕ КОНСТАНТЫ A4 ДЛЯ ВСЕГО ПРОЕКТА - ПРАВИЛЬНЫЕ ПРОПОРЦИИ!
 const A4_WIDTH_MM: f64 = 210.0;  // Ширина A4 в миллиметрах
@@ -540,6 +538,11 @@ impl DrawItemZ {
 	
 	/// Функция для всех изображений с поддержкой цветов
 	pub async fn draw_all_images_with_colors(&self, result_scales: Option<&[Option<&str>]>) -> Vec<Vec<u8>> {
+        self.draw_all_images_with_colors_and_floor(result_scales, 0.0).await
+    }
+    
+    /// Функция для всех изображений с поддержкой цветов и floor_level
+    pub async fn draw_all_images_with_colors_and_floor(&self, result_scales: Option<&[Option<&str>]>, floor_level: f32) -> Vec<Vec<u8>> {
         // === STEP 7: DRAW ALL IMAGES ===
         web_sys::console::log_1(&format!("[STEP 7] draw_all_images_with_colors() called with {} entities", self.data.len()).into());
         web_sys::console::log_1(&format!("[STEP 7] result_scales: {:?}", result_scales).into());
@@ -553,7 +556,7 @@ impl DrawItemZ {
             // === STEP 8: DRAW SINGLE IMAGE ===
             web_sys::console::log_1(&format!("[STEP 8] Calling draw_image('{}', {:?})", field, result_scale).into());
             
-            let result = self.draw_image(field, result_scale).await;
+            let result = self.draw_image_with_floor(field, result_scale, floor_level).await;
             
             web_sys::console::log_1(&format!("[STEP 8] draw_image('{}') returned {} bytes", field, result.len()).into());
             results.push(result);
@@ -565,6 +568,10 @@ impl DrawItemZ {
 
 	/// Основная функция рендеринга с поддержкой цветов
 	pub async fn draw_image(&self, field: &str, result_scale: Option<&str>) -> Vec<u8> {
+        self.draw_image_with_floor(field, result_scale, 0.0).await
+    }
+    
+    pub async fn draw_image_with_floor(&self, field: &str, result_scale: Option<&str>, floor_level: f32) -> Vec<u8> {
         // === STEP 9: MAIN DRAW FUNCTION ===
         web_sys::console::log_1(&format!("[STEP 9] draw_image('{}', {:?}) called with {} entities", field, result_scale, self.data.len()).into());
         
@@ -669,21 +676,162 @@ impl DrawItemZ {
 			}
 		}
 		
-		// === STEP 11: PNG ENCODING ===
-		web_sys::console::log_1(&format!("[STEP 11] Rendered {} figures for field '{}', encoding to PNG", rendered_count, field).into());
-		
-		// PNG кодирование
-		let mut buffer = Vec::new();
-		let cursor = Cursor::new(&mut buffer);
-		let encoder = PngEncoder::new(cursor);
-		img.write_with_encoder(encoder).unwrap();
-		
-		web_sys::console::log_1(&format!("[STEP 11] PNG encoding completed, {} bytes generated", buffer.len()).into());
-		
-		buffer
-	}
+		// === STEP 11: СОЗДАНИЕ ЛЕГЕНДЫ ===
+        let legend_width = dimensions.img_width;
+        let legend_height = 150; // Высота для легенды
+        
+        let legend_img = Self::create_legend_image(
+             floor_level,
+             field,
+             result_scale,
+             &color_palette,
+             legend_width,
+             legend_height
+         );
+        
+        // === STEP 12: КОМБИНИРОВАНИЕ ИЗОБРАЖЕНИЙ ===
+        let total_height = legend_height + dimensions.img_height;
+        let mut combined_img = ImageBuffer::from_fn(dimensions.img_width, total_height, |_, _| Rgb([255u8, 255u8, 255u8]));
+        
+        // Копируем легенду сверху
+        for y in 0..legend_height {
+            for x in 0..dimensions.img_width {
+                if x < legend_width && y < legend_height {
+                    let pixel = legend_img.get_pixel(x, y);
+                    combined_img.put_pixel(x, y, *pixel);
+                }
+            }
+        }
+        
+        // Копируем основное изображение снизу
+        for y in 0..dimensions.img_height {
+            for x in 0..dimensions.img_width {
+                let pixel = img.get_pixel(x, y);
+                combined_img.put_pixel(x, y + legend_height, *pixel);
+            }
+        }
+        
+        // === STEP 13: PNG ENCODING ===
+        web_sys::console::log_1(&format!("[STEP 11] Rendered {} figures for field '{}', encoding to PNG", rendered_count, field).into());
+        
+        // PNG кодирование
+        let mut buffer = Vec::new();
+        let cursor = Cursor::new(&mut buffer);
+        let encoder = PngEncoder::new(cursor);
+        combined_img.write_with_encoder(encoder).unwrap();
+        
+        web_sys::console::log_1(&format!("[STEP 11] PNG encoding completed, {} bytes generated", buffer.len()).into());
+        
+        buffer
+    }
 
-	pub async fn draw_all_images_optimized(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
+    /// Создает легенду с заголовком, цветовой шкалой и метаданными
+    fn create_legend_image(
+        floor_level: f32,
+        function_name: &str,
+        result_scale: Option<&str>,
+        color_palette: &[Rgb<u8>],
+        legend_width: u32,
+        legend_height: u32
+    ) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+        let mut legend_img = ImageBuffer::from_fn(legend_width, legend_height, |_, _| Rgb([255u8, 255u8, 255u8]));
+        
+        let mut current_y = 10;
+        
+        // === РАЗДЕЛ 1: TITLE ===
+        let title_text = format!("Этаж {} - Функция {}", floor_level, function_name.to_uppercase());
+        let title_font_size = 20.0;
+        let title_scale = Scale::uniform(title_font_size);
+        let title_color = Rgb([0u8, 0u8, 0u8]);
+        
+        // Центрируем заголовок
+        let title_x = (legend_width as i32 - (title_text.len() as i32 * 12)) / 2;
+        draw_text_mut(&mut legend_img, title_color, title_x, current_y, title_scale, &CACHED_FONT, &title_text);
+        current_y += 35;
+        
+        // === РАЗДЕЛ 2: ЦВЕТОВАЯ ШКАЛА ===
+        if let Some(scale) = result_scale {
+            let scale_ranges = Self::parse_result_scale_ranges(scale);
+            let rect_count = scale_ranges.len();
+            
+            if rect_count > 0 {
+                let total_scale_width = legend_width - 40; // Отступы по 20px с каждой стороны
+                let rect_width = total_scale_width / rect_count as u32;
+                let rect_height = 20;
+                
+                // Рисуем прямоугольники с цветами
+                for (i, _range) in scale_ranges.iter().enumerate() {
+                    let x = 20 + (i as u32 * rect_width);
+                    let y = current_y as u32;
+                    
+                    let color = color_palette.get(i).copied().unwrap_or(color_palette[0]);
+                    let rect = Rect::at(x as i32, y as i32).of_size(rect_width - 2, rect_height); // -2 для отступа
+                    draw_filled_rect_mut(&mut legend_img, rect, color);
+                }
+                
+                current_y += rect_height as i32 + 5;
+                
+                // Подписи диапазонов
+                let range_font_size = 12.0;
+                let range_scale = Scale::uniform(range_font_size);
+                
+                for (i, range) in scale_ranges.iter().enumerate() {
+                    let x = 20 + (i as u32 * rect_width);
+                    let range_text = if i == 0 {
+                        format!("0 - {:.3}", range.1)
+                    } else {
+                        format!("{:.3} - {:.3}", scale_ranges[i-1].1, range.1)
+                    };
+                    
+                    draw_text_mut(&mut legend_img, title_color, x as i32, current_y, range_scale, &CACHED_FONT, &range_text);
+                }
+                
+                current_y += 25;
+            }
+        }
+        
+        // === РАЗДЕЛ 3: МЕТАДАННЫЕ ===
+        let metadata_font_size = 10.0;
+        let metadata_scale = Scale::uniform(metadata_font_size);
+        
+        let calculation_method = Self::get_calculation_method();
+        draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, &calculation_method);
+        current_y += 15;
+        
+        let units_text = "Единицы измерения см2";
+        draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
+        current_y += 15;
+        
+        let diameter_text = "Шаг диаметр - мм";
+        draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, diameter_text);
+        
+        legend_img
+    }
+    
+    /// Парсит result_scale и возвращает диапазоны (min, max)
+    fn parse_result_scale_ranges(scale: &str) -> Vec<(f32, f32)> {
+        // Парсим строку вида "[2.515см2:Ø8 мм][3.930см2:Ø8+Ø6][5.030см2:Ø8+Ø8]"
+        let mut ranges = Vec::new();
+        let parts: Vec<&str> = scale.split("][").collect();
+        
+        for part in parts {
+            let clean_part = part.trim_start_matches('[').trim_end_matches(']');
+            if let Some(area_end) = clean_part.find("см2:") {
+                if let Ok(area) = clean_part[..area_end].parse::<f32>() {
+                    ranges.push((0.0, area)); // Упрощенно: от 0 до area
+                }
+            }
+        }
+        
+        ranges
+    }
+    
+    /// Возвращает метод расчета (выносим в отдельную функцию для будущих изменений)
+    fn get_calculation_method() -> String {
+        "Расчет по усилиям СНиП 2.03.01-84".to_string()
+    }
+
+    pub async fn draw_all_images_optimized(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
 		let fields = ["as1", "as2", "as3", "as4"];
 		
 		if config.enable_parallel_rendering {
@@ -824,9 +972,6 @@ impl DrawItemZ {
 		}
 		
 		results
-	}
-	pub fn log_to_data(&self){
-		string_log_two_params("Это после сортировки по z",&serde_json::to_string_pretty(&self.data).unwrap());
 	}
 }
 
