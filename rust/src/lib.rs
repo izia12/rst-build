@@ -89,8 +89,9 @@ pub async fn create_docx_legacy(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]
     
     process_files(sli_data, txt_data, &xlsx_data);
     
-    // Используем старый модуль для создания DOCX (с GPU)
-    libs::generate_documents::docx_generator::create_docx_document(entities, "Hello, world!").await
+    // Используем упрощенную функцию создания DOCX
+    // Автоматически определяет нужны ли цвета
+    libs::generate_documents::docx_generator::create_docx(entities, None, None, "Hello, world!").await
 }
 
 pub fn create_docx_with_image(image_data: &[u8], doc: Docx) -> Result<Docx, Box<dyn std::error::Error>> {
@@ -337,6 +338,9 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
     
     use crate::libs::generate_documents::docx_generator::{SelectedCombination, CombinationItem};
     
+    // === STEP 1: WASM ENTRY POINT ===
+    web_sys::console::log_1(&format!("[STEP 1] create_docx_with_selected_combinations() called with: {}", selected_combinations_json).into());
+    
     #[derive(serde::Deserialize)]
     struct SelectedCombinationsData {
         combinations: Vec<SelectedCombination>,
@@ -356,12 +360,21 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
     });
     
     // Создаем DOCX с цветовой палитрой
-    let docx_data = libs::generate_documents::docx_generator::create_docx_with_color_palette(
+    let floors: Vec<f32> = selected_data.floors.iter()
+        .map(|f| f.parse::<f32>().unwrap_or(0.0))
+        .collect();
+    
+    // === STEP 2: CALLING DOCX GENERATOR ===
+    web_sys::console::log_1(&format!("[STEP 2] Calling create_docx() with {} floors, {} combinations", floors.len(), selected_data.combinations.len()).into());
+    
+    let docx_data = libs::generate_documents::docx_generator::create_docx(
         entities,
-        selected_data.floors.iter().map(|f| f.parse::<f32>().unwrap_or(0.0)).collect(),
-        selected_data.combinations,
+        Some(floors),
+        Some(selected_data.combinations),
         "Документ с цветовой палитрой арматуры"
     ).await;
+    
+    web_sys::console::log_1(&format!("[STEP 2] create_docx() returned {} bytes", docx_data.len()).into());
     
     Ok(docx_data)
 }
@@ -387,6 +400,7 @@ pub async fn create_docx_for_selected_combinations(selected_floors_json: &str) -
     libs::generate_documents::docx_generator::create_docx_for_selected_floors(
         entities,
         selected_floors,
+        None, // Нет combinations для этой функции
         "Документ с выбранными комбинациями арматуры"
     ).await
 }

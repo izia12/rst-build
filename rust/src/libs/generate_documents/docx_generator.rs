@@ -25,21 +25,30 @@ pub struct CombinationItem {
     pub result_scale: Option<String>,
 }
 
-/// НОВАЯ ФУНКЦИЯ: Создает DOCX документ с цветовой палитрой
-pub async fn create_docx_with_color_palette(
+/// ЕДИНСТВЕННАЯ ФУНКЦИЯ СОЗДАНИЯ DOCX - ПРОСТАЯ И БЫСТРАЯ
+/// Автоматически применяет цвета если есть selected_combinations
+pub async fn create_docx(
     entities: Vec<EntityWithXlsx>,
-    selected_floors: Vec<f32>,
-    selected_combinations: Vec<SelectedCombination>,
+    selected_floors: Option<Vec<f32>>,
+    selected_combinations: Option<Vec<SelectedCombination>>,
     title: &str
 ) -> Vec<u8> {
-    web_sys::console::log_1(&format!("🎨 Creating DOCX with color palette for {} floors", selected_floors.len()).into());
+    // === STEP 3: DOCX GENERATOR ===
+    web_sys::console::log_1(&format!("[STEP 3] create_docx() called with title: '{}'", title).into());
+    web_sys::console::log_1(&format!("[STEP 3] selected_floors: {:?}", selected_floors).into());
+    web_sys::console::log_1(&format!("[STEP 3] selected_combinations: {:?}", selected_combinations.as_ref().map(|c| c.len())).into());
     
-    // Пока используем стандартную генерацию, позже добавим цветовую палитру
-    create_docx_for_selected_floors(
-        entities,
-        selected_floors,
-        title
-    ).await
+    match selected_floors {
+        Some(floors) => {
+              web_sys::console::log_1(&format!("[STEP 3] Calling create_docx_for_selected_floors() with {} floors", floors.len()).into());
+              web_sys::console::log_1(&"[STEP 3] ✅ FIXED: Now passing combinations to create_docx_for_selected_floors!".into());
+              create_docx_for_selected_floors(entities, floors, selected_combinations, title).await
+          },
+         None => {
+             web_sys::console::log_1(&"[STEP 3] Calling create_docx_document() - no floors specified".into());
+             create_docx_document(entities, title).await
+         }
+    }
 }
 
 /// Создает DOCX документ для всех этажей с мониторингом производительности
@@ -92,7 +101,7 @@ pub async fn create_docx_document_optimized(
             floor_index + 1, floors_count, key.to_string()).into());
         
         // Используем GPU-оптимизированную батчевую генерацию изображений
-        let images = item_z.draw_all_images_gpu_batch(monitor.get_config()).await;
+        let images = item_z.draw_all_images_with_colors(None).await;
         
         total_images += images.len();
         
@@ -177,7 +186,7 @@ pub async fn create_docx_document_legacy(
     let monitor = PerformanceMonitor::new(PerformanceConfig::default());
     
     for (key, item_z) in hash {
-        let imgs = item_z.draw_all_images_gpu_batch(monitor.get_config()).await;
+        let imgs = item_z.draw_all_images_with_colors(None).await;
         
         // Добавляем заголовок этажа
         let run = Run::new()
@@ -216,8 +225,13 @@ pub async fn create_docx_document_legacy(
 pub async fn create_docx_for_selected_floors(
     entities: Vec<EntityWithXlsx>,
     selected_floors: Vec<f32>,
+    selected_combinations: Option<Vec<SelectedCombination>>,
     title: &str
 ) -> Vec<u8> {
+    // === STEP 4: SELECTED FLOORS PROCESSING ===
+    web_sys::console::log_1(&format!("[STEP 4] create_docx_for_selected_floors() called with {} entities, {} floors", entities.len(), selected_floors.len()).into());
+    web_sys::console::log_1(&format!("[STEP 4] selected_floors: {:?}", selected_floors).into());
+    web_sys::console::log_1(&format!("[STEP 4] selected_combinations: {:?}", selected_combinations.as_ref().map(|c| c.len())).into());
     let mut doc = Docx::new()
         // Устанавливаем минимальные отступы страницы для максимального использования пространства
         .page_margin(docx_rs::PageMargin {
@@ -243,13 +257,60 @@ pub async fn create_docx_for_selected_floors(
     
     let monitor = PerformanceMonitor::new(PerformanceConfig::default());
     
+    // === STEP 5: CREATING COMBINATION MAP ===
+    let mut combination_map = std::collections::HashMap::new();
+    if let Some(combinations) = &selected_combinations {
+         web_sys::console::log_1(&format!("[STEP 5] Creating combination map from {} combinations", combinations.len()).into());
+         for (idx, combo) in combinations.iter().enumerate() {
+             web_sys::console::log_1(&format!("[DEBUG] Combo {}: floor_level='{}', function_name='{}'", idx, combo.floor_level, combo.function_name).into());
+             web_sys::console::log_1(&format!("[DEBUG] Combo {}: result_scale={:?}", idx, combo.combination.result_scale).into());
+             
+             let key = format!("{}-{}", combo.floor_level, combo.function_name);
+             if let Some(ref result_scale) = combo.combination.result_scale {
+                 combination_map.insert(key.clone(), result_scale.as_str());
+                 web_sys::console::log_1(&format!("[STEP 5] ✅ Added mapping: {} -> {}", key, result_scale).into());
+             } else {
+                 web_sys::console::log_1(&format!("[STEP 5] ❌ No result_scale for combo {}: {}", idx, key).into());
+             }
+         }
+         web_sys::console::log_1(&format!("[STEP 5] Final combination_map size: {}", combination_map.len()).into());
+     } else {
+         web_sys::console::log_1(&"[STEP 5] No combinations provided, using default colors".into());
+     }
+    
+    // === STEP 6: PROCESSING EACH FLOOR ===
+    web_sys::console::log_1(&format!("[STEP 6] Processing {} selected floors", selected_floors.len()).into());
+    
     // Обрабатываем только выбранные этажи
-    for selected_floor in selected_floors {
-        let z_key = OrderedFloat(selected_floor);
+    for (floor_idx, selected_floor) in selected_floors.iter().enumerate() {
+        let z_key = OrderedFloat(*selected_floor);
         
-        if let Some(item_z) = hash.get(&z_key) {
-            // Генерируем изображения для этого этажа
-            let imgs = item_z.draw_all_images_gpu_batch(monitor.get_config()).await;
+        web_sys::console::log_1(&format!("[STEP 6] Processing floor {}/{}: {}", floor_idx + 1, selected_floors.len(), selected_floor).into());
+         
+         if let Some(item_z) = hash.get(&z_key) {
+             web_sys::console::log_1(&format!("[STEP 6] Found {} entities for floor {}", item_z.data.len(), selected_floor).into());
+             
+             // === STEP 7: CREATING RESULT_SCALES FOR THIS FLOOR ===
+              let result_scales: Vec<Option<&str>> = ["as1", "as2", "as3", "as4"]
+                  .iter()
+                  .map(|field| {
+                      let key = format!("{}-{}", selected_floor, field);
+                      let result = combination_map.get(&key).copied();
+                      web_sys::console::log_1(&format!("[DEBUG] Looking for key '{}': {:?}", key, result).into());
+                      result
+                  })
+                  .collect();
+              
+              web_sys::console::log_1(&format!("[STEP 7] Created result_scales for floor {}: {:?}", selected_floor, result_scales).into());
+              web_sys::console::log_1(&format!("[DEBUG] Available keys in map: {:?}", combination_map.keys().collect::<Vec<_>>()).into());
+             
+             // === STEP 8: CALLING DRAW FUNCTIONS ===
+             web_sys::console::log_1(&format!("[STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor {}", selected_floor).into());
+             web_sys::console::log_1(&"[STEP 8] ✅ FIXED: Now passing result_scales instead of None!".into());
+             
+             let imgs = item_z.draw_all_images_with_colors(Some(&result_scales)).await;
+             
+             web_sys::console::log_1(&format!("[STEP 8] draw_all_images_with_colors() returned {} images", imgs.len()).into());
             
             // Добавляем заголовок этажа
             let run = Run::new()

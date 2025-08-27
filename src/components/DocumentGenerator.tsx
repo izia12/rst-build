@@ -23,8 +23,13 @@ export const DocumentGenerator: React.FC = () => {
                             floor_level: floor.level,
                             function_name: armatureCombination.function_name,
                             as_target_value: armatureCombination.as_target_value,
-                            combination: item
+                            combination: {
+                                ...item,
+                                result_scale: item.result_scale || `[${item.total_area.toFixed(3)}см2:Ø${item.main_diameter}${item.additional_diameter ? '+Ø' + item.additional_diameter : ''}]`
+                            }
                         });
+                        
+                        console.log(`Added combination: ${floor.level}-${armatureCombination.function_name}, result_scale: ${item.result_scale || 'generated'}`);
                         
                         // Добавляем этаж в список если его еще нет
                         if (!selectedFloors.includes(floor.level)) {

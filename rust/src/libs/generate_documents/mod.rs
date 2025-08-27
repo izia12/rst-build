@@ -12,9 +12,7 @@ pub mod color_palette;
 
 // Реэкспорт основных функций для удобства использования
 pub use docx_generator::{
-    create_docx_document,
-    create_docx_document_optimized,
-    create_docx_document_legacy,
+    create_docx,
     create_docx_for_selected_floors
 };
 

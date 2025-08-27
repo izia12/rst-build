@@ -93,7 +93,7 @@ impl DocxGenerator {
             if let Some(item_z) = height_data.get(height) {
                 // Проверяем, что есть данные для отрисовки
                 if !item_z.data.is_empty() {
-                    let images = item_z.draw_all_images().await;
+                    let images = item_z.draw_all_images_with_colors(None).await;
                     let title = format!("Высота {} (элементов: {})", height, item_z.data.len());
                     self.add_image_group(&title, images);
                 }

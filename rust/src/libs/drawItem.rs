@@ -1,6 +1,32 @@
 use std::io::Cursor;
 use std::sync::{Arc};
 
+// Функция генерации цветовой палитры
+fn generate_color_palette(_scale: &str) -> Vec<Rgb<u8>> {
+	// Красивая палитра от светло-желтого до бордового
+	vec![
+		Rgb([247, 233, 171]), // #f7e9ab - светло-желтый
+		Rgb([255, 255, 0]),   // #ffff00 - желтый
+		Rgb([247, 172, 52]),  // #f7ac34 - оранжево-желтый
+		Rgb([232, 145, 5]),   // #e89105 - оранжевый
+		Rgb([232, 96, 5]),    // #e86005 - темно-оранжевый
+		Rgb([139, 0, 0]),     // #8b0000 - бордовый
+	]
+}
+
+// Функция получения цвета для значения
+fn get_color_for_value(item: &EntityWithXlsx, field: &str, _scale: Option<&str>, palette: &[Rgb<u8>]) -> Rgb<u8> {
+	if let Some(values) = item.get_value(field) {
+		if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
+			// Простая логика: чем больше значение, тем краснее цвет
+			let normalized = (max_value / 100.0).min(1.0).max(0.0); // Нормализуем к 0-1
+			let index = (normalized * (palette.len() - 1) as f32) as usize;
+			return palette[index.min(palette.len() - 1)];
+		}
+	}
+	palette[0] // Дефолтный цвет
+}
+
 use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
 use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, draw_filled_rect_mut, draw_polygon_mut}, point::Point, rect::Rect};
 use rusttype::{Font, Scale};
@@ -265,13 +291,10 @@ impl DrawItemZ {
 	}
 
 	pub async fn draw_image_as1(&self, field: &str) -> Vec<u8> {
-		self.draw_image_as1_optimized(field, &PerformanceConfig::default()).await
+		self.draw_image(field, None).await
 	}
 
 	pub async fn draw_image_as1_optimized(&self, field: &str, config: &PerformanceConfig) -> Vec<u8> {
-		// Диагностика координат
-		self.diagnose_coordinates();
-		
 		let dimensions = self.calculate_image_bounds_with_config(config);
 		
 		// Проверяем использование GPU ускорения
@@ -405,7 +428,11 @@ impl DrawItemZ {
 					let quad_points: Vec<Point<i32>> = points.iter().map(|p| {
 						Point::new(p.x as i32, p.y as i32)
 					}).collect();
-					draw_polygon_mut(&mut img, &quad_points, Rgb([204, 204, 0]));
+					
+					// Простая заливка без автоматических цветов
+					let fill_color = Rgb([204, 204, 0]); // Дефолтный темно-желтый
+					
+					draw_polygon_mut(&mut img, &quad_points, fill_color);
 					
 					// Контуры поверх заливки
 					for i in 0..4 {
@@ -499,24 +526,161 @@ impl DrawItemZ {
 		let mut buffer = Vec::new();
 		let cursor = Cursor::new(&mut buffer);
 		
-		if config.compression_quality > 80 {
-			// Высокое качество - медленное сжатие
-			let encoder = PngEncoder::new_with_quality(cursor, CompressionType::Best, image::codecs::png::FilterType::Adaptive);
-			img.write_with_encoder(encoder).unwrap();
-		} else if config.compression_quality > 50 {
-			// Среднее качество - быстрое сжатие
-			let encoder = PngEncoder::new_with_quality(cursor, CompressionType::Default, image::codecs::png::FilterType::Sub);
-			img.write_with_encoder(encoder).unwrap();
-		} else {
-			// Низкое качество - максимальная скорость
-			let encoder = PngEncoder::new_with_quality(cursor, CompressionType::Fast, image::codecs::png::FilterType::Sub);
-			img.write_with_encoder(encoder).unwrap();
-		}
+		// Простое PNG кодирование без сложностей
+        let encoder = PngEncoder::new(cursor);
+        img.write_with_encoder(encoder).unwrap();
 		
 		buffer
 	}
+	/// ЕДИНСТВЕННАЯ ФУНКЦИЯ ДЛЯ ВСЕХ ИЗОБРАЖЕНИЙ - ПРОСТАЯ И БЫСТРАЯ
+	/// Автоматически применяет цвета если есть result_scales
 	pub async fn draw_all_images(&self) -> Vec<Vec<u8>> {
-		self.draw_all_images_optimized(&PerformanceConfig::default()).await
+		self.draw_all_images_with_colors(None).await
+	}
+	
+	/// Функция для всех изображений с поддержкой цветов
+	pub async fn draw_all_images_with_colors(&self, result_scales: Option<&[Option<&str>]>) -> Vec<Vec<u8>> {
+        // === STEP 7: DRAW ALL IMAGES ===
+        web_sys::console::log_1(&format!("[STEP 7] draw_all_images_with_colors() called with {} entities", self.data.len()).into());
+        web_sys::console::log_1(&format!("[STEP 7] result_scales: {:?}", result_scales).into());
+        
+        let fields = ["as1", "as2", "as3", "as4"];
+        let mut results = Vec::with_capacity(4);
+        
+        for (i, field) in fields.iter().enumerate() {
+            let result_scale = result_scales.and_then(|scales| scales.get(i)).and_then(|s| *s);
+            
+            // === STEP 8: DRAW SINGLE IMAGE ===
+            web_sys::console::log_1(&format!("[STEP 8] Calling draw_image('{}', {:?})", field, result_scale).into());
+            
+            let result = self.draw_image(field, result_scale).await;
+            
+            web_sys::console::log_1(&format!("[STEP 8] draw_image('{}') returned {} bytes", field, result.len()).into());
+            results.push(result);
+        }
+        
+        web_sys::console::log_1(&format!("[STEP 7] draw_all_images_with_colors() completed, returning {} images", results.len()).into());
+        results
+	}
+
+	/// Основная функция рендеринга с поддержкой цветов
+	pub async fn draw_image(&self, field: &str, result_scale: Option<&str>) -> Vec<u8> {
+        // === STEP 9: MAIN DRAW FUNCTION ===
+        web_sys::console::log_1(&format!("[STEP 9] draw_image('{}', {:?}) called with {} entities", field, result_scale, self.data.len()).into());
+        
+        // Используем дефолтные настройки для простоты
+        let dimensions = self.calculate_image_bounds_with_config(&PerformanceConfig::default());
+        
+        // Генерируем цветовую палитру если есть result_scale
+        let color_palette = if let Some(scale) = result_scale {
+            web_sys::console::log_1(&format!("[STEP 9] ✅ Using color palette for result_scale: {}", scale).into());
+            generate_color_palette(scale)
+        } else {
+            web_sys::console::log_1(&"[STEP 9] ❌ No result_scale provided, using default yellow color".into());
+            vec![Rgb([204, 204, 0])] // Дефолтный темно-желтый
+        };
+        
+        web_sys::console::log_1(&format!("[STEP 9] Generated color palette with {} colors", color_palette.len()).into());
+		
+		// ТОЛЬКО CPU - никакого GPU, никаких сложностей
+		let use_gpu = false;
+		
+		let mut img = ImageBuffer::from_fn(dimensions.img_width, dimensions.img_height, |_, _| Rgb([255u8, 255u8, 255u8]));
+		
+		// Логика масштабирования и рендеринга аналогична draw_image_as1_optimized
+		let margin_pixels = MARGIN_MM * MM_TO_PIXELS;
+		let right_margin_pixels = margin_pixels * 1.5;
+		let bottom_margin_pixels = margin_pixels * 1.5;
+		let available_width_pixels = dimensions.img_width as f64 - margin_pixels - right_margin_pixels;
+		let available_height_pixels = dimensions.img_height as f64 - margin_pixels - bottom_margin_pixels;
+		
+		let scale_x = available_width_pixels / dimensions.content_width;
+		let scale_y = available_height_pixels / dimensions.content_height;
+		let safety_margin = 0.968;
+		let coord_scale = scale_x.min(scale_y) * safety_margin;
+		
+		let scaled_content_width = dimensions.content_width * coord_scale;
+		let scaled_content_height = dimensions.content_height * coord_scale;
+		
+		let offset_x = margin_pixels;
+		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0;
+		
+		let font_size = 25.0;
+		let text_color = Rgb([0u8, 0u8, 0u8]);
+		let font_scale = Scale::uniform(font_size);
+		
+		// === STEP 10: RENDERING FIGURES ===
+		let mut rendered_count = 0;
+		
+		// Рендерим все объекты с цветовой палитрой
+		for (item_idx, item) in self.data.iter().enumerate() {
+			if item.vertices.len() == 4 {
+				let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
+					let normalized_x = v.x - dimensions.min_x;
+					let normalized_y = v.y - dimensions.min_y;
+					Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
+				}).collect();
+				
+				let quad_points: Vec<Point<i32>> = points.iter().map(|p| {
+					Point::new(p.x as i32, p.y as i32)
+				}).collect();
+				
+				// Выбираем цвет из палитры или дефолтный
+				let fill_color = if color_palette.len() > 1 {
+					get_color_for_value(item, field, result_scale, &color_palette)
+				} else {
+					color_palette[0]
+				};
+				
+				// Логируем только первые 3 фигуры
+				if rendered_count < 3 {
+					web_sys::console::log_1(&format!("[STEP 10] Rendering figure {}: field='{}', color=RGB({},{},{})", 
+						item_idx + 1, field, fill_color[0], fill_color[1], fill_color[2]).into());
+				}
+				
+				draw_polygon_mut(&mut img, &quad_points, fill_color);
+				rendered_count += 1;
+				
+				// Контуры
+				for i in 0..4 {
+					let next = (i + 1) % 4;
+					draw_line_segment_mut(&mut img,
+						(points[i].x as f32, points[i].y as f32),
+						(points[next].x as f32, points[next].y as f32),
+						Rgb([0, 0, 0]));
+				}
+				
+				// Текст
+				if let Some(values) = item.get_value(field) {
+					if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
+						let min_x = points.iter().map(|p| p.x).fold(f64::INFINITY, f64::min);
+						let max_x = points.iter().map(|p| p.x).fold(f64::NEG_INFINITY, f64::max);
+						let min_y = points.iter().map(|p| p.y).fold(f64::INFINITY, f64::min);
+						let max_y = points.iter().map(|p| p.y).fold(f64::NEG_INFINITY, f64::max);
+						
+						let width = max_x - min_x;
+						let height = max_y - min_y;
+						let text_x = (min_x + width * 0.1) as i32;
+						let text_y = (min_y + height * 0.1) as i32;
+						
+						draw_text_mut(&mut img, text_color, text_x, text_y, font_scale, &CACHED_FONT, &max_value.to_string());
+					}
+				}
+			}
+		}
+		
+		// === STEP 11: PNG ENCODING ===
+		web_sys::console::log_1(&format!("[STEP 11] Rendered {} figures for field '{}', encoding to PNG", rendered_count, field).into());
+		
+		// PNG кодирование
+		let mut buffer = Vec::new();
+		let cursor = Cursor::new(&mut buffer);
+		let encoder = PngEncoder::new(cursor);
+		img.write_with_encoder(encoder).unwrap();
+		
+		web_sys::console::log_1(&format!("[STEP 11] PNG encoding completed, {} bytes generated", buffer.len()).into());
+		
+		buffer
 	}
 
 	pub async fn draw_all_images_optimized(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
@@ -543,25 +707,12 @@ impl DrawItemZ {
 		// CPU рендеринг батча
 		let fields = ["as1", "as2", "as3", "as4"];
 		
-		let results = if config.enable_parallel_rendering {
-			// Параллельная генерация изображений
-			let futures: Vec<_> = fields
-				.iter()
-				.map(|field| self.draw_image_as1_optimized(field, config))
-				.collect();
-			let results = futures::future::join_all(futures).await;
-			results
-		} else {
-			// Последовательная генерация
-			let mut results = Vec::with_capacity(4); // 4 результата для полей
-			for field in &fields {
-				let result = self.draw_image_as1_optimized(field, config).await;
-				results.push(result);
-			}
-			results
-		};
-		
-		// CPU рендеринг завершен
+		// Простая последовательная генерация с новой функцией
+		let mut results = Vec::with_capacity(4);
+		for field in fields.iter() {
+			let result = self.draw_image(field, None).await;
+			results.push(result);
+		}
 		results
 	}
 
