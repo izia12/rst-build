@@ -1,8 +1,8 @@
 use crate::libs::drawItem::DrawItemZ;
-use crate::libs::parse::EntityWithXlsx;
 use crate::libs::generate_documents::PerformanceConfig;
-use image::{ImageBuffer, Rgb};
+use crate::libs::parse::EntityWithXlsx;
 use crate::Vertex;
+use image::{ImageBuffer, Rgb};
 use wasm_bindgen::prelude::*;
 
 #[derive(Debug, Clone)]
@@ -29,7 +29,7 @@ impl TestModule {
     pub fn create_test_data(&mut self) {
         // Очищаем существующие данные
         self.draw_item = DrawItemZ::new();
-        
+
         // Тестовые четырехугольники с разными размерами и позициями
         let test_rectangles = vec![
             // Прямоугольник 1 (левый верхний)
@@ -72,17 +72,21 @@ impl TestModule {
         // Преобразуем тестовые данные в формат EntityWithXlsx
         for (i, rectangle) in test_rectangles.iter().enumerate() {
             let vertices: Vec<Vertex> = rectangle
-                 .iter()
-                 .map(|v| Vertex { x: v.x, y: v.y, z: 0.0 })
-                 .collect();
+                .iter()
+                .map(|v| Vertex {
+                    x: v.x,
+                    y: v.y,
+                    z: 0.0,
+                })
+                .collect();
 
             let entity = EntityWithXlsx {
-                 entity_type: "rectangle".to_string(),
-                 vertices,
-                 row: None,
-                 changed: false,
-                 material: None,
-             };
+                entity_type: "rectangle".to_string(),
+                vertices,
+                row: None,
+                changed: false,
+                material: None,
+            };
 
             self.draw_item.add_entity(entity);
         }
@@ -113,7 +117,7 @@ impl TestModule {
         };
 
         // Используем внутренний метод для получения границ
-        let (min_x, min_y, max_x, max_y, width, height) = 
+        let (min_x, min_y, max_x, max_y, width, height) =
             self.draw_item.calculate_image_bounds_with_config(&config);
 
         format!(
@@ -121,9 +125,14 @@ impl TestModule {
             X: от {:.2} до {:.2} (ширина: {:.2})\n\
             Y: от {:.2} до {:.2} (высота: {:.2})\n\
             Размер изображения: {}x{}",
-            min_x, max_x, max_x - min_x,
-            min_y, max_y, max_y - min_y,
-            width, height
+            min_x,
+            max_x,
+            max_x - min_x,
+            min_y,
+            max_y,
+            max_y - min_y,
+            width,
+            height
         )
     }
 
@@ -144,10 +153,26 @@ impl TestModule {
     /// Добавляет прямоугольник с заданными координатами и размерами
     pub fn add_custom_rectangle(&mut self, start_x: f64, start_y: f64, width: f64, height: f64) {
         let vertices = vec![
-            Vertex { x: start_x, y: start_y, z: 0.0 },
-            Vertex { x: start_x + width, y: start_y, z: 0.0 },
-            Vertex { x: start_x + width, y: start_y + height, z: 0.0 },
-            Vertex { x: start_x, y: start_y + height, z: 0.0 },
+            Vertex {
+                x: start_x,
+                y: start_y,
+                z: 0.0,
+            },
+            Vertex {
+                x: start_x + width,
+                y: start_y,
+                z: 0.0,
+            },
+            Vertex {
+                x: start_x + width,
+                y: start_y + height,
+                z: 0.0,
+            },
+            Vertex {
+                x: start_x,
+                y: start_y + height,
+                z: 0.0,
+            },
         ];
 
         let entity = EntityWithXlsx {
@@ -165,21 +190,47 @@ impl TestModule {
 // Вспомогательные функции для работы с тестовыми данными
 impl TestModule {
     /// Добавляет дополнительный прямоугольник к тестовым данным
-    pub fn add_rectangle(&mut self, x1: f64, y1: f64, x2: f64, y2: f64, x3: f64, y3: f64, x4: f64, y4: f64) {
+    pub fn add_rectangle(
+        &mut self,
+        x1: f64,
+        y1: f64,
+        x2: f64,
+        y2: f64,
+        x3: f64,
+        y3: f64,
+        x4: f64,
+        y4: f64,
+    ) {
         let vertices = vec![
-            Vertex { x: x1, y: y1, z: 0.0 },
-            Vertex { x: x2, y: y2, z: 0.0 },
-            Vertex { x: x3, y: y3, z: 0.0 },
-            Vertex { x: x4, y: y4, z: 0.0 },
+            Vertex {
+                x: x1,
+                y: y1,
+                z: 0.0,
+            },
+            Vertex {
+                x: x2,
+                y: y2,
+                z: 0.0,
+            },
+            Vertex {
+                x: x3,
+                y: y3,
+                z: 0.0,
+            },
+            Vertex {
+                x: x4,
+                y: y4,
+                z: 0.0,
+            },
         ];
 
         let entity = EntityWithXlsx {
-             entity_type: "rectangle".to_string(),
-             vertices,
-             row: None,
-             changed: false,
-             material: None,
-         };
+            entity_type: "rectangle".to_string(),
+            vertices,
+            row: None,
+            changed: false,
+            material: None,
+        };
 
         self.draw_item.add_entity(entity);
     }
@@ -199,18 +250,18 @@ impl TestModule {
             compression_quality: 80,
             enable_caching: false,
         };
-        use image::{ImageBuffer, Rgba, ImageEncoder};
-        
+        use image::{ImageBuffer, ImageEncoder, Rgba};
+
         // Создаем большое изображение с фиксированным размером
         let width = 1200u32;
         let height = 1400u32;
         let mut img = ImageBuffer::new(width, height);
-        
+
         // Заполняем белым фоном
         for pixel in img.pixels_mut() {
             *pixel = Rgba([255, 255, 255, 255]);
         }
-        
+
         // Рисуем большие тестовые фигуры по всему изображению
         let colors = [
             Rgba([255, 0, 0, 255]),   // Красный
@@ -225,36 +276,70 @@ impl TestModule {
         for i in 0..12 {
             let row = i / 4;
             let col = i % 4;
-            
+
             let rect_width = 300.0;
             let rect_height = 200.0;
             let margin = 50.0;
-            
-            let start_figure_x = margin + col as f32 * (rect_width + margin) +200.0;
-            let start_figure_y = margin + row as f32 * (rect_height + margin)+200.0;
-            
+
+            let start_figure_x = margin + col as f32 * (rect_width + margin) + 200.0;
+            let start_figure_y = margin + row as f32 * (rect_height + margin) + 200.0;
+
             let color = colors[i % colors.len()];
-            
+
             // Рисуем толстые линии прямоугольника
             for thickness in 0..5 {
                 let offset = thickness as f32;
-                imageproc::drawing::draw_line_segment_mut(&mut img, 
-                    (start_figure_x + offset, start_figure_y + offset), 
-                    (start_figure_x + rect_width - offset, start_figure_y + offset), color);
-                imageproc::drawing::draw_line_segment_mut(&mut img, 
-                    (start_figure_x + rect_width - offset, start_figure_y + offset), 
-                    (start_figure_x + rect_width - offset, start_figure_y + rect_height - offset), color);
-                imageproc::drawing::draw_line_segment_mut(&mut img, 
-                    (start_figure_x + rect_width - offset, start_figure_y + rect_height - offset), 
-                    (start_figure_x + offset, start_figure_y + rect_height - offset), color);
-                imageproc::drawing::draw_line_segment_mut(&mut img, 
-                    (start_figure_x + offset, start_figure_y + rect_height - offset), 
-                    (start_figure_x + offset, start_figure_y + offset), color);
+                imageproc::drawing::draw_line_segment_mut(
+                    &mut img,
+                    (start_figure_x + offset, start_figure_y + offset),
+                    (
+                        start_figure_x + rect_width - offset,
+                        start_figure_y + offset,
+                    ),
+                    color,
+                );
+                imageproc::drawing::draw_line_segment_mut(
+                    &mut img,
+                    (
+                        start_figure_x + rect_width - offset,
+                        start_figure_y + offset,
+                    ),
+                    (
+                        start_figure_x + rect_width - offset,
+                        start_figure_y + rect_height - offset,
+                    ),
+                    color,
+                );
+                imageproc::drawing::draw_line_segment_mut(
+                    &mut img,
+                    (
+                        start_figure_x + rect_width - offset,
+                        start_figure_y + rect_height - offset,
+                    ),
+                    (
+                        start_figure_x + offset,
+                        start_figure_y + rect_height - offset,
+                    ),
+                    color,
+                );
+                imageproc::drawing::draw_line_segment_mut(
+                    &mut img,
+                    (
+                        start_figure_x + offset,
+                        start_figure_y + rect_height - offset,
+                    ),
+                    (start_figure_x + offset, start_figure_y + offset),
+                    color,
+                );
             }
-            
+
             // Добавляем заливку
-            for fill_y in (start_figure_y as u32 + 10)..(start_figure_y as u32 + rect_height as u32 - 10) {
-                for fill_x in (start_figure_x as u32 + 10)..(start_figure_x as u32 + rect_width as u32 - 10) {
+            for fill_y in
+                (start_figure_y as u32 + 10)..(start_figure_y as u32 + rect_height as u32 - 10)
+            {
+                for fill_x in
+                    (start_figure_x as u32 + 10)..(start_figure_x as u32 + rect_width as u32 - 10)
+                {
                     if fill_x < width && fill_y < height {
                         let mut fill_color = color;
                         fill_color.0[3] = 100; // Полупрозрачная заливка
@@ -263,7 +348,7 @@ impl TestModule {
                 }
             }
         }
-        
+
         // Конвертируем в PNG
         let mut png_data = Vec::new();
         // ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения (тесты)
@@ -271,41 +356,33 @@ impl TestModule {
             let encoder = image::codecs::png::PngEncoder::new_with_quality(
                 &mut png_data,
                 image::codecs::png::CompressionType::Fast,
-                image::codecs::png::FilterType::NoFilter
+                image::codecs::png::FilterType::NoFilter,
             );
-            if let Err(_) = encoder.write_image(
-                img.as_raw(),
-                width,
-                height,
-                image::ColorType::Rgba8,
-            ) {
+            if let Err(_) =
+                encoder.write_image(img.as_raw(), width, height, image::ColorType::Rgba8)
+            {
                 return Vec::new();
             }
         }
-        
+
         // Создаем DOCX документ с изображением
         // Рассчитываем размеры для DOCX в твипах (1 твип = 1/20 точки)
         // Для изображения 1200x1400 пикселей при 96 DPI:
         // 1200 пикселей = 1200/96*72*20 = 18000 твипов
         // 1400 пикселей = 1400/96*72*20 = 21000 твипов
-        let docx_width_twips = (width as f64 * 72.0 / 96.0 * 20.0) as u32;  // ~18000 твипов
+        let docx_width_twips = (width as f64 * 72.0 / 96.0 * 20.0) as u32; // ~18000 твипов
         let docx_height_twips = (height as f64 * 72.0 / 96.0 * 20.0) as u32; // ~21000 твипов
-        
+
         let doc = Docx::new()
             .add_paragraph(
-                Paragraph::new()
-                    .add_run(Run::new().add_text("Тестовое изображение с геометрическими фигурами"))
+                Paragraph::new().add_run(
+                    Run::new().add_text("Тестовое изображение с геометрическими фигурами"),
+                ),
             )
-            .add_paragraph(
-                Paragraph::new()
-                    .add_run(
-                        Run::new().add_image(
-                            Pic::new(&png_data)
-                                .size(docx_width_twips, docx_height_twips)
-                        )
-                    )
-            );
-        
+            .add_paragraph(Paragraph::new().add_run(
+                Run::new().add_image(Pic::new(&png_data).size(docx_width_twips, docx_height_twips)),
+            ));
+
         // Конвертируем DOCX в байты
         let mut buffer = Vec::new();
         let mut cursor = std::io::Cursor::new(&mut buffer);

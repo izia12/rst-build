@@ -58,6 +58,9 @@ rst_build.js:733 [STEP 3] ✅ FIXED: Now passing combinations to create_docx_for
 rst_build.js:733 [STEP 4] create_docx_for_selected_floors() called with 27645 entities, 7 floors
 rst_build.js:733 [STEP 4] selected_floors: [0.0, 3.3, 6.6, 9.9, 13.2, 16.5, 19.5]
 rst_build.js:733 [STEP 4] selected_combinations: Some(48)
+rst_build.js:733 📄 [DOCX-INIT] DOCX structure created: 1.0ms
+rst_build.js:733 ✨ [DOCX-OPT] Global page settings applied
+rst_build.js:733 📋 [SORT-Z] Entities sorted by Z-coordinate: 16.5ms (14 floors)
 rst_build.js:733 [STEP 5] Creating combination map from 48 combinations
 rst_build.js:733 [DEBUG] Combo 0: floor_level='0', function_name='as1'
 rst_build.js:733 [DEBUG] Combo 0: result_scale=Some("[2.830см2:Ø6+Ø6]")
@@ -216,12 +219,19 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 0
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 2615 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=572.6ms, Polygons=158.4ms (1859 objects), PNG=304.6ms (21.4MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=435.0ms, Polygons=140.7ms (1859 objects), PNG=269.3ms (21.4MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=444.2ms, Polygons=146.3ms (1859 objects), PNG=269.2ms (21.4MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=436.6ms, Polygons=140.2ms (1859 objects), PNG=269.2ms (21.4MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2146.1ms, Avg=536.5ms/image, Size=85.8MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=521.5ms, Polygons=169.0ms (1859 objects), PNG=303.9ms (21.4MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=429.6ms, Polygons=137.3ms (1859 objects), PNG=265.5ms (21.4MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=427.8ms, Polygons=137.0ms (1859 objects), PNG=266.6ms (21.4MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=427.7ms, Polygons=136.1ms (1859 objects), PNG=264.2ms (21.4MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2131.5ms, Avg=532.9ms/image, Size=85.8MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 0 images generated: 2131.8ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 0 in 2696.8ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 0 added to DOCX: 2697.3ms (4 images) [PREP: 2696.8ms + BATCH: 0.0ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 0 processing complete: 4830.1ms (Images: 2131.8ms, DOCX: 2697.3ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 0 completed at timestamp: 40610.1ms
+rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 3.3 processing
 rst_build.js:733 [STEP 6] Processing floor 2/7: 3.3
 rst_build.js:733 [STEP 6] Found 3353 entities for floor 3.3
 rst_build.js:733 [DEBUG] Looking for key '3.3-as1': Some("[8.170см2:Ø12+Ø8]")
@@ -233,12 +243,19 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 3.3
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3353 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=511.1ms, Polygons=232.8ms (2431 objects), PNG=252.1ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=521.9ms, Polygons=234.6ms (2431 objects), PNG=262.7ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=516.7ms, Polygons=235.1ms (2431 objects), PNG=256.9ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=517.5ms, Polygons=233.3ms (2431 objects), PNG=259.5ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2068.1ms, Avg=517.0ms/image, Size=95.4MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=507.5ms, Polygons=229.5ms (2431 objects), PNG=252.1ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=507.2ms, Polygons=226.2ms (2431 objects), PNG=255.6ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=506.7ms, Polygons=226.6ms (2431 objects), PNG=255.2ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=509.7ms, Polygons=229.1ms (2431 objects), PNG=254.6ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2032.4ms, Avg=508.1ms/image, Size=95.4MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 3.3 images generated: 2032.5ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 3.3 in 2813.3ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 3.3 added to DOCX: 2813.6ms (4 images) [PREP: 2813.3ms + BATCH: 0.0ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 3.3 processing complete: 4847.8ms (Images: 2032.5ms, DOCX: 2813.6ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 3.3 completed at timestamp: 45458.1ms
+rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 6.6 processing
 rst_build.js:733 [STEP 6] Processing floor 3/7: 6.6
 rst_build.js:733 [STEP 6] Found 3347 entities for floor 6.6
 rst_build.js:733 [DEBUG] Looking for key '6.6-as1': Some("[9.115см2:Ø14+Ø6]")
@@ -250,12 +267,19 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 6.6
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=506.6ms, Polygons=233.5ms (2431 objects), PNG=248.1ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=508.3ms, Polygons=235.0ms (2431 objects), PNG=248.9ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=510.9ms, Polygons=235.9ms (2431 objects), PNG=248.3ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=501.1ms, Polygons=231.1ms (2431 objects), PNG=245.7ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2027.7ms, Avg=506.9ms/image, Size=95.5MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=507.7ms, Polygons=231.5ms (2431 objects), PNG=250.4ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=496.5ms, Polygons=225.6ms (2431 objects), PNG=246.6ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=505.3ms, Polygons=233.1ms (2431 objects), PNG=247.4ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=500.7ms, Polygons=228.0ms (2431 objects), PNG=247.5ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2011.3ms, Avg=502.8ms/image, Size=95.5MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 6.6 images generated: 2011.4ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 6.6 in 2829.7ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 6.6 added to DOCX: 2830.0ms (4 images) [PREP: 2829.7ms + BATCH: 0.0ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 6.6 processing complete: 4842.6ms (Images: 2011.4ms, DOCX: 2830.0ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 6.6 completed at timestamp: 50300.8ms
+rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 9.9 processing
 rst_build.js:733 [STEP 6] Processing floor 4/7: 9.9
 rst_build.js:733 [STEP 6] Found 3347 entities for floor 9.9
 rst_build.js:733 [DEBUG] Looking for key '9.9-as1': Some("[9.115см2:Ø14+Ø6]")
@@ -267,12 +291,19 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 9.9
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=506.4ms, Polygons=233.5ms (2431 objects), PNG=247.4ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=506.5ms, Polygons=231.3ms (2431 objects), PNG=250.9ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=511.5ms, Polygons=236.5ms (2431 objects), PNG=250.6ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=512.0ms, Polygons=235.8ms (2431 objects), PNG=252.1ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2037.4ms, Avg=509.4ms/image, Size=95.5MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=498.5ms, Polygons=227.2ms (2431 objects), PNG=245.3ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=508.1ms, Polygons=229.8ms (2431 objects), PNG=252.0ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=505.0ms, Polygons=231.6ms (2431 objects), PNG=248.9ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=502.1ms, Polygons=229.2ms (2431 objects), PNG=247.7ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2014.9ms, Avg=503.7ms/image, Size=95.5MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 9.9 images generated: 2015.0ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 9.9 in 2834.3ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 9.9 added to DOCX: 2834.6ms (4 images) [PREP: 2834.3ms + BATCH: 0.0ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 9.9 processing complete: 4851.3ms (Images: 2015.0ms, DOCX: 2834.6ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 9.9 completed at timestamp: 55152.3ms
+rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 13.2 processing
 rst_build.js:733 [STEP 6] Processing floor 5/7: 13.2
 rst_build.js:733 [STEP 6] Found 3347 entities for floor 13.2
 rst_build.js:733 [DEBUG] Looking for key '13.2-as1': Some("[8.170см2:Ø12+Ø8]")
@@ -284,12 +315,19 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 13.2
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=506.2ms, Polygons=232.9ms (2431 objects), PNG=248.7ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=508.1ms, Polygons=230.2ms (2431 objects), PNG=253.5ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=509.7ms, Polygons=233.1ms (2431 objects), PNG=245.3ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=538.9ms, Polygons=229.0ms (2431 objects), PNG=284.0ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2136.9ms, Avg=534.2ms/image, Size=95.4MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=497.4ms, Polygons=226.5ms (2431 objects), PNG=244.9ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=501.4ms, Polygons=226.1ms (2431 objects), PNG=250.1ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=497.0ms, Polygons=226.5ms (2431 objects), PNG=244.5ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=532.1ms, Polygons=227.8ms (2431 objects), PNG=278.2ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2112.2ms, Avg=528.1ms/image, Size=95.4MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 13.2 images generated: 2112.7ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 13.2 in 2838.2ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.1ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 13.2 added to DOCX: 2838.8ms (4 images) [PREP: 2838.2ms + BATCH: 0.1ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 13.2 processing complete: 4953.0ms (Images: 2112.7ms, DOCX: 2838.8ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 13.2 completed at timestamp: 60105.5ms
+rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 16.5 processing
 rst_build.js:733 [STEP 6] Processing floor 6/7: 16.5
 rst_build.js:733 [STEP 6] Found 3408 entities for floor 16.5
 rst_build.js:733 [DEBUG] Looking for key '16.5-as1': Some("[9.115см2:Ø14+Ø6]")
@@ -301,12 +339,19 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 16.5
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3408 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=511.2ms, Polygons=234.1ms (2466 objects), PNG=251.9ms (24.0MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=512.1ms, Polygons=232.9ms (2466 objects), PNG=254.3ms (24.0MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=535.7ms, Polygons=235.6ms (2466 objects), PNG=274.6ms (24.0MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=545.7ms, Polygons=234.4ms (2466 objects), PNG=286.2ms (24.0MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2204.1ms, Avg=551.0ms/image, Size=95.9MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=513.1ms, Polygons=232.4ms (2466 objects), PNG=255.8ms (24.0MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=506.9ms, Polygons=231.4ms (2466 objects), PNG=251.1ms (24.0MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=540.4ms, Polygons=240.3ms (2466 objects), PNG=275.1ms (24.0MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=539.5ms, Polygons=228.4ms (2466 objects), PNG=286.7ms (24.0MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2203.4ms, Avg=550.8ms/image, Size=95.9MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 16.5 images generated: 2203.6ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 16.5 in 2848.4ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 16.5 added to DOCX: 2848.7ms (4 images) [PREP: 2848.4ms + BATCH: 0.0ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 16.5 processing complete: 5058.2ms (Images: 2203.6ms, DOCX: 2848.7ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 16.5 completed at timestamp: 65164.1ms
+rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 19.5 processing
 rst_build.js:733 [STEP 6] Processing floor 7/7: 19.5
 rst_build.js:733 [STEP 6] Found 3464 entities for floor 19.5
 rst_build.js:733 [DEBUG] Looking for key '19.5-as1': Some("[2.515см2:Ø8]")
@@ -318,9 +363,18 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 19.5
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3464 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=507.7ms, Polygons=232.6ms (2516 objects), PNG=250.1ms (24.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=509.4ms, Polygons=231.4ms (2516 objects), PNG=253.5ms (24.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=524.9ms, Polygons=231.2ms (2516 objects), PNG=266.0ms (24.2MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=520.8ms, Polygons=232.4ms (2516 objects), PNG=263.8ms (24.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2063.7ms, Avg=515.9ms/image, Size=97.0MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=504.8ms, Polygons=232.3ms (2516 objects), PNG=247.8ms (24.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=512.5ms, Polygons=231.0ms (2516 objects), PNG=254.1ms (24.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=506.5ms, Polygons=223.5ms (2516 objects), PNG=258.5ms (24.2MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=529.9ms, Polygons=227.4ms (2516 objects), PNG=273.9ms (24.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2055.0ms, Avg=513.8ms/image, Size=97.0MB
+rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 19.5 images generated: 2055.1ms (4 images)
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 19.5 in 2812.3ms
+rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.1ms
+rst_build.js:733 📄 [FLOOR-DOCX] Floor 19.5 added to DOCX: 2812.6ms (4 images) [PREP: 2812.3ms + BATCH: 0.1ms]
+rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 19.5 processing complete: 4868.7ms (Images: 2055.1ms, DOCX: 2812.6ms)
+rst_build.js:733 ⏹️ [FLOOR-END] Floor 19.5 completed at timestamp: 70033.2ms
+rst_build.js:733 ✅ [DOCX-BUILD] Document built successfully: 94.4ms, Size: 59.0MB
+rst_build.js:733 🏁 [DOCX-TOTAL] Total DOCX generation time: 34380.8ms
+rst_build.js:733 [STEP 2] create_docx() returned 61834173 bytes

@@ -692,65 +692,105 @@ impl DrawItemZ {
 		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0;
 		
 		let font_size = 25.0;
-		let text_color = Rgb([0u8, 0u8, 0u8]);
-		let font_scale = Scale::uniform(font_size);
 		
-		// === STEP 10: RENDERING FIGURES ===
+		// === STEP 10: ОПТИМИЗИРОВАННЫЙ РЕНДЕРИНГ ПОЛИГОНОВ ===
 		let mut rendered_count = 0;
 		
 		// 🔍 PERFORMANCE: Начало рендеринга полигонов
 		let polygon_start = web_sys::window().unwrap().performance().unwrap().now();
-		let mut rendered_count = 0;
 		
-		// Рендерим все объекты с цветовой палитрой
-		for (item_idx, item) in self.data.iter().enumerate() {
+		// ОПТИМИЗАЦИЯ 1: Предварительно аллоцируем буферы для переиспользования
+		let mut points_buffer = Vec::with_capacity(4);
+		let mut quad_points_buffer = Vec::with_capacity(4);
+		
+		// ОПТИМИЗАЦИЯ ТЕКСТА: Предвычисляем все текстовые данные в одном проходе
+		let mut text_data = Vec::with_capacity(self.data.len());
+		let text_color = Rgb([0u8, 0u8, 0u8]);
+		let font_scale = Scale::uniform(font_size); // Один объект Scale для всех
+		
+		// Первый проход: собираем все текстовые данные
+		for item in self.data.iter() {
 			if item.vertices.len() == 4 {
-				let points: Vec<Point<f64>> = item.vertices.iter().map(|v| {
-					let normalized_x = v.x - dimensions.min_x;
-					let normalized_y = v.y - dimensions.min_y;
-					Point::new(normalized_x * coord_scale + offset_x, normalized_y * coord_scale + offset_y)
-				}).collect();
+				if let Some(values) = item.get_value(field) {
+					if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
+						// Предвычисляем строку один раз
+						let text_string = max_value.to_string();
+						text_data.push(Some(text_string));
+					} else {
+						text_data.push(None);
+					}
+				} else {
+					text_data.push(None);
+				}
+			} else {
+				text_data.push(None);
+			}
+		}
+		
+		// ОПТИМИЗАЦИЯ 2: Батчевая обработка объектов
+		let mut text_index = 0;
+		for item in self.data.iter() {
+			if item.vertices.len() == 4 {
+				// Очищаем буферы для переиспользования (избегаем новых аллокаций)
+				points_buffer.clear();
+				quad_points_buffer.clear();
 				
-				let quad_points: Vec<Point<i32>> = points.iter().map(|p| {
-					Point::new(p.x as i32, p.y as i32)
-				}).collect();
+				// ОПТИМИЗАЦИЯ 3: Прямое вычисление координат без промежуточного Vec
+				let mut min_x = f64::INFINITY;
+				let mut max_x = f64::NEG_INFINITY;
+				let mut min_y = f64::INFINITY;
+				let mut max_y = f64::NEG_INFINITY;
 				
-				// Выбираем цвет из палитры или дефолтный
+				for vertex in &item.vertices {
+					let normalized_x = vertex.x - dimensions.min_x;
+					let normalized_y = vertex.y - dimensions.min_y;
+					let screen_x = normalized_x * coord_scale + offset_x;
+					let screen_y = normalized_y * coord_scale + offset_y;
+					
+					points_buffer.push(Point::new(screen_x, screen_y));
+					quad_points_buffer.push(Point::new(screen_x as i32, screen_y as i32));
+					
+					// Одновременно вычисляем границы для текста
+					min_x = min_x.min(screen_x);
+					max_x = max_x.max(screen_x);
+					min_y = min_y.min(screen_y);
+					max_y = max_y.max(screen_y);
+				}
+				
+				// ОПТИМИЗАЦИЯ 4: Выбор цвета только когда нужно
 				let fill_color = if color_palette.len() > 1 {
 					get_color_for_value(item, field, result_scale, &color_palette)
 				} else {
 					color_palette[0]
 				};
 				
-				draw_polygon_mut(&mut img, &quad_points, fill_color);
+				// Рисуем полигон
+				draw_polygon_mut(&mut img, &quad_points_buffer, fill_color);
 				rendered_count += 1;
 				
-				// Контуры
+				// ОПТИМИЗАЦИЯ 5: Объединенный цикл контуров без отдельного for
+				let black_color = Rgb([0, 0, 0]);
 				for i in 0..4 {
 					let next = (i + 1) % 4;
 					draw_line_segment_mut(&mut img,
-						(points[i].x as f32, points[i].y as f32),
-						(points[next].x as f32, points[next].y as f32),
-						Rgb([0, 0, 0]));
+						(points_buffer[i].x as f32, points_buffer[i].y as f32),
+						(points_buffer[next].x as f32, points_buffer[next].y as f32),
+						black_color);
 				}
 				
-				// 🔍 PERFORMANCE: Текст рендеринг (потенциально медленная операция)
-				if let Some(values) = item.get_value(field) {
-					if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
-						let min_x = points.iter().map(|p| p.x).fold(f64::INFINITY, f64::min);
-						let max_x = points.iter().map(|p| p.x).fold(f64::NEG_INFINITY, f64::max);
-						let min_y = points.iter().map(|p| p.y).fold(f64::INFINITY, f64::min);
-						let max_y = points.iter().map(|p| p.y).fold(f64::NEG_INFINITY, f64::max);
-						
-						let width = max_x - min_x;
-						let height = max_y - min_y;
-						let text_x = (min_x + width * 0.1) as i32;
-						let text_y = (min_y + height * 0.1) as i32;
-						
-						draw_text_mut(&mut img, text_color, text_x, text_y, font_scale, &CACHED_FONT, &max_value.to_string());
-					}
+				// ОПТИМИЗАЦИЯ ТЕКСТА: Используем предвычисленные данные
+				if let Some(ref text_string) = text_data[text_index] {
+					// Используем уже вычисленные границы
+					let width = max_x - min_x;
+					let height = max_y - min_y;
+					let text_x = (min_x + width * 0.1) as i32;
+					let text_y = (min_y + height * 0.1) as i32;
+					
+					// Один вызов с предвычисленной строкой и общим Scale
+					draw_text_mut(&mut img, text_color, text_x, text_y, font_scale, &CACHED_FONT, text_string);
 				}
 			}
+			text_index += 1;
 		}
 		
 		// === STEP 11: СОЗДАНИЕ ЛЕГЕНДЫ ===
