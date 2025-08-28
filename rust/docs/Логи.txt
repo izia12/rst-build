@@ -216,11 +216,11 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 0
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 2615 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=680.4ms, Polygons=162.8ms (1859 objects), PNG=488.0ms (0.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=661.9ms, Polygons=142.6ms (1859 objects), PNG=483.5ms (0.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=654.4ms, Polygons=144.9ms (1859 objects), PNG=483.6ms (0.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=648.4ms, Polygons=141.6ms (1859 objects), PNG=482.2ms (0.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2654.3ms, Avg=663.6ms/image, Size=3.5MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=572.6ms, Polygons=158.4ms (1859 objects), PNG=304.6ms (21.4MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=435.0ms, Polygons=140.7ms (1859 objects), PNG=269.3ms (21.4MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=444.2ms, Polygons=146.3ms (1859 objects), PNG=269.2ms (21.4MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=436.6ms, Polygons=140.2ms (1859 objects), PNG=269.2ms (21.4MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2146.1ms, Avg=536.5ms/image, Size=85.8MB
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
 rst_build.js:733 [STEP 6] Processing floor 2/7: 3.3
 rst_build.js:733 [STEP 6] Found 3353 entities for floor 3.3
@@ -233,11 +233,11 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 3.3
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3353 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=765.8ms, Polygons=238.0ms (2431 objects), PNG=502.0ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=765.1ms, Polygons=231.3ms (2431 objects), PNG=509.3ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=779.2ms, Polygons=243.5ms (2431 objects), PNG=510.8ms (2.4MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=773.6ms, Polygons=237.7ms (2431 objects), PNG=510.9ms (2.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3084.5ms, Avg=771.1ms/image, Size=9.3MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=511.1ms, Polygons=232.8ms (2431 objects), PNG=252.1ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=521.9ms, Polygons=234.6ms (2431 objects), PNG=262.7ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=516.7ms, Polygons=235.1ms (2431 objects), PNG=256.9ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=517.5ms, Polygons=233.3ms (2431 objects), PNG=259.5ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2068.1ms, Avg=517.0ms/image, Size=95.4MB
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
 rst_build.js:733 [STEP 6] Processing floor 3/7: 6.6
 rst_build.js:733 [STEP 6] Found 3347 entities for floor 6.6
@@ -250,11 +250,11 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 6.6
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=766.2ms, Polygons=237.3ms (2431 objects), PNG=502.2ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=766.3ms, Polygons=233.2ms (2431 objects), PNG=508.5ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=782.8ms, Polygons=239.8ms (2431 objects), PNG=518.2ms (2.4MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=771.1ms, Polygons=236.8ms (2431 objects), PNG=509.5ms (2.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3087.4ms, Avg=771.8ms/image, Size=9.3MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=506.6ms, Polygons=233.5ms (2431 objects), PNG=248.1ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=508.3ms, Polygons=235.0ms (2431 objects), PNG=248.9ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=510.9ms, Polygons=235.9ms (2431 objects), PNG=248.3ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=501.1ms, Polygons=231.1ms (2431 objects), PNG=245.7ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2027.7ms, Avg=506.9ms/image, Size=95.5MB
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
 rst_build.js:733 [STEP 6] Processing floor 4/7: 9.9
 rst_build.js:733 [STEP 6] Found 3347 entities for floor 9.9
@@ -267,11 +267,11 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 9.9
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=803.1ms, Polygons=246.0ms (2431 objects), PNG=528.8ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=770.1ms, Polygons=236.8ms (2431 objects), PNG=508.1ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=773.4ms, Polygons=239.4ms (2431 objects), PNG=509.2ms (2.4MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=775.5ms, Polygons=236.8ms (2431 objects), PNG=512.3ms (2.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3132.1ms, Avg=783.0ms/image, Size=9.3MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=506.4ms, Polygons=233.5ms (2431 objects), PNG=247.4ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=506.5ms, Polygons=231.3ms (2431 objects), PNG=250.9ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=511.5ms, Polygons=236.5ms (2431 objects), PNG=250.6ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=512.0ms, Polygons=235.8ms (2431 objects), PNG=252.1ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2037.4ms, Avg=509.4ms/image, Size=95.5MB
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
 rst_build.js:733 [STEP 6] Processing floor 5/7: 13.2
 rst_build.js:733 [STEP 6] Found 3347 entities for floor 13.2
@@ -284,11 +284,11 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 13.2
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=779.9ms, Polygons=244.9ms (2431 objects), PNG=510.2ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=782.0ms, Polygons=234.6ms (2431 objects), PNG=513.9ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=773.1ms, Polygons=237.5ms (2431 objects), PNG=509.5ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=769.0ms, Polygons=235.0ms (2431 objects), PNG=509.0ms (2.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3113.0ms, Avg=778.2ms/image, Size=9.2MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=506.2ms, Polygons=232.9ms (2431 objects), PNG=248.7ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=508.1ms, Polygons=230.2ms (2431 objects), PNG=253.5ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=509.7ms, Polygons=233.1ms (2431 objects), PNG=245.3ms (23.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=538.9ms, Polygons=229.0ms (2431 objects), PNG=284.0ms (23.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2136.9ms, Avg=534.2ms/image, Size=95.4MB
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
 rst_build.js:733 [STEP 6] Processing floor 6/7: 16.5
 rst_build.js:733 [STEP 6] Found 3408 entities for floor 16.5
@@ -301,11 +301,11 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 16.5
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3408 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=779.4ms, Polygons=250.7ms (2466 objects), PNG=503.9ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=770.8ms, Polygons=235.2ms (2466 objects), PNG=508.6ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=764.3ms, Polygons=232.9ms (2466 objects), PNG=507.0ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=763.3ms, Polygons=232.5ms (2466 objects), PNG=506.3ms (2.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3086.9ms, Avg=771.7ms/image, Size=9.2MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=511.2ms, Polygons=234.1ms (2466 objects), PNG=251.9ms (24.0MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=512.1ms, Polygons=232.9ms (2466 objects), PNG=254.3ms (24.0MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=535.7ms, Polygons=235.6ms (2466 objects), PNG=274.6ms (24.0MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=545.7ms, Polygons=234.4ms (2466 objects), PNG=286.2ms (24.0MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2204.1ms, Avg=551.0ms/image, Size=95.9MB
 rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
 rst_build.js:733 [STEP 6] Processing floor 7/7: 19.5
 rst_build.js:733 [STEP 6] Found 3464 entities for floor 19.5
@@ -318,8 +318,9 @@ rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", 
 rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 19.5
 rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
 rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3464 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=772.6ms, Polygons=242.1ms (2516 objects), PNG=504.7ms (2.2MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=764.7ms, Polygons=234.3ms (2516 objects), PNG=505.8ms (2.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=764.0ms, Polygons=229.6ms (2516 objects), PNG=504.6ms (2.2MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=769.5ms, Polygons=236.7ms (2516 objects), PNG=507.4ms (2.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3071.6ms, Avg=767.9ms/image, Size=9.1MB
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=507.7ms, Polygons=232.6ms (2516 objects), PNG=250.1ms (24.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=509.4ms, Polygons=231.4ms (2516 objects), PNG=253.5ms (24.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=524.9ms, Polygons=231.2ms (2516 objects), PNG=266.0ms (24.2MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=520.8ms, Polygons=232.4ms (2516 objects), PNG=263.8ms (24.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2063.7ms, Avg=515.9ms/image, Size=97.0MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images

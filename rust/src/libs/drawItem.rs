@@ -1,6 +1,6 @@
 use std::io::Cursor;
 use std::sync::{Arc};
-use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType}};
+use image::{ImageBuffer, Rgb, Rgba, ImageEncoder, codecs::png::{PngEncoder, CompressionType, FilterType}};
 use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, draw_filled_rect_mut, draw_polygon_mut}, point::Point, rect::Rect};
 use rusttype::{Font, Scale};
 use serde::Serialize;
@@ -599,8 +599,8 @@ impl DrawItemZ {
 		let mut buffer = Vec::new();
 		let cursor = Cursor::new(&mut buffer);
 		
-		// Простое PNG кодирование без сложностей
-        let encoder = PngEncoder::new(cursor);
+		// ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения
+        let encoder = PngEncoder::new_with_quality(cursor, CompressionType::Fast, image::codecs::png::FilterType::NoFilter);
         img.write_with_encoder(encoder).unwrap();
 		
 		buffer
@@ -794,10 +794,10 @@ impl DrawItemZ {
         // 🔍 PERFORMANCE: Начало PNG кодирования
         let png_start = web_sys::window().unwrap().performance().unwrap().now();
         
-        // PNG кодирование
+        // ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения
         let mut buffer = Vec::new();
         let cursor = Cursor::new(&mut buffer);
-        let encoder = PngEncoder::new(cursor);
+        let encoder = PngEncoder::new_with_quality(cursor, CompressionType::Fast, image::codecs::png::FilterType::NoFilter);
         combined_img.write_with_encoder(encoder).unwrap();
         
         // 🔍 PERFORMANCE: Финальные метрики
@@ -1013,7 +1013,12 @@ impl DrawItemZ {
 		for img in images {
 			let mut png_data = Vec::new();
 			{
-				let encoder = image::codecs::png::PngEncoder::new(&mut png_data);
+				// ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения
+			let encoder = image::codecs::png::PngEncoder::new_with_quality(
+				&mut png_data,
+				CompressionType::Fast,
+				image::codecs::png::FilterType::NoFilter
+			);
 				let _ = encoder.write_image(
 					img.as_raw(),
 					img.width(),

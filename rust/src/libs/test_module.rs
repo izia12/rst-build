@@ -266,8 +266,13 @@ impl TestModule {
         
         // Конвертируем в PNG
         let mut png_data = Vec::new();
+        // ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения (тесты)
         {
-            let encoder = image::codecs::png::PngEncoder::new(&mut png_data);
+            let encoder = image::codecs::png::PngEncoder::new_with_quality(
+                &mut png_data,
+                image::codecs::png::CompressionType::Fast,
+                image::codecs::png::FilterType::NoFilter
+            );
             if let Err(_) = encoder.write_image(
                 img.as_raw(),
                 width,
