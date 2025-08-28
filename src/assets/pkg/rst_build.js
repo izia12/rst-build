@@ -579,11 +579,11 @@ export function get_canvas_statistics_wasm() {
 }
 
 function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure217_externref_shim(arg0, arg1, arg2);
+    wasm.closure215_externref_shim(arg0, arg1, arg2);
 }
 
 function __wbg_adapter_153(arg0, arg1, arg2, arg3) {
-    wasm.closure447_externref_shim(arg0, arg1, arg2, arg3);
+    wasm.closure445_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_GpuPowerPreference = ["low-power", "high-performance"];
@@ -891,8 +891,8 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper1277 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 218, __wbg_adapter_40);
+    imports.wbg.__wbindgen_closure_wrapper1283 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 216, __wbg_adapter_40);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {

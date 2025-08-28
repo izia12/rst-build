@@ -9,29 +9,104 @@ use super::parse::EntityWithXlsx;
 use super::generate_documents::performance::{PerformanceConfig, PerformanceMonitor};
 use super::gpu_renderer::{ get_gpu_renderer,};
 // Функция генерации цветовой палитры
-fn generate_color_palette(_scale: &str) -> Vec<Rgb<u8>> {
-	// Красивая палитра от светло-желтого до бордового
-	vec![
+fn generate_color_palette(scale: &str) -> Vec<Rgb<u8>> {
+	// Определяем количество диапазонов в result_scale
+	let ranges = parse_result_scale_ranges(scale);
+	let num_colors = if ranges.is_empty() { 1 } else { ranges.len() };
+	
+	// Базовые цвета для интерполяции
+	let base_colors = vec![
 		Rgb([247, 233, 171]), // #f7e9ab - светло-желтый
 		Rgb([255, 255, 0]),   // #ffff00 - желтый
 		Rgb([247, 172, 52]),  // #f7ac34 - оранжево-желтый
 		Rgb([232, 145, 5]),   // #e89105 - оранжевый
 		Rgb([232, 96, 5]),    // #e86005 - темно-оранжевый
 		Rgb([139, 0, 0]),     // #8b0000 - бордовый
-	]
+	];
+	
+	// Если нужно меньше цветов, берем первые
+	if num_colors <= base_colors.len() {
+		base_colors.into_iter().take(num_colors).collect()
+	} else {
+		// Если нужно больше цветов, интерполируем
+		let mut result = Vec::new();
+		for i in 0..num_colors {
+			let ratio = i as f32 / (num_colors - 1).max(1) as f32;
+			let index = (ratio * (base_colors.len() - 1) as f32) as usize;
+			result.push(base_colors[index.min(base_colors.len() - 1)]);
+		}
+		result
+	}
 }
 
-// Функция получения цвета для значения
-fn get_color_for_value(item: &EntityWithXlsx, field: &str, _scale: Option<&str>, palette: &[Rgb<u8>]) -> Rgb<u8> {
+// Функция получения цвета для значения на основе диапазонов result_scale
+fn get_color_for_value(item: &EntityWithXlsx, field: &str, scale: Option<&str>, palette: &[Rgb<u8>]) -> Rgb<u8> {
 	if let Some(values) = item.get_value(field) {
 		if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
-			// Простая логика: чем больше значение, тем краснее цвет
-			let normalized = (max_value / 100.0).min(1.0).max(0.0); // Нормализуем к 0-1
+			// Если есть result_scale, используем диапазоны из него
+			if let Some(scale_str) = scale {
+				let ranges = parse_result_scale_ranges(scale_str);
+				if !ranges.is_empty() {
+					// Находим подходящий диапазон для значения
+					for (i, (min_val, max_val)) in ranges.iter().enumerate() {
+						if max_value >= *min_val && max_value <= *max_val {
+							return palette.get(i).copied().unwrap_or(palette[0]);
+						}
+					}
+					// Если значение больше всех диапазонов, используем последний цвет
+					if max_value > ranges.last().unwrap().1 {
+						return palette.get(ranges.len() - 1).copied().unwrap_or(palette[0]);
+					}
+					// Если значение меньше всех диапазонов, используем первый цвет
+					return palette[0];
+				}
+			}
+			// Старая логика для случаев без result_scale или пустых диапазонов
+			let normalized = (max_value / 100.0).min(1.0).max(0.0);
 			let index = (normalized * (palette.len() - 1) as f32) as usize;
 			return palette[index.min(palette.len() - 1)];
 		}
 	}
 	palette[0] // Дефолтный цвет
+}
+
+// Функция парсинга диапазонов result_scale (вынесена из impl блока)
+fn parse_result_scale_ranges(scale: &str) -> Vec<(f32, f32)> {
+	// Парсим строку вида "[2.515см2:Ø8 мм][3.930см2:Ø8+Ø6][5.030см2:Ø8+Ø8]"
+	let mut areas = Vec::new();
+	let parts: Vec<&str> = scale.split("][").collect();
+	
+	// Извлекаем все площади
+	for part in parts {
+		let clean_part = part.trim_start_matches('[').trim_end_matches(']');
+		if let Some(area_end) = clean_part.find("см2:") {
+			if let Ok(area) = clean_part[..area_end].parse::<f32>() {
+				areas.push(area);
+			}
+		}
+	}
+	
+	// Сортируем площади
+	areas.sort_by(|a, b| a.partial_cmp(b).unwrap());
+	
+	// Создаем диапазоны между соседними значениями
+	let mut ranges = Vec::new();
+	if !areas.is_empty() {
+		// Первый диапазон: от 0 до первого значения
+		ranges.push((0.0, areas[0]));
+		
+		// Промежуточные диапазоны: от предыдущего до текущего
+		for i in 1..areas.len() {
+			ranges.push((areas[i-1], areas[i]));
+		}
+		
+		// Если есть только одно значение, добавляем еще один диапазон
+		if areas.len() == 1 {
+			ranges.push((areas[0], areas[0] * 2.0));
+		}
+	}
+	
+	ranges
 }
 
 
@@ -543,9 +618,13 @@ impl DrawItemZ {
     
     /// Функция для всех изображений с поддержкой цветов и floor_level
     pub async fn draw_all_images_with_colors_and_floor(&self, result_scales: Option<&[Option<&str>]>, floor_level: f32) -> Vec<Vec<u8>> {
-        // === STEP 7: DRAW ALL IMAGES ===
-        web_sys::console::log_1(&format!("[STEP 7] draw_all_images_with_colors() called with {} entities", self.data.len()).into());
-        web_sys::console::log_1(&format!("[STEP 7] result_scales: {:?}", result_scales).into());
+        // 🔍 PERFORMANCE: Засекаем общее время генерации всех изображений
+        let total_start = web_sys::window().unwrap().performance().unwrap().now();
+        
+        web_sys::console::log_1(&format!(
+            "🚀 [DOCX-GEN] Starting generation of 4 images for {} entities", 
+            self.data.len()
+        ).into());
         
         let fields = ["as1", "as2", "as3", "as4"];
         let mut results = Vec::with_capacity(4);
@@ -553,16 +632,20 @@ impl DrawItemZ {
         for (i, field) in fields.iter().enumerate() {
             let result_scale = result_scales.and_then(|scales| scales.get(i)).and_then(|s| *s);
             
-            // === STEP 8: DRAW SINGLE IMAGE ===
-            web_sys::console::log_1(&format!("[STEP 8] Calling draw_image('{}', {:?})", field, result_scale).into());
-            
             let result = self.draw_image_with_floor(field, result_scale, floor_level).await;
-            
-            web_sys::console::log_1(&format!("[STEP 8] draw_image('{}') returned {} bytes", field, result.len()).into());
             results.push(result);
         }
         
-        web_sys::console::log_1(&format!("[STEP 7] draw_all_images_with_colors() completed, returning {} images", results.len()).into());
+        // 🔍 PERFORMANCE: Финальные метрики по всем изображениям
+        let total_time = web_sys::window().unwrap().performance().unwrap().now() - total_start;
+        let avg_per_image = total_time / 4.0;
+        let total_size: usize = results.iter().map(|r| r.len()).sum();
+        
+        web_sys::console::log_1(&format!(
+            "✅ [DOCX-GEN] All 4 images completed: Total={:.1}ms, Avg={:.1}ms/image, Size={:.1}MB", 
+            total_time, avg_per_image, total_size as f64 / 1024.0 / 1024.0
+        ).into());
+        
         results
 	}
 
@@ -572,22 +655,18 @@ impl DrawItemZ {
     }
     
     pub async fn draw_image_with_floor(&self, field: &str, result_scale: Option<&str>, floor_level: f32) -> Vec<u8> {
-        // === STEP 9: MAIN DRAW FUNCTION ===
-        web_sys::console::log_1(&format!("[STEP 9] draw_image('{}', {:?}) called with {} entities", field, result_scale, self.data.len()).into());
+        // 🔍 PERFORMANCE: Начало генерации изображения
+        let start_time = web_sys::window().unwrap().performance().unwrap().now();
         
         // Используем дефолтные настройки для простоты
         let dimensions = self.calculate_image_bounds_with_config(&PerformanceConfig::default());
         
         // Генерируем цветовую палитру если есть result_scale
         let color_palette = if let Some(scale) = result_scale {
-            web_sys::console::log_1(&format!("[STEP 9] ✅ Using color palette for result_scale: {}", scale).into());
             generate_color_palette(scale)
         } else {
-            web_sys::console::log_1(&"[STEP 9] ❌ No result_scale provided, using default yellow color".into());
             vec![Rgb([204, 204, 0])] // Дефолтный темно-желтый
         };
-        
-        web_sys::console::log_1(&format!("[STEP 9] Generated color palette with {} colors", color_palette.len()).into());
 		
 		// ТОЛЬКО CPU - никакого GPU, никаких сложностей
 		let use_gpu = false;
@@ -619,6 +698,10 @@ impl DrawItemZ {
 		// === STEP 10: RENDERING FIGURES ===
 		let mut rendered_count = 0;
 		
+		// 🔍 PERFORMANCE: Начало рендеринга полигонов
+		let polygon_start = web_sys::window().unwrap().performance().unwrap().now();
+		let mut rendered_count = 0;
+		
 		// Рендерим все объекты с цветовой палитрой
 		for (item_idx, item) in self.data.iter().enumerate() {
 			if item.vertices.len() == 4 {
@@ -639,12 +722,6 @@ impl DrawItemZ {
 					color_palette[0]
 				};
 				
-				// Логируем только первые 3 фигуры
-				if rendered_count < 3 {
-					web_sys::console::log_1(&format!("[STEP 10] Rendering figure {}: field='{}', color=RGB({},{},{})", 
-						item_idx + 1, field, fill_color[0], fill_color[1], fill_color[2]).into());
-				}
-				
 				draw_polygon_mut(&mut img, &quad_points, fill_color);
 				rendered_count += 1;
 				
@@ -657,7 +734,7 @@ impl DrawItemZ {
 						Rgb([0, 0, 0]));
 				}
 				
-				// Текст
+				// 🔍 PERFORMANCE: Текст рендеринг (потенциально медленная операция)
 				if let Some(values) = item.get_value(field) {
 					if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
 						let min_x = points.iter().map(|p| p.x).fold(f64::INFINITY, f64::min);
@@ -677,8 +754,8 @@ impl DrawItemZ {
 		}
 		
 		// === STEP 11: СОЗДАНИЕ ЛЕГЕНДЫ ===
-        let legend_width = dimensions.img_width;
-        let legend_height = 150; // Высота для легенды
+         let legend_width = dimensions.img_width;
+         let legend_height = 200; // Уменьшена высота для меньших шрифтов
         
         let legend_img = Self::create_legend_image(
              floor_level,
@@ -711,8 +788,11 @@ impl DrawItemZ {
             }
         }
         
-        // === STEP 13: PNG ENCODING ===
-        web_sys::console::log_1(&format!("[STEP 11] Rendered {} figures for field '{}', encoding to PNG", rendered_count, field).into());
+        // 🔍 PERFORMANCE: Измеряем время полигонов
+        let polygon_time = web_sys::window().unwrap().performance().unwrap().now() - polygon_start;
+        
+        // 🔍 PERFORMANCE: Начало PNG кодирования
+        let png_start = web_sys::window().unwrap().performance().unwrap().now();
         
         // PNG кодирование
         let mut buffer = Vec::new();
@@ -720,7 +800,14 @@ impl DrawItemZ {
         let encoder = PngEncoder::new(cursor);
         combined_img.write_with_encoder(encoder).unwrap();
         
-        web_sys::console::log_1(&format!("[STEP 11] PNG encoding completed, {} bytes generated", buffer.len()).into());
+        // 🔍 PERFORMANCE: Финальные метрики
+        let png_time = web_sys::window().unwrap().performance().unwrap().now() - png_start;
+        let total_time = web_sys::window().unwrap().performance().unwrap().now() - start_time;
+        
+        web_sys::console::log_1(&format!(
+            "📊 PERFORMANCE [{}]: Total={:.1}ms, Polygons={:.1}ms ({} objects), PNG={:.1}ms ({:.1}MB)", 
+            field, total_time, polygon_time, rendered_count, png_time, buffer.len() as f64 / 1024.0 / 1024.0
+        ).into());
         
         buffer
     }
@@ -739,15 +826,15 @@ impl DrawItemZ {
         let mut current_y = 10;
         
         // === РАЗДЕЛ 1: TITLE ===
-        let title_text = format!("Этаж {} - Функция {}", floor_level, function_name.to_uppercase());
-        let title_font_size = 20.0;
-        let title_scale = Scale::uniform(title_font_size);
-        let title_color = Rgb([0u8, 0u8, 0u8]);
-        
-        // Центрируем заголовок
-        let title_x = (legend_width as i32 - (title_text.len() as i32 * 12)) / 2;
-        draw_text_mut(&mut legend_img, title_color, title_x, current_y, title_scale, &CACHED_FONT, &title_text);
-        current_y += 35;
+         let title_text = format!("Этаж {} - Функция {}", floor_level, function_name.to_uppercase());
+         let title_font_size = 40.0; // Уменьшено в 2 раза (80 / 2)
+         let title_scale = Scale::uniform(title_font_size);
+         let title_color = Rgb([0u8, 0u8, 0u8]);
+         
+         // Центрируем заголовок
+          let title_x = (legend_width as i32 - (title_text.len() as i32 * 24)) / 2; // Пропорционально уменьшено
+          draw_text_mut(&mut legend_img, title_color, title_x, current_y, title_scale, &CACHED_FONT, &title_text);
+          current_y += 50; // Уменьшено пропорционально
         
         // === РАЗДЕЛ 2: ЦВЕТОВАЯ ШКАЛА ===
         if let Some(scale) = result_scale {
@@ -764,16 +851,16 @@ impl DrawItemZ {
                     let x = 20 + (i as u32 * rect_width);
                     let y = current_y as u32;
                     
-                    let color = color_palette.get(i).copied().unwrap_or(color_palette[0]);
+                    let color = color_palette.get(i).copied().unwrap_or(color_palette[i]);
                     let rect = Rect::at(x as i32, y as i32).of_size(rect_width - 2, rect_height); // -2 для отступа
                     draw_filled_rect_mut(&mut legend_img, rect, color);
                 }
                 
-                current_y += rect_height as i32 + 5;
+                current_y += rect_height as i32 + 10; // Уменьшен отступ
                 
                 // Подписи диапазонов
-                let range_font_size = 12.0;
-                let range_scale = Scale::uniform(range_font_size);
+                 let range_font_size = 30.0; // Уменьшено в 4 раза (120 / 4)
+                 let range_scale = Scale::uniform(range_font_size);
                 
                 for (i, range) in scale_ranges.iter().enumerate() {
                     let x = 20 + (i as u32 * rect_width);
@@ -786,45 +873,32 @@ impl DrawItemZ {
                     draw_text_mut(&mut legend_img, title_color, x as i32, current_y, range_scale, &CACHED_FONT, &range_text);
                 }
                 
-                current_y += 25;
+                current_y += 40; // Уменьшен отступ после диапазонов
             }
         }
         
         // === РАЗДЕЛ 3: МЕТАДАННЫЕ ===
-        let metadata_font_size = 10.0;
-        let metadata_scale = Scale::uniform(metadata_font_size);
+         let metadata_font_size = 25.0; // Уменьшено в 4 раза (100 / 4)
+         let metadata_scale = Scale::uniform(metadata_font_size);
         
         let calculation_method = Self::get_calculation_method();
         draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, &calculation_method);
-        current_y += 15;
-        
-        let units_text = "Единицы измерения см2";
-        draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
-        current_y += 15;
-        
-        let diameter_text = "Шаг диаметр - мм";
-        draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, diameter_text);
+          current_y += 30; // Уменьшено в 4 раза
+          
+          let units_text = "Единицы измерения см2";
+          draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
+          current_y += 30; // Уменьшено в 4 раза
+          
+          let diameter_text = "Шаг диаметр - мм";
+          draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, diameter_text);
         
         legend_img
     }
     
     /// Парсит result_scale и возвращает диапазоны (min, max)
-    fn parse_result_scale_ranges(scale: &str) -> Vec<(f32, f32)> {
-        // Парсим строку вида "[2.515см2:Ø8 мм][3.930см2:Ø8+Ø6][5.030см2:Ø8+Ø8]"
-        let mut ranges = Vec::new();
-        let parts: Vec<&str> = scale.split("][").collect();
-        
-        for part in parts {
-            let clean_part = part.trim_start_matches('[').trim_end_matches(']');
-            if let Some(area_end) = clean_part.find("см2:") {
-                if let Ok(area) = clean_part[..area_end].parse::<f32>() {
-                    ranges.push((0.0, area)); // Упрощенно: от 0 до area
-                }
-            }
-        }
-        
-        ranges
-    }
+     fn parse_result_scale_ranges(scale: &str) -> Vec<(f32, f32)> {
+         parse_result_scale_ranges(scale)
+     }
     
     /// Возвращает метод расчета (выносим в отдельную функцию для будущих изменений)
     fn get_calculation_method() -> String {

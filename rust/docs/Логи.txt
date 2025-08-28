@@ -1,0 +1,325 @@
+Added combination: 0-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 0-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 0-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 0-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 0-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 3.3-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 6.6-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 9.9-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 13.2-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 16.5-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 19.5-as1, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 19.5-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 19.5-as2, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 19.5-as3, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 19.5-as4, result_scale: generated
+DocumentGenerator.tsx:32 Added combination: 19.5-as4, result_scale: generated
+DocumentGenerator.tsx:53 Selected combinations data: {combinations: Array(48), floors: Array(7)}
+wasmThanks.ts:70 🎨 Generating document with color palette for: {combinations: Array(48), floors: Array(7)}
+rst_build.js:733 [STEP 1] create_docx_with_selected_combinations() called with: {"combinations":[{"floor_level":"0","function_name":"as1","as_target_value":2.69,"combination":{"main_diameter":6,"additional_diameter":6,"total_area":2.83,"deviation":5.204451,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[2.830см2:Ø6+Ø6]"}},{"floor_level":"0","function_name":"as2","as_target_value":1.25,"combination":{"main_diameter":6,"additional_diameter":0,"total_area":1.415,"deviation":13.199997,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[1.415см2:Ø6]"}},{"floor_level":"0","function_name":"as3","as_target_value":1.69,"combination":{"main_diameter":8,"additional_diameter":0,"total_area":2.515,"deviation":48.816574,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[2.515см2:Ø8]"}},{"floor_level":"0","function_name":"as4","as_target_value":3.41,"combination":{"main_diameter":6,"additional_diameter":8,"total_area":3.93,"deviation":15.249264,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[3.930см2:Ø6+Ø8]"}},{"floor_level":"0","function_name":"as4","as_target_value":3.41,"combination":{"main_diameter":8,"additional_diameter":6,"total_area":3.93,"deviation":15.249264,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[3.930см2:Ø8+Ø6]"}},{"floor_level":"3.3","function_name":"as1","as_target_value":8.12,"combination":{"main_diameter":8,"additional_diameter":12,"total_area":8.17,"deviation":0.61576366,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[8.170см2:Ø8+Ø12]"}},{"floor_level":"3.3","function_name":"as1","as_target_value":8.12,"combination":{"main_diameter":12,"additional_diameter":8,"total_area":8.17,"deviation":0.61576366,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[8.170см2:Ø12+Ø8]"}},{"floor_level":"3.3","function_name":"as2","as_target_value":26.44,"combination":{"main_diameter":14,"additional_diameter":22,"total_area":26.7,"deviation":0.9833574,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[26.700см2:Ø14+Ø22]"}},{"floor_level":"3.3","function_name":"as2","as_target_value":26.44,"combination":{"main_diameter":22,"additional_diameter":14,"total_area":26.7,"deviation":0.9833574,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[26.700см2:Ø22+Ø14]"}},{"floor_level":"3.3","function_name":"as3","as_target_value":7.22,"combination":{"main_diameter":10,"additional_diameter":10,"total_area":7.8500004,"deviation":8.725775,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[7.850см2:Ø10+Ø10]"}},{"floor_level":"3.3","function_name":"as4","as_target_value":30.18,"combination":{"main_diameter":12,"additional_diameter":25,"total_area":30.205,"deviation":0.082838535,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[30.205см2:Ø12+Ø25]"}},{"floor_level":"3.3","function_name":"as4","as_target_value":30.18,"combination":{"main_diameter":25,"additional_diameter":12,"total_area":30.205,"deviation":0.082838535,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[30.205см2:Ø25+Ø12]"}},{"floor_level":"6.6","function_name":"as1","as_target_value":8.48,"combination":{"main_diameter":6,"additional_diameter":14,"total_area":9.115,"deviation":7.488215,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[9.115см2:Ø6+Ø14]"}},{"floor_level":"6.6","function_name":"as1","as_target_value":8.48,"combination":{"main_diameter":14,"additional_diameter":6,"total_area":9.115,"deviation":7.488215,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[9.115см2:Ø14+Ø6]"}},{"floor_level":"6.6","function_name":"as2","as_target_value":27.57,"combination":{"main_diameter":18,"additional_diameter":20,"total_area":28.400002,"deviation":3.0105233,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[28.400см2:Ø18+Ø20]"}},{"floor_level":"6.6","function_name":"as2","as_target_value":27.57,"combination":{"main_diameter":20,"additional_diameter":18,"total_area":28.400002,"deviation":3.0105233,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[28.400см2:Ø20+Ø18]"}},{"floor_level":"6.6","function_name":"as3","as_target_value":7.38,"combination":{"main_diameter":10,"additional_diameter":10,"total_area":7.8500004,"deviation":6.3685656,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[7.850см2:Ø10+Ø10]"}},{"floor_level":"6.6","function_name":"as4","as_target_value":31.58,"combination":{"main_diameter":18,"additional_diameter":22,"total_area":31.7,"deviation":0.37999153,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[31.700см2:Ø18+Ø22]"}},{"floor_level":"6.6","function_name":"as4","as_target_value":31.58,"combination":{"main_diameter":22,"additional_diameter":18,"total_area":31.7,"deviation":0.37999153,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[31.700см2:Ø22+Ø18]"}},{"floor_level":"9.9","function_name":"as1","as_target_value":8.27,"combination":{"main_diameter":6,"additiona
+rst_build.js:733 [STEP 2] Calling create_docx() with 7 floors, 48 combinations
+rst_build.js:733 [STEP 3] create_docx() called with title: 'Документ с цветовой палитрой арматуры'
+rst_build.js:733 [STEP 3] selected_floors: Some([0.0, 3.3, 6.6, 9.9, 13.2, 16.5, 19.5])
+rst_build.js:733 [STEP 3] selected_combinations: Some(48)
+rst_build.js:733 [STEP 3] Calling create_docx_for_selected_floors() with 7 floors
+rst_build.js:733 [STEP 3] ✅ FIXED: Now passing combinations to create_docx_for_selected_floors!
+rst_build.js:733 [STEP 4] create_docx_for_selected_floors() called with 27645 entities, 7 floors
+rst_build.js:733 [STEP 4] selected_floors: [0.0, 3.3, 6.6, 9.9, 13.2, 16.5, 19.5]
+rst_build.js:733 [STEP 4] selected_combinations: Some(48)
+rst_build.js:733 [STEP 5] Creating combination map from 48 combinations
+rst_build.js:733 [DEBUG] Combo 0: floor_level='0', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 0: result_scale=Some("[2.830см2:Ø6+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as1 -> [2.830см2:Ø6+Ø6]
+rst_build.js:733 [DEBUG] Combo 1: floor_level='0', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 1: result_scale=Some("[1.415см2:Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as2 -> [1.415см2:Ø6]
+rst_build.js:733 [DEBUG] Combo 2: floor_level='0', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 2: result_scale=Some("[2.515см2:Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as3 -> [2.515см2:Ø8]
+rst_build.js:733 [DEBUG] Combo 3: floor_level='0', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 3: result_scale=Some("[3.930см2:Ø6+Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as4 -> [3.930см2:Ø6+Ø8]
+rst_build.js:733 [DEBUG] Combo 4: floor_level='0', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 4: result_scale=Some("[3.930см2:Ø8+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as4 -> [3.930см2:Ø8+Ø6]
+rst_build.js:733 [DEBUG] Combo 5: floor_level='3.3', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 5: result_scale=Some("[8.170см2:Ø8+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as1 -> [8.170см2:Ø8+Ø12]
+rst_build.js:733 [DEBUG] Combo 6: floor_level='3.3', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 6: result_scale=Some("[8.170см2:Ø12+Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as1 -> [8.170см2:Ø12+Ø8]
+rst_build.js:733 [DEBUG] Combo 7: floor_level='3.3', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 7: result_scale=Some("[26.700см2:Ø14+Ø22]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as2 -> [26.700см2:Ø14+Ø22]
+rst_build.js:733 [DEBUG] Combo 8: floor_level='3.3', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 8: result_scale=Some("[26.700см2:Ø22+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as2 -> [26.700см2:Ø22+Ø14]
+rst_build.js:733 [DEBUG] Combo 9: floor_level='3.3', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 9: result_scale=Some("[7.850см2:Ø10+Ø10]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as3 -> [7.850см2:Ø10+Ø10]
+rst_build.js:733 [DEBUG] Combo 10: floor_level='3.3', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 10: result_scale=Some("[30.205см2:Ø12+Ø25]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as4 -> [30.205см2:Ø12+Ø25]
+rst_build.js:733 [DEBUG] Combo 11: floor_level='3.3', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 11: result_scale=Some("[30.205см2:Ø25+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as4 -> [30.205см2:Ø25+Ø12]
+rst_build.js:733 [DEBUG] Combo 12: floor_level='6.6', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 12: result_scale=Some("[9.115см2:Ø6+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as1 -> [9.115см2:Ø6+Ø14]
+rst_build.js:733 [DEBUG] Combo 13: floor_level='6.6', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 13: result_scale=Some("[9.115см2:Ø14+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as1 -> [9.115см2:Ø14+Ø6]
+rst_build.js:733 [DEBUG] Combo 14: floor_level='6.6', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 14: result_scale=Some("[28.400см2:Ø18+Ø20]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as2 -> [28.400см2:Ø18+Ø20]
+rst_build.js:733 [DEBUG] Combo 15: floor_level='6.6', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 15: result_scale=Some("[28.400см2:Ø20+Ø18]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as2 -> [28.400см2:Ø20+Ø18]
+rst_build.js:733 [DEBUG] Combo 16: floor_level='6.6', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 16: result_scale=Some("[7.850см2:Ø10+Ø10]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as3 -> [7.850см2:Ø10+Ø10]
+rst_build.js:733 [DEBUG] Combo 17: floor_level='6.6', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 17: result_scale=Some("[31.700см2:Ø18+Ø22]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as4 -> [31.700см2:Ø18+Ø22]
+rst_build.js:733 [DEBUG] Combo 18: floor_level='6.6', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 18: result_scale=Some("[31.700см2:Ø22+Ø18]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as4 -> [31.700см2:Ø22+Ø18]
+rst_build.js:733 [DEBUG] Combo 19: floor_level='9.9', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 19: result_scale=Some("[9.115см2:Ø6+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as1 -> [9.115см2:Ø6+Ø14]
+rst_build.js:733 [DEBUG] Combo 20: floor_level='9.9', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 20: result_scale=Some("[9.115см2:Ø14+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as1 -> [9.115см2:Ø14+Ø6]
+rst_build.js:733 [DEBUG] Combo 21: floor_level='9.9', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 21: result_scale=Some("[27.065см2:Ø8+Ø25]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as2 -> [27.065см2:Ø8+Ø25]
+rst_build.js:733 [DEBUG] Combo 22: floor_level='9.9', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 22: result_scale=Some("[27.065см2:Ø25+Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as2 -> [27.065см2:Ø25+Ø8]
+rst_build.js:733 [DEBUG] Combo 23: floor_level='9.9', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 23: result_scale=Some("[7.070см2:Ø6+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as3 -> [7.070см2:Ø6+Ø12]
+rst_build.js:733 [DEBUG] Combo 24: floor_level='9.9', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 24: result_scale=Some("[7.070см2:Ø12+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as3 -> [7.070см2:Ø12+Ø6]
+rst_build.js:733 [DEBUG] Combo 25: floor_level='9.9', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 25: result_scale=Some("[31.400см2:Ø20+Ø20]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as4 -> [31.400см2:Ø20+Ø20]
+rst_build.js:733 [DEBUG] Combo 26: floor_level='13.2', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 26: result_scale=Some("[8.170см2:Ø8+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as1 -> [8.170см2:Ø8+Ø12]
+rst_build.js:733 [DEBUG] Combo 27: floor_level='13.2', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 27: result_scale=Some("[8.170см2:Ø12+Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as1 -> [8.170см2:Ø12+Ø8]
+rst_build.js:733 [DEBUG] Combo 28: floor_level='13.2', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 28: result_scale=Some("[26.700см2:Ø14+Ø22]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as2 -> [26.700см2:Ø14+Ø22]
+rst_build.js:733 [DEBUG] Combo 29: floor_level='13.2', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 29: result_scale=Some("[26.700см2:Ø22+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as2 -> [26.700см2:Ø22+Ø14]
+rst_build.js:733 [DEBUG] Combo 30: floor_level='13.2', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 30: result_scale=Some("[7.070см2:Ø6+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as3 -> [7.070см2:Ø6+Ø12]
+rst_build.js:733 [DEBUG] Combo 31: floor_level='13.2', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 31: result_scale=Some("[7.070см2:Ø12+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as3 -> [7.070см2:Ø12+Ø6]
+rst_build.js:733 [DEBUG] Combo 32: floor_level='13.2', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 32: result_scale=Some("[28.400см2:Ø18+Ø20]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as4 -> [28.400см2:Ø18+Ø20]
+rst_build.js:733 [DEBUG] Combo 33: floor_level='13.2', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 33: result_scale=Some("[28.400см2:Ø20+Ø18]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as4 -> [28.400см2:Ø20+Ø18]
+rst_build.js:733 [DEBUG] Combo 34: floor_level='16.5', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 34: result_scale=Some("[9.115см2:Ø6+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as1 -> [9.115см2:Ø6+Ø14]
+rst_build.js:733 [DEBUG] Combo 35: floor_level='16.5', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 35: result_scale=Some("[9.115см2:Ø14+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as1 -> [9.115см2:Ø14+Ø6]
+rst_build.js:733 [DEBUG] Combo 36: floor_level='16.5', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 36: result_scale=Some("[24.655см2:Ø12+Ø22]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as2 -> [24.655см2:Ø12+Ø22]
+rst_build.js:733 [DEBUG] Combo 37: floor_level='16.5', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 37: result_scale=Some("[24.655см2:Ø22+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as2 -> [24.655см2:Ø22+Ø12]
+rst_build.js:733 [DEBUG] Combo 38: floor_level='16.5', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 38: result_scale=Some("[7.070см2:Ø6+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as3 -> [7.070см2:Ø6+Ø12]
+rst_build.js:733 [DEBUG] Combo 39: floor_level='16.5', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 39: result_scale=Some("[7.070см2:Ø12+Ø6]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as3 -> [7.070см2:Ø12+Ø6]
+rst_build.js:733 [DEBUG] Combo 40: floor_level='16.5', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 40: result_scale=Some("[24.655см2:Ø12+Ø22]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as4 -> [24.655см2:Ø12+Ø22]
+rst_build.js:733 [DEBUG] Combo 41: floor_level='16.5', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 41: result_scale=Some("[24.655см2:Ø22+Ø12]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as4 -> [24.655см2:Ø22+Ø12]
+rst_build.js:733 [DEBUG] Combo 42: floor_level='19.5', function_name='as1'
+rst_build.js:733 [DEBUG] Combo 42: result_scale=Some("[2.515см2:Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as1 -> [2.515см2:Ø8]
+rst_build.js:733 [DEBUG] Combo 43: floor_level='19.5', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 43: result_scale=Some("[10.215см2:Ø8+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as2 -> [10.215см2:Ø8+Ø14]
+rst_build.js:733 [DEBUG] Combo 44: floor_level='19.5', function_name='as2'
+rst_build.js:733 [DEBUG] Combo 44: result_scale=Some("[10.215см2:Ø14+Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as2 -> [10.215см2:Ø14+Ø8]
+rst_build.js:733 [DEBUG] Combo 45: floor_level='19.5', function_name='as3'
+rst_build.js:733 [DEBUG] Combo 45: result_scale=Some("[2.515см2:Ø8]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as3 -> [2.515см2:Ø8]
+rst_build.js:733 [DEBUG] Combo 46: floor_level='19.5', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 46: result_scale=Some("[11.625см2:Ø10+Ø14]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as4 -> [11.625см2:Ø10+Ø14]
+rst_build.js:733 [DEBUG] Combo 47: floor_level='19.5', function_name='as4'
+rst_build.js:733 [DEBUG] Combo 47: result_scale=Some("[11.625см2:Ø14+Ø10]")
+rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as4 -> [11.625см2:Ø14+Ø10]
+rst_build.js:733 [STEP 5] Final combination_map size: 28
+rst_build.js:733 [STEP 6] Processing 7 selected floors
+rst_build.js:733 [STEP 6] Processing floor 1/7: 0
+rst_build.js:733 [STEP 6] Found 2615 entities for floor 0
+rst_build.js:733 [DEBUG] Looking for key '0-as1': Some("[2.830см2:Ø6+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '0-as2': Some("[1.415см2:Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '0-as3': Some("[2.515см2:Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '0-as4': Some("[3.930см2:Ø8+Ø6]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 0: [Some("[2.830см2:Ø6+Ø6]"), Some("[1.415см2:Ø6]"), Some("[2.515см2:Ø8]"), Some("[3.930см2:Ø8+Ø6]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 0
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 2615 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=680.4ms, Polygons=162.8ms (1859 objects), PNG=488.0ms (0.9MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=661.9ms, Polygons=142.6ms (1859 objects), PNG=483.5ms (0.9MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=654.4ms, Polygons=144.9ms (1859 objects), PNG=483.6ms (0.9MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=648.4ms, Polygons=141.6ms (1859 objects), PNG=482.2ms (0.9MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2654.3ms, Avg=663.6ms/image, Size=3.5MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 [STEP 6] Processing floor 2/7: 3.3
+rst_build.js:733 [STEP 6] Found 3353 entities for floor 3.3
+rst_build.js:733 [DEBUG] Looking for key '3.3-as1': Some("[8.170см2:Ø12+Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '3.3-as2': Some("[26.700см2:Ø22+Ø14]")
+rst_build.js:733 [DEBUG] Looking for key '3.3-as3': Some("[7.850см2:Ø10+Ø10]")
+rst_build.js:733 [DEBUG] Looking for key '3.3-as4': Some("[30.205см2:Ø25+Ø12]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 3.3: [Some("[8.170см2:Ø12+Ø8]"), Some("[26.700см2:Ø22+Ø14]"), Some("[7.850см2:Ø10+Ø10]"), Some("[30.205см2:Ø25+Ø12]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 3.3
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3353 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=765.8ms, Polygons=238.0ms (2431 objects), PNG=502.0ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=765.1ms, Polygons=231.3ms (2431 objects), PNG=509.3ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=779.2ms, Polygons=243.5ms (2431 objects), PNG=510.8ms (2.4MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=773.6ms, Polygons=237.7ms (2431 objects), PNG=510.9ms (2.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3084.5ms, Avg=771.1ms/image, Size=9.3MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 [STEP 6] Processing floor 3/7: 6.6
+rst_build.js:733 [STEP 6] Found 3347 entities for floor 6.6
+rst_build.js:733 [DEBUG] Looking for key '6.6-as1': Some("[9.115см2:Ø14+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '6.6-as2': Some("[28.400см2:Ø20+Ø18]")
+rst_build.js:733 [DEBUG] Looking for key '6.6-as3': Some("[7.850см2:Ø10+Ø10]")
+rst_build.js:733 [DEBUG] Looking for key '6.6-as4': Some("[31.700см2:Ø22+Ø18]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 6.6: [Some("[9.115см2:Ø14+Ø6]"), Some("[28.400см2:Ø20+Ø18]"), Some("[7.850см2:Ø10+Ø10]"), Some("[31.700см2:Ø22+Ø18]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 6.6
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=766.2ms, Polygons=237.3ms (2431 objects), PNG=502.2ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=766.3ms, Polygons=233.2ms (2431 objects), PNG=508.5ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=782.8ms, Polygons=239.8ms (2431 objects), PNG=518.2ms (2.4MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=771.1ms, Polygons=236.8ms (2431 objects), PNG=509.5ms (2.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3087.4ms, Avg=771.8ms/image, Size=9.3MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 [STEP 6] Processing floor 4/7: 9.9
+rst_build.js:733 [STEP 6] Found 3347 entities for floor 9.9
+rst_build.js:733 [DEBUG] Looking for key '9.9-as1': Some("[9.115см2:Ø14+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '9.9-as2': Some("[27.065см2:Ø25+Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '9.9-as3': Some("[7.070см2:Ø12+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '9.9-as4': Some("[31.400см2:Ø20+Ø20]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 9.9: [Some("[9.115см2:Ø14+Ø6]"), Some("[27.065см2:Ø25+Ø8]"), Some("[7.070см2:Ø12+Ø6]"), Some("[31.400см2:Ø20+Ø20]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 9.9
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=803.1ms, Polygons=246.0ms (2431 objects), PNG=528.8ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=770.1ms, Polygons=236.8ms (2431 objects), PNG=508.1ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=773.4ms, Polygons=239.4ms (2431 objects), PNG=509.2ms (2.4MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=775.5ms, Polygons=236.8ms (2431 objects), PNG=512.3ms (2.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3132.1ms, Avg=783.0ms/image, Size=9.3MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 [STEP 6] Processing floor 5/7: 13.2
+rst_build.js:733 [STEP 6] Found 3347 entities for floor 13.2
+rst_build.js:733 [DEBUG] Looking for key '13.2-as1': Some("[8.170см2:Ø12+Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '13.2-as2': Some("[26.700см2:Ø22+Ø14]")
+rst_build.js:733 [DEBUG] Looking for key '13.2-as3': Some("[7.070см2:Ø12+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '13.2-as4': Some("[28.400см2:Ø20+Ø18]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 13.2: [Some("[8.170см2:Ø12+Ø8]"), Some("[26.700см2:Ø22+Ø14]"), Some("[7.070см2:Ø12+Ø6]"), Some("[28.400см2:Ø20+Ø18]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 13.2
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=779.9ms, Polygons=244.9ms (2431 objects), PNG=510.2ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=782.0ms, Polygons=234.6ms (2431 objects), PNG=513.9ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=773.1ms, Polygons=237.5ms (2431 objects), PNG=509.5ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=769.0ms, Polygons=235.0ms (2431 objects), PNG=509.0ms (2.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3113.0ms, Avg=778.2ms/image, Size=9.2MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 [STEP 6] Processing floor 6/7: 16.5
+rst_build.js:733 [STEP 6] Found 3408 entities for floor 16.5
+rst_build.js:733 [DEBUG] Looking for key '16.5-as1': Some("[9.115см2:Ø14+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '16.5-as2': Some("[24.655см2:Ø22+Ø12]")
+rst_build.js:733 [DEBUG] Looking for key '16.5-as3': Some("[7.070см2:Ø12+Ø6]")
+rst_build.js:733 [DEBUG] Looking for key '16.5-as4': Some("[24.655см2:Ø22+Ø12]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 16.5: [Some("[9.115см2:Ø14+Ø6]"), Some("[24.655см2:Ø22+Ø12]"), Some("[7.070см2:Ø12+Ø6]"), Some("[24.655см2:Ø22+Ø12]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 16.5
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3408 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=779.4ms, Polygons=250.7ms (2466 objects), PNG=503.9ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=770.8ms, Polygons=235.2ms (2466 objects), PNG=508.6ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=764.3ms, Polygons=232.9ms (2466 objects), PNG=507.0ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=763.3ms, Polygons=232.5ms (2466 objects), PNG=506.3ms (2.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3086.9ms, Avg=771.7ms/image, Size=9.2MB
+rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
+rst_build.js:733 [STEP 6] Processing floor 7/7: 19.5
+rst_build.js:733 [STEP 6] Found 3464 entities for floor 19.5
+rst_build.js:733 [DEBUG] Looking for key '19.5-as1': Some("[2.515см2:Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '19.5-as2': Some("[10.215см2:Ø14+Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '19.5-as3': Some("[2.515см2:Ø8]")
+rst_build.js:733 [DEBUG] Looking for key '19.5-as4': Some("[11.625см2:Ø14+Ø10]")
+rst_build.js:733 [STEP 7] Created result_scales for floor 19.5: [Some("[2.515см2:Ø8]"), Some("[10.215см2:Ø14+Ø8]"), Some("[2.515см2:Ø8]"), Some("[11.625см2:Ø14+Ø10]")]
+rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
+rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 19.5
+rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
+rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3464 entities
+rst_build.js:733 📊 PERFORMANCE [as1]: Total=772.6ms, Polygons=242.1ms (2516 objects), PNG=504.7ms (2.2MB)
+rst_build.js:733 📊 PERFORMANCE [as2]: Total=764.7ms, Polygons=234.3ms (2516 objects), PNG=505.8ms (2.3MB)
+rst_build.js:733 📊 PERFORMANCE [as3]: Total=764.0ms, Polygons=229.6ms (2516 objects), PNG=504.6ms (2.2MB)
+rst_build.js:733 📊 PERFORMANCE [as4]: Total=769.5ms, Polygons=236.7ms (2516 objects), PNG=507.4ms (2.3MB)
+rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=3071.6ms, Avg=767.9ms/image, Size=9.1MB

@@ -65,10 +65,16 @@ pub async fn create_docx_document_optimized(
     title: &str,
     config: PerformanceConfig
 ) -> Vec<u8> {
+    // 🔍 PERFORMANCE: Засекаем общее время создания DOCX
+    let docx_start = web_sys::window().unwrap().performance().unwrap().now();
+    
     let mut monitor = PerformanceMonitor::new(config);
     let elements_count = entities.len();
     
-    web_sys::console::log_1(&format!("🚀 Starting DOCX generation for {} elements", elements_count).into());
+    web_sys::console::log_1(&format!(
+        "🚀 [DOCX-CREATE] Starting DOCX creation for {} elements", 
+        elements_count
+    ).into());
     
     let mut doc = Docx::new()
         // Устанавливаем минимальные отступы страницы для максимального использования пространства
@@ -137,21 +143,29 @@ pub async fn create_docx_document_optimized(
     // Создаем буфер и записываем документ
     let mut buffer = Cursor::new(Vec::new());
     match doc.build().pack(&mut buffer) {
-        Ok(_) => web_sys::console::log_1(&"✅ DOCX document created successfully".into()),
-        Err(e) => web_sys::console::log_1(&format!("❌ Error creating document: {}", e).into()),
+        Ok(_) => web_sys::console::log_1(&"✅ [DOCX-CREATE] DOCX document built successfully".into()),
+        Err(e) => web_sys::console::log_1(&format!("❌ [DOCX-CREATE] Error creating document: {}", e).into()),
     }
     
     let docx_time = monitor.end_docx_creation();
     
-    // Логируем метрики производительности
-    let metrics = monitor.finish(image_time, docx_time, elements_count, total_images);
-    log_performance_metrics(&metrics);
+    // 🔍 PERFORMANCE: Финальные метрики DOCX создания
+    let total_docx_time = web_sys::window().unwrap().performance().unwrap().now() - docx_start;
+    let buffer_size = buffer.get_ref().len();
     
-    // Выводим рекомендации по оптимизации
-    let recommendations = get_optimization_recommendations(&metrics);
-    for rec in recommendations {
-        web_sys::console::log_1(&rec.into());
-    }
+    web_sys::console::log_1(&format!(
+        "✅ [DOCX-CREATE] DOCX creation completed: Total={:.1}ms, Images={:.1}ms, Assembly={:.1}ms, Size={:.1}MB", 
+        total_docx_time, image_time.as_secs_f64() * 1000.0, docx_time.as_secs_f64() * 1000.0, 
+        buffer_size as f64 / 1024.0 / 1024.0
+    ).into());
+    
+    // Логируем метрики производительности (упрощенно)
+    let metrics = monitor.finish(image_time, docx_time, elements_count, total_images);
+    web_sys::console::log_1(&format!(
+        "📊 [PERFORMANCE] Elements: {}, Images: {}, Avg per image: {:.1}ms", 
+        metrics.elements_count, metrics.images_count, 
+        metrics.avg_time_per_image.as_secs_f64() * 1000.0
+    ).into());
     
     buffer.into_inner()
 }
