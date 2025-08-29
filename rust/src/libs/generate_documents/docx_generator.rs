@@ -34,18 +34,13 @@ pub async fn create_docx(
     title: &str
 ) -> Vec<u8> {
     // === STEP 3: DOCX GENERATOR ===
-    web_sys::console::log_1(&format!("[STEP 3] create_docx() called with title: '{}'", title).into());
-    web_sys::console::log_1(&format!("[STEP 3] selected_floors: {:?}", selected_floors).into());
-    web_sys::console::log_1(&format!("[STEP 3] selected_combinations: {:?}", selected_combinations.as_ref().map(|c| c.len())).into());
+
     
     match selected_floors {
         Some(floors) => {
-              web_sys::console::log_1(&format!("[STEP 3] Calling create_docx_for_selected_floors() with {} floors", floors.len()).into());
-              web_sys::console::log_1(&"[STEP 3] ✅ FIXED: Now passing combinations to create_docx_for_selected_floors!".into());
               create_docx_for_selected_floors(entities, floors, selected_combinations, title).await
           },
          None => {
-             web_sys::console::log_1(&"[STEP 3] Calling create_docx_document() - no floors specified".into());
              create_docx_document(entities, title).await
          }
     }
@@ -71,10 +66,7 @@ pub async fn create_docx_document_optimized(
     let mut monitor = PerformanceMonitor::new(config);
     let elements_count = entities.len();
     
-    web_sys::console::log_1(&format!(
-        "🚀 [DOCX-CREATE] Starting DOCX creation for {} elements", 
-        elements_count
-    ).into());
+
     
     let mut doc = Docx::new()
         // Устанавливаем минимальные отступы страницы для максимального использования пространства
@@ -120,8 +112,7 @@ pub async fn create_docx_document_optimized(
         
         // Добавляем изображения в документ
         for (img_index, img) in images.iter().enumerate() {
-            web_sys::console::log_1(&format!("🖼️ Adding image {} of {} for floor {}", 
-                img_index + 1, images.len(), key.to_string()).into());
+
                 
             doc = doc
                 .page_size(DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS)
@@ -153,19 +144,7 @@ pub async fn create_docx_document_optimized(
     let total_docx_time = web_sys::window().unwrap().performance().unwrap().now() - docx_start;
     let buffer_size = buffer.get_ref().len();
     
-    web_sys::console::log_1(&format!(
-        "✅ [DOCX-CREATE] DOCX creation completed: Total={:.1}ms, Images={:.1}ms, Assembly={:.1}ms, Size={:.1}MB", 
-        total_docx_time, image_time.as_secs_f64() * 1000.0, docx_time.as_secs_f64() * 1000.0, 
-        buffer_size as f64 / 1024.0 / 1024.0
-    ).into());
-    
-    // Логируем метрики производительности (упрощенно)
     let metrics = monitor.finish(image_time, docx_time, elements_count, total_images);
-    web_sys::console::log_1(&format!(
-        "📊 [PERFORMANCE] Elements: {}, Images: {}, Avg per image: {:.1}ms", 
-        metrics.elements_count, metrics.images_count, 
-        metrics.avg_time_per_image.as_secs_f64() * 1000.0
-    ).into());
     
     buffer.into_inner()
 }
@@ -271,14 +250,11 @@ pub async fn create_docx_for_selected_floors(
     
     // 🔍 PERFORMANCE: Время инициализации DOCX
     let docx_init_time = web_sys::window().unwrap().performance().unwrap().now() - docx_init_start;
-    web_sys::console::log_1(&format!("📄 [DOCX-INIT] DOCX structure created: {:.1}ms", docx_init_time).into());
     
     // ✨ ОПТИМИЗАЦИЯ: Настраиваем page size и orientation ОДИН раз для всего документа
     doc = doc
         .page_size(DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS)
         .page_orient(docx_rs::PageOrientationType::Landscape);
-    
-    web_sys::console::log_1(&"✨ [DOCX-OPT] Global page settings applied".into());
     
     // 🔍 PERFORMANCE: Начало сортировки по Z
     let sort_start = web_sys::window().unwrap().performance().unwrap().now();
@@ -288,7 +264,7 @@ pub async fn create_docx_for_selected_floors(
     
     // 🔍 PERFORMANCE: Время сортировки
     let sort_time = web_sys::window().unwrap().performance().unwrap().now() - sort_start;
-    web_sys::console::log_1(&format!("📋 [SORT-Z] Entities sorted by Z-coordinate: {:.1}ms ({} floors)", sort_time, hash.len()).into());
+
     
     // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
     use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
@@ -298,26 +274,16 @@ pub async fn create_docx_for_selected_floors(
     // === STEP 5: CREATING COMBINATION MAP ===
     let mut combination_map = std::collections::HashMap::new();
     if let Some(combinations) = &selected_combinations {
-         web_sys::console::log_1(&format!("[STEP 5] Creating combination map from {} combinations", combinations.len()).into());
          for (idx, combo) in combinations.iter().enumerate() {
-             web_sys::console::log_1(&format!("[DEBUG] Combo {}: floor_level='{}', function_name='{}'", idx, combo.floor_level, combo.function_name).into());
-             web_sys::console::log_1(&format!("[DEBUG] Combo {}: result_scale={:?}", idx, combo.combination.result_scale).into());
              
              let key = format!("{}-{}", combo.floor_level, combo.function_name);
              if let Some(ref result_scale) = combo.combination.result_scale {
                  combination_map.insert(key.clone(), result_scale.as_str());
-                 web_sys::console::log_1(&format!("[STEP 5] ✅ Added mapping: {} -> {}", key, result_scale).into());
-             } else {
-                 web_sys::console::log_1(&format!("[STEP 5] ❌ No result_scale for combo {}: {}", idx, key).into());
              }
          }
-         web_sys::console::log_1(&format!("[STEP 5] Final combination_map size: {}", combination_map.len()).into());
-     } else {
-         web_sys::console::log_1(&"[STEP 5] No combinations provided, using default colors".into());
      }
     
     // === STEP 6: PROCESSING EACH FLOOR ===
-    web_sys::console::log_1(&format!("[STEP 6] Processing {} selected floors", selected_floors.len()).into());
     
     // 🔍 PERFORMANCE: Начало обработки всех этажей
     let floors_start = web_sys::window().unwrap().performance().unwrap().now();
@@ -326,16 +292,9 @@ pub async fn create_docx_for_selected_floors(
     for (floor_idx, selected_floor) in selected_floors.iter().enumerate() {
         // 🔍 PERFORMANCE: Начало обработки одного этажа + точка между этажами
         let floor_start = web_sys::window().unwrap().performance().unwrap().now();
-        if floor_idx > 0 {
-            web_sys::console::log_1(&format!("⏱️ [GAP] Time since last floor ended: Starting floor {} processing", selected_floor).into());
-        }
-        
         let z_key = OrderedFloat(*selected_floor);
-        
-        web_sys::console::log_1(&format!("[STEP 6] Processing floor {}/{}: {}", floor_idx + 1, selected_floors.len(), selected_floor).into());
          
          if let Some(item_z) = hash.get(&z_key) {
-             web_sys::console::log_1(&format!("[STEP 6] Found {} entities for floor {}", item_z.data.len(), selected_floor).into());
              
              // === STEP 7: CREATING RESULT_SCALES FOR THIS FLOOR ===
               let result_scales: Vec<Option<&str>> = ["as1", "as2", "as3", "as4"]
@@ -343,24 +302,11 @@ pub async fn create_docx_for_selected_floors(
                   .map(|field| {
                       let key = format!("{}-{}", selected_floor, field);
                       let result = combination_map.get(&key).copied();
-                      web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Looking for key '{}': {:?}", key, result).into());
                       result
                   })
                   .collect();
-              
-              web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Created result_scales for floor {}: {:?}", selected_floor, result_scales).into());
-              web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Available keys in map: {:?}", combination_map.keys().collect::<Vec<_>>()).into());
-              web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Total combinations received: {}", combination_map.len()).into());
-               
-               // Детальное логирование всех комбинаций в мапе
-               for (key, value) in combination_map.iter() {
-                   web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Map entry: '{}' -> '{:?}'", key, value).into());
-               }
              
              // === STEP 8: CALLING DRAW FUNCTIONS ===
-             web_sys::console::log_1(&format!("[STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor {}", selected_floor).into());
-             web_sys::console::log_1(&"[STEP 8] ✅ FIXED: Now passing result_scales instead of None!".into());
-             
              // 🔍 PERFORMANCE: Начало генерации изображений для этажа
              let images_start = web_sys::window().unwrap().performance().unwrap().now();
              
@@ -368,10 +314,6 @@ pub async fn create_docx_for_selected_floors(
              
              // 🔍 PERFORMANCE: Время генерации изображений
              let images_time = web_sys::window().unwrap().performance().unwrap().now() - images_start;
-             web_sys::console::log_1(&format!("🖼️ [FLOOR-IMAGES] Floor {} images generated: {:.1}ms ({} images)", 
-                 selected_floor, images_time, imgs.len()).into());
-             
-             web_sys::console::log_1(&format!("[STEP 8] draw_all_images_with_colors() returned {} images", imgs.len()).into());
             
             // 🔍 PERFORMANCE: Начало добавления в DOCX
             let docx_add_start = web_sys::window().unwrap().performance().unwrap().now();
@@ -397,8 +339,6 @@ pub async fn create_docx_for_selected_floors(
             }
             let prep_time = web_sys::window().unwrap().performance().unwrap().now() - prep_start;
             
-            web_sys::console::log_1(&format!("🚀 [DOCX-PREP] Prepared {} paragraphs for floor {} in {:.1}ms", 
-                image_paragraphs.len(), selected_floor, prep_time).into());
             
             // ✨ ОПТИМИЗАЦИЯ: Добавляем заголовок этажа (без повторных настроек)
             doc = doc.add_paragraph(floor_title_paragraph);
@@ -410,23 +350,14 @@ pub async fn create_docx_for_selected_floors(
             }
             let batch_time = web_sys::window().unwrap().performance().unwrap().now() - batch_start;
             
-            web_sys::console::log_1(&format!("✨ [DOCX-BATCH] Added {} images to doc in {:.1}ms", 
-                imgs.len(), batch_time).into());
-            
             // 🔍 PERFORMANCE: Время добавления в DOCX
             let docx_add_time = web_sys::window().unwrap().performance().unwrap().now() - docx_add_start;
-            web_sys::console::log_1(&format!("📄 [FLOOR-DOCX] Floor {} added to DOCX: {:.1}ms ({} images) [PREP: {:.1}ms + BATCH: {:.1}ms]", 
-                selected_floor, docx_add_time, imgs.len(), prep_time, batch_time).into());
             
             // 🔍 PERFORMANCE: Общее время обработки этажа
             let floor_total_time = web_sys::window().unwrap().performance().unwrap().now() - floor_start;
-            web_sys::console::log_1(&format!("🏁 [FLOOR-TOTAL] Floor {} processing complete: {:.1}ms (Images: {:.1}ms, DOCX: {:.1}ms)", 
-                selected_floor, floor_total_time, images_time, docx_add_time).into());
             
             // Log completion point for gap measurement
             let floor_end_timestamp = web_sys::window().unwrap().performance().unwrap().now();
-            web_sys::console::log_1(&format!("⏹️ [FLOOR-END] Floor {} completed at timestamp: {:.1}ms", 
-                selected_floor, floor_end_timestamp).into());
         }
     }
     
@@ -439,17 +370,13 @@ pub async fn create_docx_for_selected_floors(
         Ok(_) => {
             let build_time = web_sys::window().unwrap().performance().unwrap().now() - build_start;
             let buffer_size = buffer.get_ref().len();
-            web_sys::console::log_1(&format!("✅ [DOCX-BUILD] Document built successfully: {:.1}ms, Size: {:.1}MB", 
-                build_time, buffer_size as f64 / 1024.0 / 1024.0).into());
         },
         Err(e) => {
-            web_sys::console::log_1(&format!("❌ [DOCX-BUILD] Error creating document: {}", e).into());
         }
     }
     
     // 🔍 PERFORMANCE: Общее время
     let total_time = web_sys::window().unwrap().performance().unwrap().now() - total_start;
-    web_sys::console::log_1(&format!("🏁 [DOCX-TOTAL] Total DOCX generation time: {:.1}ms", total_time).into());
     
     buffer.into_inner()
 }

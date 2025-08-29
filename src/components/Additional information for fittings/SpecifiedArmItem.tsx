@@ -29,7 +29,7 @@ export const SpecifiedArmItem = ({area, diameter, price, isDefault}:SpecifiedFit
 				<td>
 					<button onClick={()=>{
 						setpriceArmItem("setting")
-						console.log(11);
+						
 					}}>
 						Задать цену?
 					</button>

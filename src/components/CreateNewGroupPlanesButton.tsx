@@ -52,7 +52,7 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 				 dispatch(
 					await fetchExcelViewData({diameters:summaryData.availableDiameters, floorsJson:summaryData.jsonArray})
 				)
-				console.log(summaryData);
+				
 			},2000)
 			
 			const data = await create_custom_sortament_report(summaryData.availableDiameters, summaryData.jsonArray	);

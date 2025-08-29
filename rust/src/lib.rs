@@ -339,7 +339,7 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
     use crate::libs::generate_documents::docx_generator::{SelectedCombination, CombinationItem};
     
     // === STEP 1: WASM ENTRY POINT ===
-    web_sys::console::log_1(&format!("[STEP 1] create_docx_with_selected_combinations() called with: {}", selected_combinations_json).into());
+
     
     #[derive(serde::Deserialize)]
     struct SelectedCombinationsData {
@@ -365,7 +365,6 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
         .collect();
     
     // === STEP 2: CALLING DOCX GENERATOR ===
-    web_sys::console::log_1(&format!("[STEP 2] Calling create_docx() with {} floors, {} combinations", floors.len(), selected_data.combinations.len()).into());
     
     let docx_data = libs::generate_documents::docx_generator::create_docx(
         entities,
@@ -373,8 +372,6 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
         Some(selected_data.combinations),
         "Документ с цветовой палитрой арматуры"
     ).await;
-    
-    web_sys::console::log_1(&format!("[STEP 2] create_docx() returned {} bytes", docx_data.len()).into());
     
     Ok(docx_data)
 }

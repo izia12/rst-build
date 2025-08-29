@@ -96,9 +96,7 @@ impl CustomSortament {
 		let limited_parts: Vec<String> = scale_parts.into_iter().take(6).map(|part| format!("[{}]", part)).collect();
 		let result = limited_parts.join("");
 		
-		// Логирование для отладки
-		web_sys::console::log_1(&format!("🟡 [SCALE_GENERATION] target_area: {}, main_step: {}, secondary_step: {}", target_area, main_step, secondary_step).into());
-		web_sys::console::log_1(&format!("🟡 [SCALE_GENERATION] generated result_scale: {}", result).into());
+
 		
 		result
 	}

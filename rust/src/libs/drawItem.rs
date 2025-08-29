@@ -617,10 +617,7 @@ impl DrawItemZ {
         // 🔍 PERFORMANCE: Засекаем общее время генерации всех изображений
         let total_start = web_sys::window().unwrap().performance().unwrap().now();
         
-        web_sys::console::log_1(&format!(
-            "🚀 [DOCX-GEN] Starting generation of 4 images for {} entities", 
-            self.data.len()
-        ).into());
+
         
         let fields = ["as1", "as2", "as3", "as4"];
         let mut results = Vec::with_capacity(4);
@@ -637,10 +634,7 @@ impl DrawItemZ {
         let avg_per_image = total_time / 4.0;
         let total_size: usize = results.iter().map(|r| r.len()).sum();
         
-        web_sys::console::log_1(&format!(
-            "✅ [DOCX-GEN] All 4 images completed: Total={:.1}ms, Avg={:.1}ms/image, Size={:.1}MB", 
-            total_time, avg_per_image, total_size as f64 / 1024.0 / 1024.0
-        ).into());
+
         
         results
 	}
@@ -840,10 +834,7 @@ impl DrawItemZ {
         let png_time = web_sys::window().unwrap().performance().unwrap().now() - png_start;
         let total_time = web_sys::window().unwrap().performance().unwrap().now() - start_time;
         
-        web_sys::console::log_1(&format!(
-            "📊 PERFORMANCE [{}]: Total={:.1}ms, Polygons={:.1}ms ({} objects), PNG={:.1}ms ({:.1}MB)", 
-            field, total_time, polygon_time, rendered_count, png_time, buffer.len() as f64 / 1024.0 / 1024.0
-        ).into());
+
         
         buffer
     }

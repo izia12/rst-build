@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import { ArmDiameters, PreparedExcelView, PureWASMJsData,  WASMDataType } from "../../../types/data.types"
-import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, get_table_data_for_frontend, parse_data, create_docx_for_selected_combinations, get_entities_json, create_docx_with_selected_combinations } from "../../../assets/pkg/rst_build"
+import init, { convert_sli_xsl_to_json_string, get_horizontal_elements_object_js, get_sortament_data, get_table_data_for_frontend, parse_data, create_docx_for_selected_combinations, create_docx_with_selected_combinations } from "../../../assets/pkg/rst_build"
 import { getPureWASMJsData } from "../../../helpers/getPureWASMJsData"
 export const fetchWasmData = createAsyncThunk<Array<WASMDataType>, {sliData:string, txtData:string, xlsxData:Uint8Array}>(
 	'users/fetchByIdStatus',
@@ -22,8 +22,7 @@ export const fetchWasmJSData = createAsyncThunk<PureWASMJsData, undefined>(
             await init();
             const result = get_horizontal_elements_object_js();
             if (!result) throw new Error('WASM data not ready'); // Добавляем проверку
-			console.log( result);
-			// console.log( getPureWASMJsData(result),"fjhdjfhjfhjdf");
+			
 			const newRes = await getPureWASMJsData(result)
             return newRes;
         } catch (error) {
@@ -67,7 +66,7 @@ export const generateDocumentWithColorPalette = createAsyncThunk<Uint8Array, imp
         try {
             await init();
             
-            console.log('🎨 Generating document with color palette for:', selectedData);
+        
             
             // Конвертируем данные в JSON строку
             const selectedCombinationsJson = JSON.stringify(selectedData);

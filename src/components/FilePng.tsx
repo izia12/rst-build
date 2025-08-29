@@ -9,7 +9,7 @@ const DiagramGenerator = () => {
     const data2 =[
         {startX:10, startY:10, endX:(window.innerWidth+25), endY:10, color:"black", lineWidth:1},
     ]
-    console.log(window.innerHeight)
+
     function getRandomInteger(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -69,7 +69,7 @@ const DiagramGenerator = () => {
             }
         }
     },[])
-    console.log(Math.trunc((window.innerHeight)/18))
+    
     const drawDiagram = () => {
         if (!canvasRef.current) return;
 

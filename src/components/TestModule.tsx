@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import init, { TestModuleWrapper } from '../assets/pkg/rst_build';
+import init from '../assets/pkg/rst_build';
+import  TestModuleWrapper  from '../assets/pkg/rst_build';
+
 
 interface TestModuleComponentProps {
   className?: string;
 }
 
 const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) => {
-  const [testModule, setTestModule] = useState<TestModuleWrapper | null>(null);
+  const [testModule, setTestModule] = useState<typeof TestModuleWrapper | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [boundsInfo, setBoundsInfo] = useState<string>('');
   const [objectsCount, setObjectsCount] = useState<number>(0);
@@ -18,7 +20,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
       try {
         await init();
         setWasmInitialized(true);
-        console.log('WASM модуль инициализирован');
+
       } catch (error) {
         console.error('Ошибка инициализации WASM:', error);
       }
@@ -44,9 +46,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
       const count = module.get_object_count();
       setObjectsCount(count);
       
-      console.log('Тестовый модуль инициализирован');
-      console.log('Границы:', bounds);
-      console.log('Количество объектов:', count);
+      
     } catch (error) {
       console.error('Ошибка при инициализации тестового модуля:', error);
     }
@@ -60,7 +60,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
 
     setIsLoading(true);
     try {
-      console.log('Генерация тестового изображения...');
+      
       
       // Генерируем изображение
       const imageBytes = testModule.draw_test_image();
@@ -70,7 +70,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
         const blob = new Blob([imageBytes], { type: 'image/png' });
         const imageUrl = URL.createObjectURL(blob);
         setImageData(imageUrl);
-        console.log('Тестовое изображение сгенерировано успешно');
+
       } else {
         console.error('Получен пустой массив байтов изображения');
       }
@@ -103,7 +103,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
       const count = testModule.get_object_count();
       setObjectsCount(count);
       
-      console.log(`Добавлен прямоугольник: (${x1.toFixed(2)}, ${y1.toFixed(2)}) - (${x2.toFixed(2)}, ${y2.toFixed(2)})`);
+      
     } catch (error) {
       console.error('Ошибка при добавлении прямоугольника:', error);
     }
@@ -116,7 +116,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
     }
     setIsLoading(true);
     try {
-      console.log('Генерация простого документа...');
+      
       
       // Создаем новый экземпляр модуля
       const module = new TestModuleWrapper();
@@ -140,7 +140,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
         // Освобождаем URL
         URL.revokeObjectURL(url);
         
-        console.log('Простой документ сгенерирован и скачан успешно');
+
       } else {
         console.error('Получен пустой массив байтов документа');
       }
@@ -162,7 +162,7 @@ const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) 
       setImageData(null);
       setBoundsInfo('');
       setObjectsCount(0);
-      console.log('Тестовые данные очищены');
+      
     } catch (error) {
       console.error('Ошибка при очистке тестовых данных:', error);
     }

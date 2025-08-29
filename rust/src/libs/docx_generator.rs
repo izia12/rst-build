@@ -140,7 +140,7 @@ pub async fn create_enhanced_docx(sli_data: &str, txt_data: &str, xlsx_data: &[u
     match generator.build() {
         Ok(doc_bytes) => doc_bytes,
         Err(e) => {
-            web_sys::console::log_1(&format!("Ошибка генерации DOCX: {}", e).into());
+    
             Vec::new()
         }
     }
@@ -157,7 +157,7 @@ pub fn create_custom_docx(title: &str, content: &str) -> Vec<u8> {
     match generator.build() {
         Ok(doc_bytes) => doc_bytes,
         Err(e) => {
-            web_sys::console::log_1(&format!("Ошибка генерации DOCX: {}", e).into());
+    
             Vec::new()
         }
     }

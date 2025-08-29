@@ -121,23 +121,7 @@ impl PerformanceMonitor {
 
 /// Утилита для логирования производительности
 pub fn log_performance_metrics(metrics: &PerformanceMetrics) {
-    web_sys::console::log_1(&format!(
-        "🚀 Performance Report:\n\
-         ⏱️  Total Time: {:.2}s\n\
-         🖼️  Image Generation: {:.2}s\n\
-         📄 DOCX Creation: {:.2}s\n\
-         📊 Elements: {}\n\
-         🖼️  Images: {}\n\
-         ⚡ Avg per Image: {:.2}s\n\
-         💾 Memory Usage: {:.1} MB",
-        metrics.total_generation_time.as_secs_f64(),
-        metrics.image_generation_time.as_secs_f64(),
-        metrics.docx_creation_time.as_secs_f64(),
-        metrics.elements_count,
-        metrics.images_count,
-        metrics.avg_time_per_image.as_secs_f64(),
-        metrics.memory_usage_mb
-    ).into());
+    // Логирование отключено для улучшения производительности
 }
 
 /// Рекомендации по оптимизации на основе метрик
