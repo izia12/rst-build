@@ -39,6 +39,7 @@ pub struct CombinationItem {
 	pub deviation: f32,
 	pub is_min_deviation: bool,
 	pub is_default_checked: bool,
+	pub result_scale: Option<String>, // Шкала для этой комбинации
 }
 
 #[derive(Debug, Clone)]
@@ -57,6 +58,44 @@ pub struct CombinationResult {
 }
 
 impl CustomSortament {
+	/// Генерирует result_scale для комбинации
+	fn generate_result_scale(&self, target_area: f32, main_step: f32, secondary_step: f32) -> String {
+		let diameters = self.get_available_diameters();
+		let main_count = 1.0 / main_step;
+		let secondary_count = 1.0 / secondary_step;
+		
+		let mut scale_parts = Vec::new();
+		
+		// Генерируем шкалу для всех возможных комбинаций
+		for &d1 in &diameters {
+			if d1 == 0 { continue; }
+			let area1 = self.get_area(d1).unwrap_or(0.0);
+			
+			// Случай без дополнительной арматуры
+			let main_only_area = main_count * area1;
+			scale_parts.push(format!("{:.3}см2:Ø{} мм s={} мм", main_only_area, d1, (main_step * 1000.0) as u32));
+			
+			// Случаи с дополнительной арматурой
+			for &d2 in &diameters {
+				if d2 == 0 || d2 > d1 { continue; } // Пропускаем 0 и диаметры больше основного
+				let area2 = self.get_area(d2).unwrap_or(0.0);
+				let combined_area = main_count * area1 + secondary_count * area2;
+				scale_parts.push(format!("{:.3}см2:Ø{} мм s={} мм + Ø{} мм s={} мм", 
+					combined_area, d1, (main_step * 1000.0) as u32, d2, (secondary_step * 1000.0) as u32));
+			}
+		}
+		
+		// Сортируем по площади и берем первые несколько
+		scale_parts.sort_by(|a, b| {
+			let area_a: f32 = a.split("см2:").next().unwrap_or("0").parse().unwrap_or(0.0);
+			let area_b: f32 = b.split("см2:").next().unwrap_or("0").parse().unwrap_or(0.0);
+			area_a.partial_cmp(&area_b).unwrap_or(std::cmp::Ordering::Equal)
+		});
+		
+		// Берем первые 6-8 элементов и форматируем как шкалу
+		let limited_parts: Vec<String> = scale_parts.into_iter().take(6).map(|part| format!("[{}]", part)).collect();
+		limited_parts.join("")
+	}
 	/// Создает новый CustomSortament из JavaScript данных о доступных диаметрах
 	pub fn from_js_data(available_diameters: Vec<u32>) -> Self {
 		let mut diameter_area_map = HashMap::new();
@@ -546,14 +585,16 @@ pub fn generate_excel_data_for_js(
 						let area = self.get_area(best_d).unwrap_or(0.0);
 						let total_area = main_count * area;
 						let deviation = ((total_area / target_area) - 1.0) * 100.0;
-						combination_items.push(CombinationItem {
-							main_diameter: best_d,
-							additional_diameter: 0, // Нет дополнительной арматуры
-							total_area,
-							deviation,
-							is_min_deviation: true, // Единственная комбинация, значит минимальная
-							is_default_checked: true, // Если минимальная, то по умолчанию выбрана
-						});
+						let result_scale = self.generate_result_scale(target_area, floor.steps[0], floor.steps[1]);
+				combination_items.push(CombinationItem {
+					main_diameter: best_d,
+					additional_diameter: 0, // Нет дополнительной арматуры
+					total_area,
+					deviation,
+					is_min_deviation: true, // Единственная комбинация, значит минимальная
+					is_default_checked: true, // Если минимальная, то по умолчанию выбрана
+					result_scale: Some(result_scale),
+				});
 						}
 				} else {
 					// Случай Б: Нашлись комбинации
@@ -570,19 +611,21 @@ pub fn generate_excel_data_for_js(
 						.fold(f32::INFINITY, f32::min);
 					
 					// Создаем CombinationItem с правильными флагами
-					for (d1, d2, total_area, deviation) in temp_combinations {
-						let is_min_deviation = (deviation.abs() - min_abs_deviation).abs() < f32::EPSILON;
-						let is_default_checked = is_min_deviation;
-						
-						combination_items.push(CombinationItem {
-							main_diameter: d1,
-							additional_diameter: d2, // 0 если нет дополнительной арматуры
-							total_area,
-							deviation,
-							is_min_deviation,
-							is_default_checked,
-						});
-					}
+				let result_scale = self.generate_result_scale(target_area, floor.steps[0], floor.steps[1]);
+				for (d1, d2, total_area, deviation) in temp_combinations {
+					let is_min_deviation = (deviation.abs() - min_abs_deviation).abs() < f32::EPSILON;
+					let is_default_checked = is_min_deviation;
+					
+					combination_items.push(CombinationItem {
+						main_diameter: d1,
+						additional_diameter: d2, // 0 если нет дополнительной арматуры
+						total_area,
+						deviation,
+						is_min_deviation,
+						is_default_checked,
+						result_scale: Some(result_scale.clone()),
+					});
+				}
 				}
 				
 				// Создаем ArmatureCombination для данной функции

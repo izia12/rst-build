@@ -29,8 +29,13 @@ export const DocumentGenerator: React.FC = () => {
                             }
                         });
                         
-                        console.log(`Added combination: ${floor.level}-${armatureCombination.function_name}, result_scale: ${item.result_scale || 'generated'}`);
-                        
+                        // Логирование шкал с фронтенда
+                        console.log(`🔵 [FRONTEND_SCALE] Floor: ${floor.level}, Function: ${armatureCombination.function_name}`);
+                        console.log(`🔵 [FRONTEND_SCALE] Original result_scale: ${item.result_scale || 'NULL'}`);
+                        console.log(`🔵 [FRONTEND_SCALE] Final result_scale: ${item.result_scale || `[${item.total_area.toFixed(3)}см2:Ø${item.main_diameter}${item.additional_diameter ? '+Ø' + item.additional_diameter : ''}]`}`);
+                        console.log(`🔵 [FRONTEND_SCALE] is_default_checked: ${item.is_default_checked}`);
+                        console.log('🔵 [FRONTEND_SCALE] Full item:', item);
+                        console.log('---');
                         // Добавляем этаж в список если его еще нет
                         if (!selectedFloors.includes(floor.level)) {
                             selectedFloors.push(floor.level);

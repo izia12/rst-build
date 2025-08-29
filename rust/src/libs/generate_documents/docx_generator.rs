@@ -343,13 +343,19 @@ pub async fn create_docx_for_selected_floors(
                   .map(|field| {
                       let key = format!("{}-{}", selected_floor, field);
                       let result = combination_map.get(&key).copied();
-                      web_sys::console::log_1(&format!("[DEBUG] Looking for key '{}': {:?}", key, result).into());
+                      web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Looking for key '{}': {:?}", key, result).into());
                       result
                   })
                   .collect();
               
-              web_sys::console::log_1(&format!("[STEP 7] Created result_scales for floor {}: {:?}", selected_floor, result_scales).into());
-              web_sys::console::log_1(&format!("[DEBUG] Available keys in map: {:?}", combination_map.keys().collect::<Vec<_>>()).into());
+              web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Created result_scales for floor {}: {:?}", selected_floor, result_scales).into());
+              web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Available keys in map: {:?}", combination_map.keys().collect::<Vec<_>>()).into());
+              web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Total combinations received: {}", combination_map.len()).into());
+               
+               // Детальное логирование всех комбинаций в мапе
+               for (key, value) in combination_map.iter() {
+                   web_sys::console::log_1(&format!("🔴 [BACKEND_SCALE] Map entry: '{}' -> '{:?}'", key, value).into());
+               }
              
              // === STEP 8: CALLING DRAW FUNCTIONS ===
              web_sys::console::log_1(&format!("[STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor {}", selected_floor).into());

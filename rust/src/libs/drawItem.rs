@@ -14,6 +14,8 @@ fn generate_color_palette(scale: &str) -> Vec<Rgb<u8>> {
 	let ranges = parse_result_scale_ranges(scale);
 	let num_colors = if ranges.is_empty() { 1 } else { ranges.len() };
 	
+
+	
 	// Базовые цвета для интерполяции
 	let base_colors = vec![
 		Rgb([247, 233, 171]), // #f7e9ab - светло-желтый
@@ -43,6 +45,7 @@ fn generate_color_palette(scale: &str) -> Vec<Rgb<u8>> {
 fn get_color_for_value(item: &EntityWithXlsx, field: &str, scale: Option<&str>, palette: &[Rgb<u8>]) -> Rgb<u8> {
 	if let Some(values) = item.get_value(field) {
 		if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
+
 			// Если есть result_scale, используем диапазоны из него
 			if let Some(scale_str) = scale {
 				let ranges = parse_result_scale_ranges(scale_str);
@@ -89,20 +92,13 @@ fn parse_result_scale_ranges(scale: &str) -> Vec<(f32, f32)> {
 	// Сортируем площади
 	areas.sort_by(|a, b| a.partial_cmp(b).unwrap());
 	
-	// Создаем диапазоны между соседними значениями
+	// Создаем диапазоны для каждого значения из result_scale
 	let mut ranges = Vec::new();
 	if !areas.is_empty() {
-		// Первый диапазон: от 0 до первого значения
-		ranges.push((0.0, areas[0]));
-		
-		// Промежуточные диапазоны: от предыдущего до текущего
-		for i in 1..areas.len() {
-			ranges.push((areas[i-1], areas[i]));
-		}
-		
-		// Если есть только одно значение, добавляем еще один диапазон
-		if areas.len() == 1 {
-			ranges.push((areas[0], areas[0] * 2.0));
+		// Каждое значение из result_scale представляет максимум диапазона
+		for (i, &area) in areas.iter().enumerate() {
+			let min_val = if i == 0 { 0.0 } else { areas[i-1] };
+			ranges.push((min_val, area));
 		}
 	}
 	
