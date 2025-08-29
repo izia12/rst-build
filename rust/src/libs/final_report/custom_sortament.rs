@@ -94,7 +94,13 @@ impl CustomSortament {
 		
 		// Берем первые 6-8 элементов и форматируем как шкалу
 		let limited_parts: Vec<String> = scale_parts.into_iter().take(6).map(|part| format!("[{}]", part)).collect();
-		limited_parts.join("")
+		let result = limited_parts.join("");
+		
+		// Логирование для отладки
+		web_sys::console::log_1(&format!("🟡 [SCALE_GENERATION] target_area: {}, main_step: {}, secondary_step: {}", target_area, main_step, secondary_step).into());
+		web_sys::console::log_1(&format!("🟡 [SCALE_GENERATION] generated result_scale: {}", result).into());
+		
+		result
 	}
 	/// Создает новый CustomSortament из JavaScript данных о доступных диаметрах
 	pub fn from_js_data(available_diameters: Vec<u32>) -> Self {
@@ -585,7 +591,7 @@ pub fn generate_excel_data_for_js(
 						let area = self.get_area(best_d).unwrap_or(0.0);
 						let total_area = main_count * area;
 						let deviation = ((total_area / target_area) - 1.0) * 100.0;
-						let result_scale = self.generate_result_scale(target_area, floor.steps[0], floor.steps[1]);
+						let result_scale = self.generate_result_scale(target_area, floor.steps[0] / 1000.0, floor.steps[1] / 1000.0);
 				combination_items.push(CombinationItem {
 					main_diameter: best_d,
 					additional_diameter: 0, // Нет дополнительной арматуры
@@ -611,7 +617,7 @@ pub fn generate_excel_data_for_js(
 						.fold(f32::INFINITY, f32::min);
 					
 					// Создаем CombinationItem с правильными флагами
-				let result_scale = self.generate_result_scale(target_area, floor.steps[0], floor.steps[1]);
+				let result_scale = self.generate_result_scale(target_area, floor.steps[0] / 1000.0, floor.steps[1] / 1000.0);
 				for (d1, d2, total_area, deviation) in temp_combinations {
 					let is_min_deviation = (deviation.abs() - min_abs_deviation).abs() < f32::EPSILON;
 					let is_default_checked = is_min_deviation;
