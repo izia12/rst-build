@@ -8,7 +8,7 @@ interface TestModuleComponentProps {
 }
 
 const TestModuleComponent: React.FC<TestModuleComponentProps> = ({ className }) => {
-  const [testModule, setTestModule] = useState<typeof TestModuleWrapper | null>(null);
+  const [testModule, setTestModule] = useState<TestModuleWrapper | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [boundsInfo, setBoundsInfo] = useState<string>('');
   const [objectsCount, setObjectsCount] = useState<number>(0);

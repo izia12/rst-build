@@ -17,14 +17,14 @@ fn generate_color_palette(scale: &str) -> Vec<Rgb<u8>> {
 
 	
 	// Базовые цвета для интерполяции
-	let base_colors = vec![
-		Rgb([247, 233, 171]), // #f7e9ab - светло-желтый
-		Rgb([255, 255, 0]),   // #ffff00 - желтый
-		Rgb([247, 172, 52]),  // #f7ac34 - оранжево-желтый
-		Rgb([232, 145, 5]),   // #e89105 - оранжевый
-		Rgb([232, 96, 5]),    // #e86005 - темно-оранжевый
-		Rgb([139, 0, 0]),     // #8b0000 - бордовый
-	];
+    let base_colors = vec![
+        Rgb([253, 255, 112]), // #fdff70 - светло-желтый
+        Rgb([249, 219, 67]),  // #f9db43 - желтый
+        Rgb([246, 167, 37]),  // #f6a725 - оранжево-желтый
+        Rgb([254, 94, 9]),    // #fe5e09 - оранжевый
+        Rgb([201, 37, 9]),    // #c92509 - темно-оранжевый
+        Rgb([123, 5, 1]),     // #7b0501 - бордовый
+    ];
 	
 	// Если нужно меньше цветов, берем первые
 	if num_colors <= base_colors.len() {
@@ -914,7 +914,13 @@ impl DrawItemZ {
           
           let units_text = "Единицы измерения см2";
           draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
-          current_y += 30; // Уменьшено в 4 раза
+          
+          // Добавляем многоколоночный текст с описанием диаметров на том же уровне
+          if let Some(scale) = result_scale {
+              Self::draw_diameter_descriptions(&mut legend_img, scale, 350, current_y-30, metadata_scale, title_color);
+          }
+          
+          current_y += 60; // Увеличиваем отступ чтобы учесть многоколоночный текст (2 строки * 30px)
           
           let diameter_text = "Шаг диаметр - мм";
           draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, diameter_text);
@@ -930,6 +936,74 @@ impl DrawItemZ {
     /// Возвращает метод расчета (выносим в отдельную функцию для будущих изменений)
     fn get_calculation_method() -> String {
         "Расчет по усилиям СНиП 2.03.01-84".to_string()
+    }
+    
+    /// Рисует многоколоночный текст с описанием диаметров арматуры
+    fn draw_diameter_descriptions(
+        img: &mut ImageBuffer<Rgb<u8>, Vec<u8>>,
+        result_scale: &str,
+        start_x: i32,
+        start_y: i32,
+        font_scale: Scale,
+        text_color: Rgb<u8>
+    ) {
+        let descriptions = Self::parse_diameter_descriptions(result_scale);
+        
+        if descriptions.is_empty() {
+            return;
+        }
+        
+        // Используем всю доступную ширину картинки
+        let img_width = img.width() as i32;
+        let available_width = img_width - start_x - 20; // Отступ справа 20px
+        
+        // Рассчитываем оптимальную ширину колонки на основе количества описаний
+        let max_lines_per_column = 2;
+        let needed_columns = (descriptions.len() + max_lines_per_column - 1) / max_lines_per_column;
+        let column_width = if needed_columns > 0 {
+            available_width / needed_columns as i32
+        } else {
+            200
+        };
+        
+        let line_height = 30; // Высота строки
+        
+        let mut current_column = 0;
+        let mut current_line = 0;
+        
+        for (_i, description) in descriptions.iter().enumerate() {
+            let x = start_x + (current_column * column_width);
+            let y = start_y + (current_line * line_height);
+            
+            draw_text_mut(img, text_color, x, y, font_scale, &CACHED_FONT, description);
+            
+            current_line += 1;
+            
+            // Переходим к следующей колонке если достигли максимума строк
+            if current_line >= max_lines_per_column as i32 {
+                current_column += 1;
+                current_line = 0;
+            }
+        }
+    }
+    
+    /// Парсит result_scale и извлекает содержимое квадратных скобок
+    fn parse_diameter_descriptions(result_scale: &str) -> Vec<String> {
+        let mut descriptions = Vec::new();
+        
+        // Парсим строку вида "[2.515см2:Ø8 мм s=200 мм][3.930см2:Ø8 мм s=200 мм + Ø6 мм s=200 мм]..."
+        let parts: Vec<&str> = result_scale.split("][").collect();
+        
+        for part in parts {
+            let clean_part = part.trim_start_matches('[').trim_end_matches(']');
+            
+            // Просто добавляем содержимое квадратных скобок как есть
+            if !clean_part.is_empty() {
+                descriptions.push(clean_part.to_string());
+            }
+        }
+        
+        descriptions
     }
 
     pub async fn draw_all_images_optimized(&self, config: &PerformanceConfig) -> Vec<Vec<u8>> {
