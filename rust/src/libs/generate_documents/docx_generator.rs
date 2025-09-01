@@ -23,6 +23,7 @@ pub struct CombinationItem {
     pub total_area: f32,
     pub deviation: f32,
     pub result_scale: Option<String>,
+    pub is_default_checked: bool,
 }
 
 /// ЕДИНСТВЕННАЯ ФУНКЦИЯ СОЗДАНИЯ DOCX - ПРОСТАЯ И БЫСТРАЯ
@@ -214,33 +215,22 @@ pub async fn create_docx_document_legacy(
     buffer.into_inner()
 }
 
-/// Создает DOCX документ для выбранных этажей
+/// Создает DOCX документ для выбранных этажей с тройным циклом генерации
 pub async fn create_docx_for_selected_floors(
     entities: Vec<EntityWithXlsx>,
     selected_floors: Vec<f32>,
     selected_combinations: Option<Vec<SelectedCombination>>,
     title: &str
 ) -> Vec<u8> {
-    // === STEP 4: SELECTED FLOORS PROCESSING ===
     web_sys::console::log_1(&format!("[STEP 4] create_docx_for_selected_floors() called with {} entities, {} floors", entities.len(), selected_floors.len()).into());
-    web_sys::console::log_1(&format!("[STEP 4] selected_floors: {:?}", selected_floors).into());
     web_sys::console::log_1(&format!("[STEP 4] selected_combinations: {:?}", selected_combinations.as_ref().map(|c| c.len())).into());
-    	
-    // 🔍 PERFORMANCE: Начало общего таймера
+    
     let total_start = web_sys::window().unwrap().performance().unwrap().now();
-    	
-    // 🔍 PERFORMANCE: Начало создания DOCX структуры
-    let docx_init_start = web_sys::window().unwrap().performance().unwrap().now();
+    
     let mut doc = Docx::new()
-        // Устанавливаем минимальные отступы страницы для максимального использования пространства
         .page_margin(docx_rs::PageMargin {
-            top: 200,    // 0.2 см (минимальный отступ)
-            right: 200,  // 0.2 см
-            bottom: 200, // 0.2 см  
-            left: 200,   // 0.2 см
-            header: 0,   // Без отступа для заголовка
-            footer: 0,   // Без отступа для подвала
-            gutter: 0,   // Без переплета
+            top: 200, right: 200, bottom: 200, left: 200,
+            header: 0, footer: 0, gutter: 0,
         })
         .add_paragraph(
             Paragraph::new().add_run(
@@ -248,135 +238,114 @@ pub async fn create_docx_for_selected_floors(
             )
         );
     
-    // 🔍 PERFORMANCE: Время инициализации DOCX
-    let docx_init_time = web_sys::window().unwrap().performance().unwrap().now() - docx_init_start;
-    
-    // ✨ ОПТИМИЗАЦИЯ: Настраиваем page size и orientation ОДИН раз для всего документа
+    // Настраиваем размер и ориентацию страницы
+    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
     doc = doc
         .page_size(DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS)
         .page_orient(docx_rs::PageOrientationType::Landscape);
     
-    // 🔍 PERFORMANCE: Начало сортировки по Z
-    let sort_start = web_sys::window().unwrap().performance().unwrap().now();
-    
-    // Группируем по Z-координате (этажам)
+    // Группируем сущности по Z-координате (этажам)
     let hash = sort_by_z(entities);
     
-    // 🔍 PERFORMANCE: Время сортировки
-    let sort_time = web_sys::window().unwrap().performance().unwrap().now() - sort_start;
-
+    // Фильтруем только выбранные комбинации с default_checked = true
+    let filtered_combinations: Vec<&SelectedCombination> = if let Some(combinations) = &selected_combinations {
+        combinations.iter()
+            .filter(|combo| combo.combination.is_default_checked)
+            .collect()
+    } else {
+        Vec::new()
+    };
     
-    // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
-    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
+    web_sys::console::log_1(&format!("Filtered combinations count: {}", filtered_combinations.len()).into());
     
-    let monitor = PerformanceMonitor::new(PerformanceConfig::default());
-    
-    // === STEP 5: CREATING COMBINATION MAP ===
-    let mut combination_map = std::collections::HashMap::new();
-    if let Some(combinations) = &selected_combinations {
-         for (idx, combo) in combinations.iter().enumerate() {
-             
-             let key = format!("{}-{}", combo.floor_level, combo.function_name);
-             if let Some(ref result_scale) = combo.combination.result_scale {
-                 combination_map.insert(key.clone(), result_scale.as_str());
-             }
-         }
-     }
-    
-    // === STEP 6: PROCESSING EACH FLOOR ===
-    
-    // 🔍 PERFORMANCE: Начало обработки всех этажей
-    let floors_start = web_sys::window().unwrap().performance().unwrap().now();
-    
-    // Обрабатываем только выбранные этажи
-    for (floor_idx, selected_floor) in selected_floors.iter().enumerate() {
-        // 🔍 PERFORMANCE: Начало обработки одного этажа + точка между этажами
-        let floor_start = web_sys::window().unwrap().performance().unwrap().now();
+    // Тройной цикл: этажи × as_функции × комбинации
+    for selected_floor in selected_floors.iter() {
         let z_key = OrderedFloat(*selected_floor);
-         
-         if let Some(item_z) = hash.get(&z_key) {
-             
-             // === STEP 7: CREATING RESULT_SCALES FOR THIS FLOOR ===
-              let result_scales: Vec<Option<&str>> = ["as1", "as2", "as3", "as4"]
-                  .iter()
-                  .map(|field| {
-                      let key = format!("{}-{}", selected_floor, field);
-                      let result = combination_map.get(&key).copied();
-                      result
-                  })
-                  .collect();
-             
-             // === STEP 8: CALLING DRAW FUNCTIONS ===
-             // 🔍 PERFORMANCE: Начало генерации изображений для этажа
-             let images_start = web_sys::window().unwrap().performance().unwrap().now();
-             
-             let imgs = item_z.draw_all_images_with_colors_and_floor(Some(&result_scales), *selected_floor).await;
-             
-             // 🔍 PERFORMANCE: Время генерации изображений
-             let images_time = web_sys::window().unwrap().performance().unwrap().now() - images_start;
-            
-            // 🔍 PERFORMANCE: Начало добавления в DOCX
-            let docx_add_start = web_sys::window().unwrap().performance().unwrap().now();
-            
-            // ✨ ОПТИМИЗАЦИЯ: Создаем заголовок этажа
+        
+        if let Some(item_z) = hash.get(&z_key) {
+            // Добавляем заголовок этажа
             let floor_title_paragraph = Paragraph::new().add_run(
                 Run::new()
                     .add_text(format!("Высота {}", selected_floor))
                     .size(40)
             );
-            
-            // ✨ ОПТИМИЗАЦИЯ: Предварительно создаем все параграфы с изображениями
-            let prep_start = web_sys::window().unwrap().performance().unwrap().now();
-            let mut image_paragraphs = Vec::with_capacity(imgs.len());
-            for img in imgs.iter() {
-                let image_paragraph = Paragraph::new().add_run(
-                    Run::new().add_image(
-                        Pic::new(img.as_slice())
-                            .size(DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU)
-                    )
-                );
-                image_paragraphs.push(image_paragraph);
-            }
-            let prep_time = web_sys::window().unwrap().performance().unwrap().now() - prep_start;
-            
-            
-            // ✨ ОПТИМИЗАЦИЯ: Добавляем заголовок этажа (без повторных настроек)
             doc = doc.add_paragraph(floor_title_paragraph);
             
-            // ✨ ОПТИМИЗАЦИЯ: Batch-добавление всех изображений
-            let batch_start = web_sys::window().unwrap().performance().unwrap().now();
-            for paragraph in image_paragraphs {
-                doc = doc.add_paragraph(paragraph);
+            // Группируем комбинации по as_функциям для данного этажа
+            let floor_combinations: Vec<&SelectedCombination> = filtered_combinations.iter()
+                .filter(|combo| combo.floor_level == selected_floor.to_string())
+                .cloned()
+                .collect();
+            
+            // Цикл по as_функциям
+            for as_function in ["as1", "as2", "as3", "as4"].iter() {
+                let as_combinations: Vec<&SelectedCombination> = floor_combinations.iter()
+                    .filter(|combo| combo.function_name == *as_function)
+                    .cloned()
+                    .collect();
+                
+                if !as_combinations.is_empty() {
+                    // Добавляем заголовок as_функции
+                    let as_title_paragraph = Paragraph::new().add_run(
+                        Run::new()
+                            .add_text(format!("Функция {}", as_function))
+                            .size(32)
+                    );
+                    doc = doc.add_paragraph(as_title_paragraph);
+                    
+                    // Цикл по комбинациям
+                    for combination in as_combinations {
+                        // Создаем result_scale для конкретной комбинации
+                        let result_scale = combination.combination.result_scale.as_deref();
+                        let result_scales = vec![result_scale];
+                        
+                        // Генерируем изображение для данной комбинации
+                        let img = item_z.draw_single_image_with_combination(
+                            &result_scales, 
+                            *selected_floor, 
+                            as_function,
+                            &combination.combination
+                        ).await;
+                        
+                        // Добавляем заголовок комбинации
+                        let combo_title = format!(
+                            "Комбинация: Ø{} мм + Ø{} мм, Площадь: {:.3} см²",
+                            combination.combination.main_diameter,
+                            combination.combination.additional_diameter,
+                            combination.combination.total_area
+                        );
+                        let combo_title_paragraph = Paragraph::new().add_run(
+                            Run::new()
+                                .add_text(combo_title)
+                                .size(24)
+                        );
+                        doc = doc.add_paragraph(combo_title_paragraph);
+                        
+                        // Добавляем изображение
+                        let image_paragraph = Paragraph::new().add_run(
+                            Run::new().add_image(
+                                Pic::new(img.as_slice())
+                                    .size(DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU)
+                            )
+                        );
+                        doc = doc.add_paragraph(image_paragraph);
+                    }
+                }
             }
-            let batch_time = web_sys::window().unwrap().performance().unwrap().now() - batch_start;
-            
-            // 🔍 PERFORMANCE: Время добавления в DOCX
-            let docx_add_time = web_sys::window().unwrap().performance().unwrap().now() - docx_add_start;
-            
-            // 🔍 PERFORMANCE: Общее время обработки этажа
-            let floor_total_time = web_sys::window().unwrap().performance().unwrap().now() - floor_start;
-            
-            // Log completion point for gap measurement
-            let floor_end_timestamp = web_sys::window().unwrap().performance().unwrap().now();
         }
     }
-    
-    // 🔍 PERFORMANCE: Начало финальной сборки DOCX
-    let build_start = web_sys::window().unwrap().performance().unwrap().now();
     
     // Создаем буфер и записываем документ
     let mut buffer = Cursor::new(Vec::new());
     match doc.build().pack(&mut buffer) {
         Ok(_) => {
-            let build_time = web_sys::window().unwrap().performance().unwrap().now() - build_start;
-            let buffer_size = buffer.get_ref().len();
+            let total_time = web_sys::window().unwrap().performance().unwrap().now() - total_start;
+            web_sys::console::log_1(&format!("Total DOCX generation time: {:.2}ms", total_time).into());
         },
         Err(e) => {
+            web_sys::console::log_1(&format!("Error creating document: {}", e).into());
         }
     }
-    
-    // 🔍 PERFORMANCE: Общее время
-    let total_time = web_sys::window().unwrap().performance().unwrap().now() - total_start;
     
     buffer.into_inner()
 }
@@ -394,5 +363,6 @@ pub fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawI
                 .data.push(item);
         }
     }
+    
     map
 }

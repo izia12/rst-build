@@ -339,8 +339,6 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
     use crate::libs::generate_documents::docx_generator::{SelectedCombination, CombinationItem};
     
     // === STEP 1: WASM ENTRY POINT ===
-
-    
     #[derive(serde::Deserialize)]
     struct SelectedCombinationsData {
         combinations: Vec<SelectedCombination>,
@@ -349,6 +347,33 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
     
     let selected_data: SelectedCombinationsData = serde_json::from_str(selected_combinations_json)
         .map_err(|e| JsValue::from_str(&format!("Failed to parse selected combinations: {:?}", e)))?;
+    
+    // 🎯 [BACKEND_DRAWING] Логи данных перед началом рисования фигур
+    web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING] ===== ДАННЫЕ ПЕРЕД РИСОВАНИЕМ ФИГУР =====").into());
+    
+    // Группируем по этажам и AS функциям
+    let mut floor_groups: std::collections::HashMap<String, std::collections::HashMap<String, Vec<&SelectedCombination>>> = std::collections::HashMap::new();
+    for combo in &selected_data.combinations {
+        floor_groups.entry(combo.floor_level.clone())
+            .or_insert_with(std::collections::HashMap::new)
+            .entry(combo.function_name.clone())
+            .or_insert_with(Vec::new)
+            .push(combo);
+    }
+    
+    // Логирование структурированных данных
+    for (floor, functions) in &floor_groups {
+        web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING] Этаж(отметка): {}", floor).into());
+        for (function, combinations) in functions {
+            web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING]   AS функция: {}", function).into());
+            for (index, combo) in combinations.iter().enumerate() {
+                web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING]     Комбинация {}: Итоговая шкала = {}", 
+                    index + 1, combo.combination.result_scale.as_ref().unwrap_or(&"NULL".to_string())).into());
+            }
+        }
+    }
+    
+    web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING] ===== КОНЕЦ ДАННЫХ ПЕРЕД РИСОВАНИЕМ =====").into());
   
     
     // Получаем все сущности из глобального хранилища

@@ -68,7 +68,31 @@ export const generateDocumentWithColorPalette = createAsyncThunk<Uint8Array, imp
             
         
             
-            // Конвертируем данные в JSON строку
+            // 📤 [FRONTEND_TO_BACKEND] Логи отправки выбранных комбинаций на бэкенд
+            console.log('📤 [FRONTEND_TO_BACKEND] ===== ОТПРАВКА ВЫБРАННЫХ КОМБИНАЦИЙ =====');
+            
+            // Группируем по этажам и AS функциям
+            const floorGroups = selectedData.combinations.reduce((acc, combo) => {
+                const floorKey = combo.floor_level;
+                if (!acc[floorKey]) acc[floorKey] = {};
+                if (!acc[floorKey][combo.function_name]) acc[floorKey][combo.function_name] = [];
+                acc[floorKey][combo.function_name].push(combo);
+                return acc;
+            }, {} as Record<string, Record<string, any[]>>);
+            
+            // Логируем структурированно по этажам и функциям
+            Object.keys(floorGroups).forEach(floor => {
+                console.log(`📤 [FRONTEND_TO_BACKEND] Этаж(отметка): ${floor}`);
+                Object.keys(floorGroups[floor]).forEach(asFunction => {
+                    const combinations = floorGroups[floor][asFunction];
+                    console.log(`📤 [FRONTEND_TO_BACKEND]   AS функция: ${asFunction}`);
+                    combinations.forEach((combo, index) => {
+                        console.log(`📤 [FRONTEND_TO_BACKEND]     Комбинация ${index + 1}: Итоговая шкала = ${combo.combination.result_scale || 'NULL'}`);
+                    });
+                });
+            });
+            
+            console.log('📤 [FRONTEND_TO_BACKEND] ===== КОНЕЦ ОТПРАВКИ ДАННЫХ =====');
             const selectedCombinationsJson = JSON.stringify(selectedData);
             
             // Вызываем новую WASM функцию для генерации с цветовой палитрой

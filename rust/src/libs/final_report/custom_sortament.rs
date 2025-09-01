@@ -60,7 +60,11 @@ pub struct CombinationResult {
 impl CustomSortament {
 	/// Генерирует result_scale для комбинации
 	fn generate_result_scale(&self, target_area: f32, main_step: f32, secondary_step: f32) -> String {
+		web_sys::console::log_1(&format!("🔍 [SCALE_GENERATION] target_area: {}, main_step: {}, secondary_step: {}", target_area, main_step, secondary_step).into());
+		
 		let diameters = self.get_available_diameters();
+		web_sys::console::log_1(&format!("🔍 [SCALE_GENERATION] Available diameters: {:?}", diameters).into());
+		
 		let main_count = 1.0 / main_step;
 		let secondary_count = 1.0 / secondary_step;
 		
@@ -533,6 +537,9 @@ pub fn generate_excel_data_for_js(
 ) -> Vec<ExcelView> {
 	let mut result = Vec::new();
 	
+	// 📋 [BACKEND_EXCEL_GENERATION] Логи формирования Excel данных с шкалой
+	web_sys::console::log_1(&format!("📋 [BACKEND_EXCEL_GENERATION] ===== ФОРМИРОВАНИЕ EXCEL ДАННЫХ =====").into());
+	
 	// Обрабатываем каждый этаж
 	for floor in floors_data {
 		let areas = [floor.max_as1, floor.max_as2, floor.max_as3, floor.max_as4];
@@ -551,6 +558,9 @@ pub fn generate_excel_data_for_js(
 					3 => "as4",
 					_ => "as",
 				};
+				
+				web_sys::console::log_1(&format!("📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): {}", floor.level).into());
+				web_sys::console::log_1(&format!("📋 [BACKEND_EXCEL_GENERATION]   AS функция: {}", function_name).into());
 				
 				// Находим комбинации для данной площади с учетом ограничений
 				let combinations = self.find_combinations_for_area_with_limits(
@@ -589,16 +599,19 @@ pub fn generate_excel_data_for_js(
 						let area = self.get_area(best_d).unwrap_or(0.0);
 						let total_area = main_count * area;
 						let deviation = ((total_area / target_area) - 1.0) * 100.0;
-						let result_scale = self.generate_result_scale(target_area, floor.steps[0] / 1000.0, floor.steps[1] / 1000.0);
-				combination_items.push(CombinationItem {
-					main_diameter: best_d,
-					additional_diameter: 0, // Нет дополнительной арматуры
-					total_area,
-					deviation,
-					is_min_deviation: true, // Единственная комбинация, значит минимальная
-					is_default_checked: true, // Если минимальная, то по умолчанию выбрана
-					result_scale: Some(result_scale),
-				});
+						// ИСПРАВЛЕНИЕ: Используем ту же логику что и в Excel для итоговой шкалы
+						let result_scale = format!("[{:.3}см2:Ø{} мм s={:.0} мм]", total_area, best_d, floor.steps[0]);
+						web_sys::console::log_1(&format!("🟢 [BACKEND_EXCEL_GENERATION] Generated result_scale for main only: {}", result_scale).into());
+						web_sys::console::log_1(&format!("🟢 [BACKEND_EXCEL_GENERATION] Floor: {}, Function: {}, Diameter: {}mm", floor.level, function_name, best_d).into());
+			combination_items.push(CombinationItem {
+				main_diameter: best_d,
+				additional_diameter: 0, // Нет дополнительной арматуры
+				total_area,
+				deviation,
+				is_min_deviation: true, // Единственная комбинация, значит минимальная
+				is_default_checked: true, // Если минимальная, то по умолчанию выбрана
+				result_scale: Some(result_scale),
+			});
 						}
 				} else {
 					// Случай Б: Нашлись комбинации
@@ -615,21 +628,61 @@ pub fn generate_excel_data_for_js(
 						.fold(f32::INFINITY, f32::min);
 					
 					// Создаем CombinationItem с правильными флагами
-				let result_scale = self.generate_result_scale(target_area, floor.steps[0] / 1000.0, floor.steps[1] / 1000.0);
-				for (d1, d2, total_area, deviation) in temp_combinations {
-					let is_min_deviation = (deviation.abs() - min_abs_deviation).abs() < f32::EPSILON;
-					let is_default_checked = is_min_deviation;
+			web_sys::console::log_1(&format!("🟢 [BACKEND_EXCEL_GENERATION] Processing {} combinations for Floor: {}, Function: {}", temp_combinations.len(), floor.level, function_name).into());
+			
+			for (d1, d2, total_area, deviation) in temp_combinations {
+				let is_min_deviation = (deviation.abs() - min_abs_deviation).abs() < f32::EPSILON;
+				let is_default_checked = is_min_deviation;
+				
+				// ИСПРАВЛЕНИЕ: Генерируем полную шкалу точно как в Excel для каждой комбинации
+				let main_count = 1.0 / (floor.steps[0] / 1000.0);
+				let secondary_count = 1.0 / (floor.steps[1] / 1000.0);
+				let area1 = self.get_area(d1).unwrap_or(0.0);
+				
+				let mut result_scales = Vec::new();
+				
+				if d2 > 0 {
+					// Комбинация с дополнительной арматурой
+					let mut diameters = self.get_available_diameters();
+					if target_area < 5.0 {
+						diameters.retain(|&d| d <= 20);
+					}
 					
-					combination_items.push(CombinationItem {
-						main_diameter: d1,
-						additional_diameter: d2, // 0 если нет дополнительной арматуры
-						total_area,
-						deviation,
-						is_min_deviation,
-						is_default_checked,
-						result_scale: Some(result_scale.clone()),
-					});
+					// 1. Сначала вариант без дополнительной арматуры
+					let main_only_area = main_count * area1;
+					result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм]", main_only_area, d1, floor.steps[0]));
+					
+					// 2. Затем все варианты с дополнительной арматурой до d2 включительно
+					for &curr_d in &diameters {
+						if curr_d > d2 || curr_d == 0 {
+							continue;
+						}
+						let area_curr = self.get_area(curr_d).unwrap_or(0.0);
+						let combined_area = main_count * area1 + secondary_count * area_curr;
+						result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм + Ø{} мм s={:.0} мм]", 
+							combined_area, d1, floor.steps[0], curr_d, floor.steps[1]));
+					}
+				} else {
+					// Комбинация только с основной арматурой
+					let main_only_area = main_count * area1;
+					result_scales.push(format!("[{:.3}см2:Ø{} мм s={:.0} мм]", main_only_area, d1, floor.steps[0]));
 				}
+				
+				// Объединяем все шкалы в одну строку как в Excel
+				let combined_result = result_scales.join("");
+				
+				combination_items.push(CombinationItem {
+					main_diameter: d1,
+					additional_diameter: d2, // 0 если нет дополнительной арматуры
+					total_area,
+					deviation,
+					is_min_deviation,
+					is_default_checked,
+					result_scale: Some(combined_result.clone()),
+				});
+				
+				web_sys::console::log_1(&format!("📋 [BACKEND_EXCEL_GENERATION]     Комбинация {}: Итоговая шкала = {}", combination_items.len(), combined_result).into());
+			}
 				}
 				
 				// Создаем ArmatureCombination для данной функции
@@ -652,6 +705,8 @@ pub fn generate_excel_data_for_js(
 			});
 		}
 	}
+	
+	web_sys::console::log_1(&format!("📋 [BACKEND_EXCEL_GENERATION] ===== КОНЕЦ ФОРМИРОВАНИЯ EXCEL ДАННЫХ =====").into());
 	
 	result
 }

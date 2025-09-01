@@ -52,7 +52,7 @@ fn generate_gradient_palette(count: usize) -> Vec<Rgb<u8>> {
 
 /// Парсит итоговую шкалу и извлекает диапазоны площадей
 pub fn parse_result_scale(result_scale: &str) -> Vec<(f32, f32)> {
-    let mut ranges = Vec::new();
+    let mut areas = Vec::new();
     
     // Ищем все вхождения вида [X.XXXсм2:...]
     let re = regex::Regex::new(r"\[(\d+\.\d+)см2:[^\]]+\]").unwrap();
@@ -60,10 +60,26 @@ pub fn parse_result_scale(result_scale: &str) -> Vec<(f32, f32)> {
     for cap in re.captures_iter(result_scale) {
         if let Some(area_str) = cap.get(1) {
             if let Ok(area) = area_str.as_str().parse::<f32>() {
-                // Создаем диапазон ±5% от значения
-                let tolerance = area * 0.05;
-                ranges.push((area - tolerance, area + tolerance));
+                areas.push(area);
             }
+        }
+    }
+    
+    // Сортируем площади
+    areas.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    
+    // ИСПРАВЛЕНИЕ: Создаем равномерные диапазоны на основе значений из result_scale
+    let mut ranges = Vec::new();
+    if !areas.is_empty() {
+        let min_area = 0.0;
+        let max_area = areas.last().copied().unwrap_or(0.0) * 1.2; // Добавляем 20% запас
+        let step = max_area / areas.len() as f32;
+        
+        // Создаем равномерные диапазоны
+        for i in 0..areas.len() {
+            let range_min = min_area + (i as f32 * step);
+            let range_max = min_area + ((i + 1) as f32 * step);
+            ranges.push((range_min, range_max));
         }
     }
     

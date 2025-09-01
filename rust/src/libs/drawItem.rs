@@ -5,6 +5,7 @@ use imageproc::{drawing::{draw_line_segment_mut, draw_text_mut, draw_filled_rect
 use rusttype::{Font, Scale};
 use serde::Serialize;
 use web_sys::console;
+use regex::Regex;
 use super::parse::EntityWithXlsx;
 use super::generate_documents::performance::{PerformanceConfig, PerformanceMonitor};
 use super::gpu_renderer::{ get_gpu_renderer,};
@@ -45,20 +46,21 @@ fn generate_color_palette(scale: &str) -> Vec<Rgb<u8>> {
 fn get_color_for_value(item: &EntityWithXlsx, field: &str, scale: Option<&str>, palette: &[Rgb<u8>]) -> Rgb<u8> {
 	if let Some(values) = item.get_value(field) {
 		if let Some(max_value) = values.iter().cloned().max_by(|a, b| a.partial_cmp(b).unwrap()) {
-
 			// Если есть result_scale, используем диапазоны из него
 			if let Some(scale_str) = scale {
 				let ranges = parse_result_scale_ranges(scale_str);
 				if !ranges.is_empty() {
-					// Находим подходящий диапазон для значения
+					// ИСПРАВЛЕНИЕ: Находим диапазон по порядку (первый подходящий)
 					for (i, (min_val, max_val)) in ranges.iter().enumerate() {
-						if max_value >= *min_val && max_value <= *max_val {
-							return palette.get(i).copied().unwrap_or(palette[0]);
+						if max_value >= *min_val && max_value < *max_val {
+							let color = palette.get(i).copied().unwrap_or(palette[0]);
+							return color;
 						}
 					}
-					// Если значение больше всех диапазонов, используем последний цвет
-					if max_value > ranges.last().unwrap().1 {
-						return palette.get(ranges.len() - 1).copied().unwrap_or(palette[0]);
+					// Если значение больше или равно последнему диапазону, используем последний цвет
+					if max_value >= ranges.last().unwrap().0 {
+						let color = palette.get(ranges.len() - 1).copied().unwrap_or(palette[0]);
+						return color;
 					}
 					// Если значение меньше всех диапазонов, используем первый цвет
 					return palette[0];
@@ -67,7 +69,8 @@ fn get_color_for_value(item: &EntityWithXlsx, field: &str, scale: Option<&str>, 
 			// Старая логика для случаев без result_scale или пустых диапазонов
 			let normalized = (max_value / 100.0).min(1.0).max(0.0);
 			let index = (normalized * (palette.len() - 1) as f32) as usize;
-			return palette[index.min(palette.len() - 1)];
+			let color = palette[index.min(palette.len() - 1)];
+			return color;
 		}
 	}
 	palette[0] // Дефолтный цвет
@@ -75,30 +78,53 @@ fn get_color_for_value(item: &EntityWithXlsx, field: &str, scale: Option<&str>, 
 
 // Функция парсинга диапазонов result_scale (вынесена из impl блока)
 fn parse_result_scale_ranges(scale: &str) -> Vec<(f32, f32)> {
-	// Парсим строку вида "[2.515см2:Ø8 мм][3.930см2:Ø8+Ø6][5.030см2:Ø8+Ø8]"
+	// Парсим строку вида "[1.415см2:Ø6 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"
+	// Используем regex для извлечения всех площадей
 	let mut areas = Vec::new();
-	let parts: Vec<&str> = scale.split("][").collect();
 	
-	// Извлекаем все площади
-	for part in parts {
-		let clean_part = part.trim_start_matches('[').trim_end_matches(']');
-		if let Some(area_end) = clean_part.find("см2:") {
-			if let Ok(area) = clean_part[..area_end].parse::<f32>() {
-				areas.push(area);
-			}
+	// Ищем все вхождения числа перед "см2"
+	let regex = Regex::new(r"(\d+\.\d+)см2").unwrap();
+	for cap in regex.captures_iter(scale) {
+		if let Ok(area) = cap[1].parse::<f32>() {
+			areas.push(area);
 		}
 	}
 	
-	// Сортируем площади
+	// Убираем дубликаты и сортируем площади
 	areas.sort_by(|a, b| a.partial_cmp(b).unwrap());
+	areas.dedup();
 	
-	// Создаем диапазоны для каждого значения из result_scale
+	// ИСПРАВЛЕНИЕ: Создаем диапазоны на основе РЕАЛЬНЫХ значений площадей
 	let mut ranges = Vec::new();
 	if !areas.is_empty() {
-		// Каждое значение из result_scale представляет максимум диапазона
-		for (i, &area) in areas.iter().enumerate() {
-			let min_val = if i == 0 { 0.0 } else { areas[i-1] };
-			ranges.push((min_val, area));
+		// Если одна площадь - создаем диапазон вокруг неё
+		if areas.len() == 1 {
+			let area = areas[0];
+			ranges.push((area * 0.8, area * 1.2)); // ±20% от значения
+		} else {
+			// Если несколько площадей - создаем диапазоны между ними
+			for i in 0..areas.len() {
+				let current_area = areas[i];
+				
+				if i == 0 {
+					// Первый диапазон: от 0 до середины между первой и второй площадью
+					let next_area = areas.get(1).copied().unwrap_or(current_area * 1.5);
+					let range_max = (current_area + next_area) / 2.0;
+					ranges.push((0.0, range_max));
+				} else if i == areas.len() - 1 {
+					// Последний диапазон: от середины между предыдущей и текущей до бесконечности
+					let prev_area = areas[i - 1];
+					let range_min = (prev_area + current_area) / 2.0;
+					ranges.push((range_min, f32::INFINITY));
+				} else {
+					// Средние диапазоны: от середины с предыдущей до середины со следующей
+					let prev_area = areas[i - 1];
+					let next_area = areas[i + 1];
+					let range_min = (prev_area + current_area) / 2.0;
+					let range_max = (current_area + next_area) / 2.0;
+					ranges.push((range_min, range_max));
+				}
+			}
 		}
 	}
 	
@@ -885,22 +911,45 @@ impl DrawItemZ {
                 
                 current_y += rect_height as i32 + 10; // Уменьшен отступ
                 
-                // Подписи диапазонов
-                 let range_font_size = 30.0; // Уменьшено в 4 раза (120 / 4)
-                 let range_scale = Scale::uniform(range_font_size);
+                // Подписи диапазонов - новая логика согласно требованиям
+                let area_font_size = 25.0; // Размер шрифта для площади
+                let diameter_font_size = 20.0; // Размер шрифта для описания диаметров
+                let area_scale = Scale::uniform(area_font_size);
+                let diameter_scale = Scale::uniform(diameter_font_size);
                 
-                for (i, range) in scale_ranges.iter().enumerate() {
+                // Получаем описания диаметров из квадратных скобок
+                let diameter_descriptions = Self::parse_diameter_descriptions(scale);
+                
+                for (i, _range) in scale_ranges.iter().enumerate() {
                     let x = 20 + (i as u32 * rect_width);
-                    let range_text = if i == 0 {
-                        format!("0 - {:.3}", range.1)
-                    } else {
-                        format!("{:.3} - {:.3}", scale_ranges[i-1].1, range.1)
-                    };
                     
-                    draw_text_mut(&mut legend_img, title_color, x as i32, current_y, range_scale, &CACHED_FONT, &range_text);
+                    if let Some(description) = diameter_descriptions.get(i) {
+                        // Парсим площадь и описание диаметров из строки вида "24.550см2:Ø25 мм s=200 мм"
+                        if let Some(colon_pos) = description.find(':') {
+                            let area_part = &description[..colon_pos]; // "24.550см2"
+                            let diameter_part = &description[colon_pos + 1..]; // "Ø25 мм s=200 мм"
+                            
+                            // Извлекаем только число площади
+                            let area_text = area_part.replace("см2", "");
+                            
+                            // Рисуем площадь в начале прямоугольника
+                            draw_text_mut(&mut legend_img, title_color, x as i32, current_y, area_scale, &CACHED_FONT, &area_text);
+                            
+                            // Рисуем описание диаметров ниже и немного правее
+                            let diameter_x = x as i32 + 10; // Отступ вправо
+                            let diameter_y = current_y + 25; // Отступ вниз
+                            draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, diameter_part);
+                        } else {
+                            // Если нет двоеточия, выводим как есть
+                            draw_text_mut(&mut legend_img, title_color, x as i32, current_y, area_scale, &CACHED_FONT, description);
+                        }
+                    } else {
+                        let range_text = format!("Диапазон {}", i + 1);
+                        draw_text_mut(&mut legend_img, title_color, x as i32, current_y, area_scale, &CACHED_FONT, &range_text);
+                    }
                 }
                 
-                current_y += 40; // Уменьшен отступ после диапазонов
+                current_y += 60; // Увеличен отступ после диапазонов для учета двух строк текста
             }
         }
         
@@ -1152,6 +1201,21 @@ impl DrawItemZ {
 		}
 		
 		results
+	}
+
+	/// Генерирует одно изображение для конкретной комбинации
+	pub async fn draw_single_image_with_combination(
+		&self,
+		result_scales: &[Option<&str>],
+		floor_level: f32,
+		as_function: &str,
+		combination: &crate::libs::generate_documents::docx_generator::CombinationItem
+	) -> Vec<u8> {
+		// Используем result_scale из комбинации
+		let result_scale = combination.result_scale.as_deref();
+		
+		// Генерируем изображение для указанной as_функции с конкретной шкалой
+		self.draw_image_with_floor(as_function, result_scale, floor_level).await
 	}
 }
 

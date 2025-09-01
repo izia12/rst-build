@@ -18,6 +18,10 @@ export const DocumentGenerator: React.FC = () => {
             floor.values.forEach(armatureCombination => {
                 armatureCombination.combinations.forEach(item => {
                     if (item.is_default_checked) {
+                        console.log(`🔵 [FRONTEND_SENDING] Floor: ${floor.level}, Function: ${armatureCombination.function_name}`);
+                        console.log(`🔵 [FRONTEND_SENDING] Sending result_scale: ${item.result_scale || 'NULL'}`);
+                        console.log(`🔵 [FRONTEND_SENDING] Item details:`, item);
+                        
                         // Добавляем выбранную комбинацию
                         selectedCombinations.push({
                             floor_level: floor.level,
@@ -49,8 +53,8 @@ export const DocumentGenerator: React.FC = () => {
             floors: selectedFloors
         };
         
+        // Убраны детальные логи формирования данных
 
-		
         try {
             // Используем новую функцию с цветовой палитрой
             const result = await dispatch(generateDocumentWithColorPalette(selectedData)).unwrap();

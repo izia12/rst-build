@@ -1,380 +1,557 @@
-Added combination: 0-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 0-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 0-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 0-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 0-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 3.3-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 6.6-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 9.9-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 13.2-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 16.5-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 19.5-as1, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 19.5-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 19.5-as2, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 19.5-as3, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 19.5-as4, result_scale: generated
-DocumentGenerator.tsx:32 Added combination: 19.5-as4, result_scale: generated
-DocumentGenerator.tsx:53 Selected combinations data: {combinations: Array(48), floors: Array(7)}
-wasmThanks.ts:70 🎨 Generating document with color palette for: {combinations: Array(48), floors: Array(7)}
-rst_build.js:733 [STEP 1] create_docx_with_selected_combinations() called with: {"combinations":[{"floor_level":"0","function_name":"as1","as_target_value":2.69,"combination":{"main_diameter":6,"additional_diameter":6,"total_area":2.83,"deviation":5.204451,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[2.830см2:Ø6+Ø6]"}},{"floor_level":"0","function_name":"as2","as_target_value":1.25,"combination":{"main_diameter":6,"additional_diameter":0,"total_area":1.415,"deviation":13.199997,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[1.415см2:Ø6]"}},{"floor_level":"0","function_name":"as3","as_target_value":1.69,"combination":{"main_diameter":8,"additional_diameter":0,"total_area":2.515,"deviation":48.816574,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[2.515см2:Ø8]"}},{"floor_level":"0","function_name":"as4","as_target_value":3.41,"combination":{"main_diameter":6,"additional_diameter":8,"total_area":3.93,"deviation":15.249264,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[3.930см2:Ø6+Ø8]"}},{"floor_level":"0","function_name":"as4","as_target_value":3.41,"combination":{"main_diameter":8,"additional_diameter":6,"total_area":3.93,"deviation":15.249264,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[3.930см2:Ø8+Ø6]"}},{"floor_level":"3.3","function_name":"as1","as_target_value":8.12,"combination":{"main_diameter":8,"additional_diameter":12,"total_area":8.17,"deviation":0.61576366,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[8.170см2:Ø8+Ø12]"}},{"floor_level":"3.3","function_name":"as1","as_target_value":8.12,"combination":{"main_diameter":12,"additional_diameter":8,"total_area":8.17,"deviation":0.61576366,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[8.170см2:Ø12+Ø8]"}},{"floor_level":"3.3","function_name":"as2","as_target_value":26.44,"combination":{"main_diameter":14,"additional_diameter":22,"total_area":26.7,"deviation":0.9833574,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[26.700см2:Ø14+Ø22]"}},{"floor_level":"3.3","function_name":"as2","as_target_value":26.44,"combination":{"main_diameter":22,"additional_diameter":14,"total_area":26.7,"deviation":0.9833574,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[26.700см2:Ø22+Ø14]"}},{"floor_level":"3.3","function_name":"as3","as_target_value":7.22,"combination":{"main_diameter":10,"additional_diameter":10,"total_area":7.8500004,"deviation":8.725775,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[7.850см2:Ø10+Ø10]"}},{"floor_level":"3.3","function_name":"as4","as_target_value":30.18,"combination":{"main_diameter":12,"additional_diameter":25,"total_area":30.205,"deviation":0.082838535,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[30.205см2:Ø12+Ø25]"}},{"floor_level":"3.3","function_name":"as4","as_target_value":30.18,"combination":{"main_diameter":25,"additional_diameter":12,"total_area":30.205,"deviation":0.082838535,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[30.205см2:Ø25+Ø12]"}},{"floor_level":"6.6","function_name":"as1","as_target_value":8.48,"combination":{"main_diameter":6,"additional_diameter":14,"total_area":9.115,"deviation":7.488215,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[9.115см2:Ø6+Ø14]"}},{"floor_level":"6.6","function_name":"as1","as_target_value":8.48,"combination":{"main_diameter":14,"additional_diameter":6,"total_area":9.115,"deviation":7.488215,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[9.115см2:Ø14+Ø6]"}},{"floor_level":"6.6","function_name":"as2","as_target_value":27.57,"combination":{"main_diameter":18,"additional_diameter":20,"total_area":28.400002,"deviation":3.0105233,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[28.400см2:Ø18+Ø20]"}},{"floor_level":"6.6","function_name":"as2","as_target_value":27.57,"combination":{"main_diameter":20,"additional_diameter":18,"total_area":28.400002,"deviation":3.0105233,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[28.400см2:Ø20+Ø18]"}},{"floor_level":"6.6","function_name":"as3","as_target_value":7.38,"combination":{"main_diameter":10,"additional_diameter":10,"total_area":7.8500004,"deviation":6.3685656,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[7.850см2:Ø10+Ø10]"}},{"floor_level":"6.6","function_name":"as4","as_target_value":31.58,"combination":{"main_diameter":18,"additional_diameter":22,"total_area":31.7,"deviation":0.37999153,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[31.700см2:Ø18+Ø22]"}},{"floor_level":"6.6","function_name":"as4","as_target_value":31.58,"combination":{"main_diameter":22,"additional_diameter":18,"total_area":31.7,"deviation":0.37999153,"is_min_deviation":true,"is_default_checked":true,"result_scale":"[31.700см2:Ø22+Ø18]"}},{"floor_level":"9.9","function_name":"as1","as_target_value":8.27,"combination":{"main_diameter":6,"additiona
-rst_build.js:733 [STEP 2] Calling create_docx() with 7 floors, 48 combinations
-rst_build.js:733 [STEP 3] create_docx() called with title: 'Документ с цветовой палитрой арматуры'
-rst_build.js:733 [STEP 3] selected_floors: Some([0.0, 3.3, 6.6, 9.9, 13.2, 16.5, 19.5])
-rst_build.js:733 [STEP 3] selected_combinations: Some(48)
-rst_build.js:733 [STEP 3] Calling create_docx_for_selected_floors() with 7 floors
-rst_build.js:733 [STEP 3] ✅ FIXED: Now passing combinations to create_docx_for_selected_floors!
+client:789 [vite] connecting...
+client:912 [vite] connected.
+Three.tsx:84 [Violation] 'requestAnimationFrame' handler took 763ms
+react-konva.js?v=94adfccb:443 [Violation] 'requestAnimationFrame' handler took 528ms
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] ===== ФОРМИРОВАНИЕ EXCEL ДАННЫХ =====
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 0
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 1 combinations for Floor: 0, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 0
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 0, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 0
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 0, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 0
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 2 combinations for Floor: 0, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 3.3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 6 combinations for Floor: 3.3, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 3.3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 3.3, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 3.3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 3.3, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 3.3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 3.3, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 30.800см2:Ø28 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [30.800см2:Ø28 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 6.6
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 4 combinations for Floor: 6.6, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 6.6
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 6.6, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 6.6
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 6.6, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 6.6
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 6.6, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 30.800см2:Ø28 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [30.800см2:Ø28 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 30.800см2:Ø28 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [30.800см2:Ø28 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 9.9
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 4 combinations for Floor: 9.9, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 9.9
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 9.9, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 9.9
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 5 combinations for Floor: 9.9, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 9.9
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 9.9, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 30.800см2:Ø28 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [30.800см2:Ø28 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 30.800см2:Ø28 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 13.2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 6 combinations for Floor: 13.2, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 13.2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 13.2, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 13.2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 13.2, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 13.2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 13.2, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 16.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 4 combinations for Floor: 16.5, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 16.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 16.5, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 16.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 16.5, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 16.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 8 combinations for Floor: 16.5, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 8: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 19.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as1
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 19.5, Function: as1
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 19.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as2
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 7 combinations for Floor: 19.5, Function: as2
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 7: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 19.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as3
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 3 combinations for Floor: 19.5, Function: as3
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] Этаж(отметка): 19.5
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]   AS функция: as4
+rst_build.js:733 🟢 [BACKEND_EXCEL_GENERATION] Processing 6 combinations for Floor: 19.5, Function: as4
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 3: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 10.050см2:Ø16 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 4: Итоговая шкала = [10.050см2:Ø16 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 5: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION]     Комбинация 6: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 📋 [BACKEND_EXCEL_GENERATION] ===== КОНЕЦ ФОРМИРОВАНИЯ EXCEL ДАННЫХ =====
+[Violation] Forced reflow while executing JavaScript took 65ms
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 0, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 6, total_area: 2.83, deviation: 5.204451, is_min_deviation: true, …}additional_diameter: 6deviation: 5.204451is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 2.83[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 0, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 0, total_area: 1.415, deviation: 13.199997, is_min_deviation: true, …}additional_diameter: 0deviation: 13.199997is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм]"total_area: 1.415[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 0, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 0, total_area: 2.515, deviation: 48.816574, is_min_deviation: true, …}
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 0, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 8, total_area: 3.93, deviation: 15.249264, is_min_deviation: true, …}additional_diameter: 8deviation: 15.249264is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]"total_area: 3.93[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 0, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 6, total_area: 3.93, deviation: 15.249264, is_min_deviation: true, …}additional_diameter: 6deviation: 15.249264is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 3.93[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 12, total_area: 8.17, deviation: 0.61576366, is_min_deviation: true, …}additional_diameter: 12deviation: 0.61576366is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 8.17[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 8, total_area: 8.17, deviation: 0.61576366, is_min_deviation: true, …}additional_diameter: 8deviation: 0.61576366is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]"total_area: 8.17[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 22, total_area: 26.7, deviation: 0.9833574, is_min_deviation: true, …}additional_diameter: 22deviation: 0.9833574is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]"total_area: 26.7[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 22, additional_diameter: 14, total_area: 26.7, deviation: 0.9833574, is_min_deviation: true, …}additional_diameter: 14deviation: 0.9833574is_default_checked: trueis_min_deviation: truemain_diameter: 22result_scale: "[19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 26.7[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 10, additional_diameter: 10, total_area: 7.8500004, deviation: 8.725775, is_min_deviation: true, …}additional_diameter: 10deviation: 8.725775is_default_checked: trueis_min_deviation: truemain_diameter: 10result_scale: "[3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]"total_area: 7.8500004[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 25, total_area: 30.205, deviation: 0.082838535, is_min_deviation: true, …}additional_diameter: 25deviation: 0.082838535is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]"total_area: 30.205[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 3.3, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 25, additional_diameter: 12, total_area: 30.205, deviation: 0.082838535, is_min_deviation: true, …}additional_diameter: 12deviation: 0.082838535is_default_checked: trueis_min_deviation: truemain_diameter: 25result_scale: "[24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 30.205[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 14, total_area: 9.115, deviation: 7.488215, is_min_deviation: true, …}additional_diameter: 14deviation: 7.488215is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 9.115[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 6, total_area: 9.115, deviation: 7.488215, is_min_deviation: true, …}additional_diameter: 6deviation: 7.488215is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 9.115[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 18, additional_diameter: 20, total_area: 28.400002, deviation: 3.0105233, is_min_deviation: true, …}additional_diameter: 20deviation: 3.0105233is_default_checked: trueis_min_deviation: truemain_diameter: 18result_scale: "[12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]"total_area: 28.400002[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 20, additional_diameter: 18, total_area: 28.400002, deviation: 3.0105233, is_min_deviation: true, …}additional_diameter: 18deviation: 3.0105233is_default_checked: trueis_min_deviation: truemain_diameter: 20result_scale: "[15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]"total_area: 28.400002[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 10, additional_diameter: 10, total_area: 7.8500004, deviation: 6.3685656, is_min_deviation: true, …}additional_diameter: 10deviation: 6.3685656is_default_checked: trueis_min_deviation: truemain_diameter: 10result_scale: "[3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]"total_area: 7.8500004[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 18, additional_diameter: 22, total_area: 31.7, deviation: 0.37999153, is_min_deviation: true, …}additional_diameter: 22deviation: 0.37999153is_default_checked: trueis_min_deviation: truemain_diameter: 18result_scale: "[12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]"total_area: 31.7[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 6.6, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 22, additional_diameter: 18, total_area: 31.7, deviation: 0.37999153, is_min_deviation: true, …}additional_diameter: 18deviation: 0.37999153is_default_checked: trueis_min_deviation: truemain_diameter: 22result_scale: "[19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]"total_area: 31.7[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 14, total_area: 9.115, deviation: 10.217643, is_min_deviation: true, …}additional_diameter: 14deviation: 10.217643is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 9.115[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 6, total_area: 9.115, deviation: 10.217643, is_min_deviation: true, …}additional_diameter: 6deviation: 10.217643is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 9.115[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 25, total_area: 27.064999, deviation: 0.91348886, is_min_deviation: true, …}additional_diameter: 25deviation: 0.91348886is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]"total_area: 27.064999[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 25, additional_diameter: 8, total_area: 27.064999, deviation: 0.91348886, is_min_deviation: true, …}additional_diameter: 8deviation: 0.91348886is_default_checked: trueis_min_deviation: truemain_diameter: 25result_scale: "[24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]"total_area: 27.064999[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 12, total_area: 7.07, deviation: 0.99999905, is_min_deviation: true, …}additional_diameter: 12deviation: 0.99999905is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 7.07[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 6, total_area: 7.07, deviation: 0.99999905, is_min_deviation: true, …}additional_diameter: 6deviation: 0.99999905is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 7.07[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 9.9, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [15.700см2:Ø20 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 20, additional_diameter: 20, total_area: 31.400002, deviation: 3.1876445, is_min_deviation: true, …}additional_diameter: 20deviation: 3.1876445is_default_checked: trueis_min_deviation: truemain_diameter: 20result_scale: "[15.700см2:Ø20 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]"total_area: 31.400002[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 12, total_area: 8.17, deviation: 0, is_min_deviation: true, …}additional_diameter: 12deviation: 0is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 8.17[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 8, total_area: 8.17, deviation: 0, is_min_deviation: true, …}additional_diameter: 8deviation: 0is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]"total_area: 8.17[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 22, total_area: 26.7, deviation: 1.0598063, is_min_deviation: true, …}additional_diameter: 22deviation: 1.0598063is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]"total_area: 26.7[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 22, additional_diameter: 14, total_area: 26.7, deviation: 1.0598063, is_min_deviation: true, …}additional_diameter: 14deviation: 1.0598063is_default_checked: trueis_min_deviation: truemain_diameter: 22result_scale: "[19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 26.7[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 12, total_area: 7.07, deviation: 6.959152, is_min_deviation: true, …}additional_diameter: 12deviation: 6.959152is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 7.07[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 6, total_area: 7.07, deviation: 6.959152, is_min_deviation: true, …}additional_diameter: 6deviation: 6.959152is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 7.07[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 18, additional_diameter: 20, total_area: 28.400002, deviation: 1.9748688, is_min_deviation: true, …}additional_diameter: 20deviation: 1.9748688is_default_checked: trueis_min_deviation: truemain_diameter: 18result_scale: "[12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]"total_area: 28.400002[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 13.2, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 20, additional_diameter: 18, total_area: 28.400002, deviation: 1.9748688, is_min_deviation: true, …}additional_diameter: 18deviation: 1.9748688is_default_checked: trueis_min_deviation: truemain_diameter: 20result_scale: "[15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]"total_area: 28.400002[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 14, total_area: 9.115, deviation: 11.158538, is_min_deviation: true, …}additional_diameter: 14deviation: 11.158538is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 9.115[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 6, total_area: 9.115, deviation: 11.158538, is_min_deviation: true, …}additional_diameter: 6deviation: 11.158538is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 9.115[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 22, total_area: 24.655, deviation: 3.8980246, is_min_deviation: true, …}additional_diameter: 22deviation: 3.8980246is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]"total_area: 24.655[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 22, additional_diameter: 12, total_area: 24.655, deviation: 3.8980246, is_min_deviation: true, …}additional_diameter: 12deviation: 3.8980246is_default_checked: trueis_min_deviation: truemain_diameter: 22result_scale: "[19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 24.655[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 6, additional_diameter: 12, total_area: 7.07, deviation: 6.3157916, is_min_deviation: true, …}additional_diameter: 12deviation: 6.3157916is_default_checked: trueis_min_deviation: truemain_diameter: 6result_scale: "[1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 7.07[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 6, total_area: 7.07, deviation: 6.3157916, is_min_deviation: true, …}additional_diameter: 6deviation: 6.3157916is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]"total_area: 7.07[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 12, additional_diameter: 22, total_area: 24.655, deviation: 2.8148532, is_min_deviation: true, …}additional_diameter: 22deviation: 2.8148532is_default_checked: trueis_min_deviation: truemain_diameter: 12result_scale: "[5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]"total_area: 24.655[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 16.5, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 22, additional_diameter: 12, total_area: 24.655, deviation: 2.8148532, is_min_deviation: true, …}additional_diameter: 12deviation: 2.8148532is_default_checked: trueis_min_deviation: truemain_diameter: 22result_scale: "[19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]"total_area: 24.655[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 19.5, Function: as1
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 0, total_area: 2.515, deviation: 8.874464, is_min_deviation: true, …}additional_diameter: 0deviation: 8.874464is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм]"total_area: 2.515[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 19.5, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 14, total_area: 10.215, deviation: 4.5547605, is_min_deviation: true, …}additional_diameter: 14deviation: 4.5547605is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 10.215[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 19.5, Function: as2
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 8, total_area: 10.215, deviation: 4.5547605, is_min_deviation: true, …}additional_diameter: 8deviation: 4.5547605is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]"total_area: 10.215[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 19.5, Function: as3
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [2.515см2:Ø8 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 8, additional_diameter: 0, total_area: 2.515, deviation: 22.68293, is_min_deviation: true, …}additional_diameter: 0deviation: 22.68293is_default_checked: trueis_min_deviation: truemain_diameter: 8result_scale: "[2.515см2:Ø8 мм s=200 мм]"total_area: 2.515[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 19.5, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [3.925см2:Ø10 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 10, additional_diameter: 14, total_area: 11.625, deviation: 1.0869622, is_min_deviation: true, …}additional_diameter: 14deviation: 1.0869622is_default_checked: trueis_min_deviation: truemain_diameter: 10result_scale: "[3.925см2:Ø10 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]"total_area: 11.625[[Prototype]]: Object
+DocumentGenerator.tsx:21 🔵 [FRONTEND_SENDING] Floor: 19.5, Function: as4
+DocumentGenerator.tsx:22 🔵 [FRONTEND_SENDING] Sending result_scale: [7.700см2:Ø14 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+DocumentGenerator.tsx:23 🔵 [FRONTEND_SENDING] Item details: {main_diameter: 14, additional_diameter: 10, total_area: 11.625, deviation: 1.0869622, is_min_deviation: true, …}additional_diameter: 10deviation: 1.0869622is_default_checked: trueis_min_deviation: truemain_diameter: 14result_scale: "[7.700см2:Ø14 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]"total_area: 11.625[[Prototype]]: Object
+wasmThanks.ts:72 📤 [FRONTEND_TO_BACKEND] ===== ОТПРАВКА ВЫБРАННЫХ КОМБИНАЦИЙ =====
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 0
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 3.3
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 6.6
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 9.9
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 13.2
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 16.5
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+wasmThanks.ts:85 📤 [FRONTEND_TO_BACKEND] Этаж(отметка): 19.5
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as1
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as2
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as3
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+wasmThanks.ts:88 📤 [FRONTEND_TO_BACKEND]   AS функция: as4
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+wasmThanks.ts:90 📤 [FRONTEND_TO_BACKEND]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+wasmThanks.ts:95 📤 [FRONTEND_TO_BACKEND] ===== КОНЕЦ ОТПРАВКИ ДАННЫХ =====
+rst_build.js:733 🎯 [BACKEND_DRAWING] ===== ДАННЫЕ ПЕРЕД РИСОВАНИЕМ ФИГУР =====
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 13.2
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 0
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 3.3
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 16.5
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 6.6
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [12.700см2:Ø18 мм s=200 мм + 19.000см2:Ø22 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [19.000см2:Ø22 мм s=200 мм + 12.700см2:Ø18 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 19.5
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [3.925см2:Ø10 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 3.925см2:Ø10 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] Этаж(отметка): 9.9
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as3
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 5.655см2:Ø12 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [5.655см2:Ø12 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as1
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [1.415см2:Ø6 мм s=200 мм + 7.700см2:Ø14 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [7.700см2:Ø14 мм s=200 мм + 1.415см2:Ø6 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as4
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [15.700см2:Ø20 мм s=200 мм + 15.700см2:Ø20 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]   AS функция: as2
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 1: Итоговая шкала = [2.515см2:Ø8 мм s=200 мм + 24.550см2:Ø25 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING]     Комбинация 2: Итоговая шкала = [24.550см2:Ø25 мм s=200 мм + 2.515см2:Ø8 мм s=200 мм]
+rst_build.js:733 🎯 [BACKEND_DRAWING] ===== КОНЕЦ ДАННЫХ ПЕРЕД РИСОВАНИЕМ =====
 rst_build.js:733 [STEP 4] create_docx_for_selected_floors() called with 27645 entities, 7 floors
 rst_build.js:733 [STEP 4] selected_floors: [0.0, 3.3, 6.6, 9.9, 13.2, 16.5, 19.5]
 rst_build.js:733 [STEP 4] selected_combinations: Some(48)
-rst_build.js:733 📄 [DOCX-INIT] DOCX structure created: 1.0ms
-rst_build.js:733 ✨ [DOCX-OPT] Global page settings applied
-rst_build.js:733 📋 [SORT-Z] Entities sorted by Z-coordinate: 16.5ms (14 floors)
-rst_build.js:733 [STEP 5] Creating combination map from 48 combinations
-rst_build.js:733 [DEBUG] Combo 0: floor_level='0', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 0: result_scale=Some("[2.830см2:Ø6+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as1 -> [2.830см2:Ø6+Ø6]
-rst_build.js:733 [DEBUG] Combo 1: floor_level='0', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 1: result_scale=Some("[1.415см2:Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as2 -> [1.415см2:Ø6]
-rst_build.js:733 [DEBUG] Combo 2: floor_level='0', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 2: result_scale=Some("[2.515см2:Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as3 -> [2.515см2:Ø8]
-rst_build.js:733 [DEBUG] Combo 3: floor_level='0', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 3: result_scale=Some("[3.930см2:Ø6+Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as4 -> [3.930см2:Ø6+Ø8]
-rst_build.js:733 [DEBUG] Combo 4: floor_level='0', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 4: result_scale=Some("[3.930см2:Ø8+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 0-as4 -> [3.930см2:Ø8+Ø6]
-rst_build.js:733 [DEBUG] Combo 5: floor_level='3.3', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 5: result_scale=Some("[8.170см2:Ø8+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as1 -> [8.170см2:Ø8+Ø12]
-rst_build.js:733 [DEBUG] Combo 6: floor_level='3.3', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 6: result_scale=Some("[8.170см2:Ø12+Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as1 -> [8.170см2:Ø12+Ø8]
-rst_build.js:733 [DEBUG] Combo 7: floor_level='3.3', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 7: result_scale=Some("[26.700см2:Ø14+Ø22]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as2 -> [26.700см2:Ø14+Ø22]
-rst_build.js:733 [DEBUG] Combo 8: floor_level='3.3', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 8: result_scale=Some("[26.700см2:Ø22+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as2 -> [26.700см2:Ø22+Ø14]
-rst_build.js:733 [DEBUG] Combo 9: floor_level='3.3', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 9: result_scale=Some("[7.850см2:Ø10+Ø10]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as3 -> [7.850см2:Ø10+Ø10]
-rst_build.js:733 [DEBUG] Combo 10: floor_level='3.3', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 10: result_scale=Some("[30.205см2:Ø12+Ø25]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as4 -> [30.205см2:Ø12+Ø25]
-rst_build.js:733 [DEBUG] Combo 11: floor_level='3.3', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 11: result_scale=Some("[30.205см2:Ø25+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 3.3-as4 -> [30.205см2:Ø25+Ø12]
-rst_build.js:733 [DEBUG] Combo 12: floor_level='6.6', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 12: result_scale=Some("[9.115см2:Ø6+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as1 -> [9.115см2:Ø6+Ø14]
-rst_build.js:733 [DEBUG] Combo 13: floor_level='6.6', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 13: result_scale=Some("[9.115см2:Ø14+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as1 -> [9.115см2:Ø14+Ø6]
-rst_build.js:733 [DEBUG] Combo 14: floor_level='6.6', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 14: result_scale=Some("[28.400см2:Ø18+Ø20]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as2 -> [28.400см2:Ø18+Ø20]
-rst_build.js:733 [DEBUG] Combo 15: floor_level='6.6', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 15: result_scale=Some("[28.400см2:Ø20+Ø18]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as2 -> [28.400см2:Ø20+Ø18]
-rst_build.js:733 [DEBUG] Combo 16: floor_level='6.6', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 16: result_scale=Some("[7.850см2:Ø10+Ø10]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as3 -> [7.850см2:Ø10+Ø10]
-rst_build.js:733 [DEBUG] Combo 17: floor_level='6.6', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 17: result_scale=Some("[31.700см2:Ø18+Ø22]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as4 -> [31.700см2:Ø18+Ø22]
-rst_build.js:733 [DEBUG] Combo 18: floor_level='6.6', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 18: result_scale=Some("[31.700см2:Ø22+Ø18]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 6.6-as4 -> [31.700см2:Ø22+Ø18]
-rst_build.js:733 [DEBUG] Combo 19: floor_level='9.9', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 19: result_scale=Some("[9.115см2:Ø6+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as1 -> [9.115см2:Ø6+Ø14]
-rst_build.js:733 [DEBUG] Combo 20: floor_level='9.9', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 20: result_scale=Some("[9.115см2:Ø14+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as1 -> [9.115см2:Ø14+Ø6]
-rst_build.js:733 [DEBUG] Combo 21: floor_level='9.9', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 21: result_scale=Some("[27.065см2:Ø8+Ø25]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as2 -> [27.065см2:Ø8+Ø25]
-rst_build.js:733 [DEBUG] Combo 22: floor_level='9.9', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 22: result_scale=Some("[27.065см2:Ø25+Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as2 -> [27.065см2:Ø25+Ø8]
-rst_build.js:733 [DEBUG] Combo 23: floor_level='9.9', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 23: result_scale=Some("[7.070см2:Ø6+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as3 -> [7.070см2:Ø6+Ø12]
-rst_build.js:733 [DEBUG] Combo 24: floor_level='9.9', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 24: result_scale=Some("[7.070см2:Ø12+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as3 -> [7.070см2:Ø12+Ø6]
-rst_build.js:733 [DEBUG] Combo 25: floor_level='9.9', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 25: result_scale=Some("[31.400см2:Ø20+Ø20]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 9.9-as4 -> [31.400см2:Ø20+Ø20]
-rst_build.js:733 [DEBUG] Combo 26: floor_level='13.2', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 26: result_scale=Some("[8.170см2:Ø8+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as1 -> [8.170см2:Ø8+Ø12]
-rst_build.js:733 [DEBUG] Combo 27: floor_level='13.2', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 27: result_scale=Some("[8.170см2:Ø12+Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as1 -> [8.170см2:Ø12+Ø8]
-rst_build.js:733 [DEBUG] Combo 28: floor_level='13.2', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 28: result_scale=Some("[26.700см2:Ø14+Ø22]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as2 -> [26.700см2:Ø14+Ø22]
-rst_build.js:733 [DEBUG] Combo 29: floor_level='13.2', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 29: result_scale=Some("[26.700см2:Ø22+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as2 -> [26.700см2:Ø22+Ø14]
-rst_build.js:733 [DEBUG] Combo 30: floor_level='13.2', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 30: result_scale=Some("[7.070см2:Ø6+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as3 -> [7.070см2:Ø6+Ø12]
-rst_build.js:733 [DEBUG] Combo 31: floor_level='13.2', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 31: result_scale=Some("[7.070см2:Ø12+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as3 -> [7.070см2:Ø12+Ø6]
-rst_build.js:733 [DEBUG] Combo 32: floor_level='13.2', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 32: result_scale=Some("[28.400см2:Ø18+Ø20]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as4 -> [28.400см2:Ø18+Ø20]
-rst_build.js:733 [DEBUG] Combo 33: floor_level='13.2', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 33: result_scale=Some("[28.400см2:Ø20+Ø18]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 13.2-as4 -> [28.400см2:Ø20+Ø18]
-rst_build.js:733 [DEBUG] Combo 34: floor_level='16.5', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 34: result_scale=Some("[9.115см2:Ø6+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as1 -> [9.115см2:Ø6+Ø14]
-rst_build.js:733 [DEBUG] Combo 35: floor_level='16.5', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 35: result_scale=Some("[9.115см2:Ø14+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as1 -> [9.115см2:Ø14+Ø6]
-rst_build.js:733 [DEBUG] Combo 36: floor_level='16.5', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 36: result_scale=Some("[24.655см2:Ø12+Ø22]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as2 -> [24.655см2:Ø12+Ø22]
-rst_build.js:733 [DEBUG] Combo 37: floor_level='16.5', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 37: result_scale=Some("[24.655см2:Ø22+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as2 -> [24.655см2:Ø22+Ø12]
-rst_build.js:733 [DEBUG] Combo 38: floor_level='16.5', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 38: result_scale=Some("[7.070см2:Ø6+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as3 -> [7.070см2:Ø6+Ø12]
-rst_build.js:733 [DEBUG] Combo 39: floor_level='16.5', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 39: result_scale=Some("[7.070см2:Ø12+Ø6]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as3 -> [7.070см2:Ø12+Ø6]
-rst_build.js:733 [DEBUG] Combo 40: floor_level='16.5', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 40: result_scale=Some("[24.655см2:Ø12+Ø22]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as4 -> [24.655см2:Ø12+Ø22]
-rst_build.js:733 [DEBUG] Combo 41: floor_level='16.5', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 41: result_scale=Some("[24.655см2:Ø22+Ø12]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 16.5-as4 -> [24.655см2:Ø22+Ø12]
-rst_build.js:733 [DEBUG] Combo 42: floor_level='19.5', function_name='as1'
-rst_build.js:733 [DEBUG] Combo 42: result_scale=Some("[2.515см2:Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as1 -> [2.515см2:Ø8]
-rst_build.js:733 [DEBUG] Combo 43: floor_level='19.5', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 43: result_scale=Some("[10.215см2:Ø8+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as2 -> [10.215см2:Ø8+Ø14]
-rst_build.js:733 [DEBUG] Combo 44: floor_level='19.5', function_name='as2'
-rst_build.js:733 [DEBUG] Combo 44: result_scale=Some("[10.215см2:Ø14+Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as2 -> [10.215см2:Ø14+Ø8]
-rst_build.js:733 [DEBUG] Combo 45: floor_level='19.5', function_name='as3'
-rst_build.js:733 [DEBUG] Combo 45: result_scale=Some("[2.515см2:Ø8]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as3 -> [2.515см2:Ø8]
-rst_build.js:733 [DEBUG] Combo 46: floor_level='19.5', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 46: result_scale=Some("[11.625см2:Ø10+Ø14]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as4 -> [11.625см2:Ø10+Ø14]
-rst_build.js:733 [DEBUG] Combo 47: floor_level='19.5', function_name='as4'
-rst_build.js:733 [DEBUG] Combo 47: result_scale=Some("[11.625см2:Ø14+Ø10]")
-rst_build.js:733 [STEP 5] ✅ Added mapping: 19.5-as4 -> [11.625см2:Ø14+Ø10]
-rst_build.js:733 [STEP 5] Final combination_map size: 28
-rst_build.js:733 [STEP 6] Processing 7 selected floors
-rst_build.js:733 [STEP 6] Processing floor 1/7: 0
-rst_build.js:733 [STEP 6] Found 2615 entities for floor 0
-rst_build.js:733 [DEBUG] Looking for key '0-as1': Some("[2.830см2:Ø6+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '0-as2': Some("[1.415см2:Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '0-as3': Some("[2.515см2:Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '0-as4': Some("[3.930см2:Ø8+Ø6]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 0: [Some("[2.830см2:Ø6+Ø6]"), Some("[1.415см2:Ø6]"), Some("[2.515см2:Ø8]"), Some("[3.930см2:Ø8+Ø6]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 0
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 2615 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=521.5ms, Polygons=169.0ms (1859 objects), PNG=303.9ms (21.4MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=429.6ms, Polygons=137.3ms (1859 objects), PNG=265.5ms (21.4MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=427.8ms, Polygons=137.0ms (1859 objects), PNG=266.6ms (21.4MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=427.7ms, Polygons=136.1ms (1859 objects), PNG=264.2ms (21.4MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2131.5ms, Avg=532.9ms/image, Size=85.8MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 0 images generated: 2131.8ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 0 in 2696.8ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 0 added to DOCX: 2697.3ms (4 images) [PREP: 2696.8ms + BATCH: 0.0ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 0 processing complete: 4830.1ms (Images: 2131.8ms, DOCX: 2697.3ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 0 completed at timestamp: 40610.1ms
-rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 3.3 processing
-rst_build.js:733 [STEP 6] Processing floor 2/7: 3.3
-rst_build.js:733 [STEP 6] Found 3353 entities for floor 3.3
-rst_build.js:733 [DEBUG] Looking for key '3.3-as1': Some("[8.170см2:Ø12+Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '3.3-as2': Some("[26.700см2:Ø22+Ø14]")
-rst_build.js:733 [DEBUG] Looking for key '3.3-as3': Some("[7.850см2:Ø10+Ø10]")
-rst_build.js:733 [DEBUG] Looking for key '3.3-as4': Some("[30.205см2:Ø25+Ø12]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 3.3: [Some("[8.170см2:Ø12+Ø8]"), Some("[26.700см2:Ø22+Ø14]"), Some("[7.850см2:Ø10+Ø10]"), Some("[30.205см2:Ø25+Ø12]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 3.3
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3353 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=507.5ms, Polygons=229.5ms (2431 objects), PNG=252.1ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=507.2ms, Polygons=226.2ms (2431 objects), PNG=255.6ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=506.7ms, Polygons=226.6ms (2431 objects), PNG=255.2ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=509.7ms, Polygons=229.1ms (2431 objects), PNG=254.6ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2032.4ms, Avg=508.1ms/image, Size=95.4MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 3.3 images generated: 2032.5ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 3.3 in 2813.3ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 3.3 added to DOCX: 2813.6ms (4 images) [PREP: 2813.3ms + BATCH: 0.0ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 3.3 processing complete: 4847.8ms (Images: 2032.5ms, DOCX: 2813.6ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 3.3 completed at timestamp: 45458.1ms
-rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 6.6 processing
-rst_build.js:733 [STEP 6] Processing floor 3/7: 6.6
-rst_build.js:733 [STEP 6] Found 3347 entities for floor 6.6
-rst_build.js:733 [DEBUG] Looking for key '6.6-as1': Some("[9.115см2:Ø14+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '6.6-as2': Some("[28.400см2:Ø20+Ø18]")
-rst_build.js:733 [DEBUG] Looking for key '6.6-as3': Some("[7.850см2:Ø10+Ø10]")
-rst_build.js:733 [DEBUG] Looking for key '6.6-as4': Some("[31.700см2:Ø22+Ø18]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 6.6: [Some("[9.115см2:Ø14+Ø6]"), Some("[28.400см2:Ø20+Ø18]"), Some("[7.850см2:Ø10+Ø10]"), Some("[31.700см2:Ø22+Ø18]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 6.6
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=507.7ms, Polygons=231.5ms (2431 objects), PNG=250.4ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=496.5ms, Polygons=225.6ms (2431 objects), PNG=246.6ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=505.3ms, Polygons=233.1ms (2431 objects), PNG=247.4ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=500.7ms, Polygons=228.0ms (2431 objects), PNG=247.5ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2011.3ms, Avg=502.8ms/image, Size=95.5MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 6.6 images generated: 2011.4ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 6.6 in 2829.7ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 6.6 added to DOCX: 2830.0ms (4 images) [PREP: 2829.7ms + BATCH: 0.0ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 6.6 processing complete: 4842.6ms (Images: 2011.4ms, DOCX: 2830.0ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 6.6 completed at timestamp: 50300.8ms
-rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 9.9 processing
-rst_build.js:733 [STEP 6] Processing floor 4/7: 9.9
-rst_build.js:733 [STEP 6] Found 3347 entities for floor 9.9
-rst_build.js:733 [DEBUG] Looking for key '9.9-as1': Some("[9.115см2:Ø14+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '9.9-as2': Some("[27.065см2:Ø25+Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '9.9-as3': Some("[7.070см2:Ø12+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '9.9-as4': Some("[31.400см2:Ø20+Ø20]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 9.9: [Some("[9.115см2:Ø14+Ø6]"), Some("[27.065см2:Ø25+Ø8]"), Some("[7.070см2:Ø12+Ø6]"), Some("[31.400см2:Ø20+Ø20]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 9.9
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=498.5ms, Polygons=227.2ms (2431 objects), PNG=245.3ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=508.1ms, Polygons=229.8ms (2431 objects), PNG=252.0ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=505.0ms, Polygons=231.6ms (2431 objects), PNG=248.9ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=502.1ms, Polygons=229.2ms (2431 objects), PNG=247.7ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2014.9ms, Avg=503.7ms/image, Size=95.5MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 9.9 images generated: 2015.0ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 9.9 in 2834.3ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 9.9 added to DOCX: 2834.6ms (4 images) [PREP: 2834.3ms + BATCH: 0.0ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 9.9 processing complete: 4851.3ms (Images: 2015.0ms, DOCX: 2834.6ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 9.9 completed at timestamp: 55152.3ms
-rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 13.2 processing
-rst_build.js:733 [STEP 6] Processing floor 5/7: 13.2
-rst_build.js:733 [STEP 6] Found 3347 entities for floor 13.2
-rst_build.js:733 [DEBUG] Looking for key '13.2-as1': Some("[8.170см2:Ø12+Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '13.2-as2': Some("[26.700см2:Ø22+Ø14]")
-rst_build.js:733 [DEBUG] Looking for key '13.2-as3': Some("[7.070см2:Ø12+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '13.2-as4': Some("[28.400см2:Ø20+Ø18]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 13.2: [Some("[8.170см2:Ø12+Ø8]"), Some("[26.700см2:Ø22+Ø14]"), Some("[7.070см2:Ø12+Ø6]"), Some("[28.400см2:Ø20+Ø18]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 13.2
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3347 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=497.4ms, Polygons=226.5ms (2431 objects), PNG=244.9ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=501.4ms, Polygons=226.1ms (2431 objects), PNG=250.1ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=497.0ms, Polygons=226.5ms (2431 objects), PNG=244.5ms (23.9MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=532.1ms, Polygons=227.8ms (2431 objects), PNG=278.2ms (23.9MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2112.2ms, Avg=528.1ms/image, Size=95.4MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 13.2 images generated: 2112.7ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 13.2 in 2838.2ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.1ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 13.2 added to DOCX: 2838.8ms (4 images) [PREP: 2838.2ms + BATCH: 0.1ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 13.2 processing complete: 4953.0ms (Images: 2112.7ms, DOCX: 2838.8ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 13.2 completed at timestamp: 60105.5ms
-rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 16.5 processing
-rst_build.js:733 [STEP 6] Processing floor 6/7: 16.5
-rst_build.js:733 [STEP 6] Found 3408 entities for floor 16.5
-rst_build.js:733 [DEBUG] Looking for key '16.5-as1': Some("[9.115см2:Ø14+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '16.5-as2': Some("[24.655см2:Ø22+Ø12]")
-rst_build.js:733 [DEBUG] Looking for key '16.5-as3': Some("[7.070см2:Ø12+Ø6]")
-rst_build.js:733 [DEBUG] Looking for key '16.5-as4': Some("[24.655см2:Ø22+Ø12]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 16.5: [Some("[9.115см2:Ø14+Ø6]"), Some("[24.655см2:Ø22+Ø12]"), Some("[7.070см2:Ø12+Ø6]"), Some("[24.655см2:Ø22+Ø12]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 16.5
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3408 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=513.1ms, Polygons=232.4ms (2466 objects), PNG=255.8ms (24.0MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=506.9ms, Polygons=231.4ms (2466 objects), PNG=251.1ms (24.0MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=540.4ms, Polygons=240.3ms (2466 objects), PNG=275.1ms (24.0MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=539.5ms, Polygons=228.4ms (2466 objects), PNG=286.7ms (24.0MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2203.4ms, Avg=550.8ms/image, Size=95.9MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 16.5 images generated: 2203.6ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 16.5 in 2848.4ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.0ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 16.5 added to DOCX: 2848.7ms (4 images) [PREP: 2848.4ms + BATCH: 0.0ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 16.5 processing complete: 5058.2ms (Images: 2203.6ms, DOCX: 2848.7ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 16.5 completed at timestamp: 65164.1ms
-rst_build.js:733 ⏱️ [GAP] Time since last floor ended: Starting floor 19.5 processing
-rst_build.js:733 [STEP 6] Processing floor 7/7: 19.5
-rst_build.js:733 [STEP 6] Found 3464 entities for floor 19.5
-rst_build.js:733 [DEBUG] Looking for key '19.5-as1': Some("[2.515см2:Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '19.5-as2': Some("[10.215см2:Ø14+Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '19.5-as3': Some("[2.515см2:Ø8]")
-rst_build.js:733 [DEBUG] Looking for key '19.5-as4': Some("[11.625см2:Ø14+Ø10]")
-rst_build.js:733 [STEP 7] Created result_scales for floor 19.5: [Some("[2.515см2:Ø8]"), Some("[10.215см2:Ø14+Ø8]"), Some("[2.515см2:Ø8]"), Some("[11.625см2:Ø14+Ø10]")]
-rst_build.js:733 [DEBUG] Available keys in map: ["0-as3", "6.6-as2", "9.9-as3", "3.3-as1", "16.5-as3", "3.3-as3", "0-as1", "6.6-as4", "9.9-as4", "13.2-as4", "6.6-as1", "3.3-as4", "16.5-as2", "0-as2", "16.5-as4", "0-as4", "19.5-as2", "13.2-as3", "16.5-as1", "3.3-as2", "6.6-as3", "9.9-as2", "19.5-as3", "19.5-as1", "19.5-as4", "13.2-as1", "13.2-as2", "9.9-as1"]
-rst_build.js:733 [STEP 8] Calling draw_all_images_with_colors(Some(result_scales)) for floor 19.5
-rst_build.js:733 [STEP 8] ✅ FIXED: Now passing result_scales instead of None!
-rst_build.js:733 🚀 [DOCX-GEN] Starting generation of 4 images for 3464 entities
-rst_build.js:733 📊 PERFORMANCE [as1]: Total=504.8ms, Polygons=232.3ms (2516 objects), PNG=247.8ms (24.3MB)
-rst_build.js:733 📊 PERFORMANCE [as2]: Total=512.5ms, Polygons=231.0ms (2516 objects), PNG=254.1ms (24.3MB)
-rst_build.js:733 📊 PERFORMANCE [as3]: Total=506.5ms, Polygons=223.5ms (2516 objects), PNG=258.5ms (24.2MB)
-rst_build.js:733 📊 PERFORMANCE [as4]: Total=529.9ms, Polygons=227.4ms (2516 objects), PNG=273.9ms (24.3MB)
-rst_build.js:733 ✅ [DOCX-GEN] All 4 images completed: Total=2055.0ms, Avg=513.8ms/image, Size=97.0MB
-rst_build.js:733 🖼️ [FLOOR-IMAGES] Floor 19.5 images generated: 2055.1ms (4 images)
-rst_build.js:733 [STEP 8] draw_all_images_with_colors() returned 4 images
-rst_build.js:733 🚀 [DOCX-PREP] Prepared 4 paragraphs for floor 19.5 in 2812.3ms
-rst_build.js:733 ✨ [DOCX-BATCH] Added 4 images to doc in 0.1ms
-rst_build.js:733 📄 [FLOOR-DOCX] Floor 19.5 added to DOCX: 2812.6ms (4 images) [PREP: 2812.3ms + BATCH: 0.1ms]
-rst_build.js:733 🏁 [FLOOR-TOTAL] Floor 19.5 processing complete: 4868.7ms (Images: 2055.1ms, DOCX: 2812.6ms)
-rst_build.js:733 ⏹️ [FLOOR-END] Floor 19.5 completed at timestamp: 70033.2ms
-rst_build.js:733 ✅ [DOCX-BUILD] Document built successfully: 94.4ms, Size: 59.0MB
-rst_build.js:733 🏁 [DOCX-TOTAL] Total DOCX generation time: 34380.8ms
-rst_build.js:733 [STEP 2] create_docx() returned 61834173 bytes
