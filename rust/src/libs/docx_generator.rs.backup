@@ -139,7 +139,7 @@ pub async fn create_enhanced_docx(sli_data: &str, txt_data: &str, xlsx_data: &[u
     // Возвращаем готовый документ
     match generator.build() {
         Ok(doc_bytes) => doc_bytes,
-        Err(e) => {
+        Err(_e) => {
     
             Vec::new()
         }

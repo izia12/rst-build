@@ -4,9 +4,7 @@ use ordered_float::OrderedFloat;
 use crate::libs::drawItem::DrawItemZ;
 use crate::libs::parse::EntityWithXlsx;
 use crate::libs::generate_documents::performance::{
-    PerformanceMonitor, PerformanceConfig, 
-    log_performance_metrics, get_optimization_recommendations
-};
+    PerformanceMonitor, PerformanceConfig};
 
 #[derive(serde::Deserialize, Debug)]
 pub struct SelectedCombination {
@@ -61,14 +59,9 @@ pub async fn create_docx_document_optimized(
     title: &str,
     config: PerformanceConfig
 ) -> Vec<u8> {
-    // 🔍 PERFORMANCE: Засекаем общее время создания DOCX
-    let docx_start = web_sys::window().unwrap().performance().unwrap().now();
-    
+    // 🔍 PERFORMANCE: Засекаем общее время создания DOCX    
     let mut monitor = PerformanceMonitor::new(config);
-    let elements_count = entities.len();
-    
 
-    
     let mut doc = Docx::new()
         // Устанавливаем минимальные отступы страницы для максимального использования пространства
         .page_margin(docx_rs::PageMargin {
@@ -92,9 +85,7 @@ pub async fn create_docx_document_optimized(
     // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
     use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
     
-    monitor.start_image_generation();
-    let mut total_images = 0;
-    
+    monitor.start_image_generation();    
     for (floor_index, (key, item_z)) in hash.iter().enumerate() {
         web_sys::console::log_1(&format!("📊 Processing floor {} of {} (height: {})", 
             floor_index + 1, floors_count, key.to_string()).into());
@@ -102,7 +93,7 @@ pub async fn create_docx_document_optimized(
         // Используем GPU-оптимизированную батчевую генерацию изображений
         let images = item_z.draw_all_images_with_colors(None).await;
         
-        total_images += images.len();
+
         
         // Добавляем заголовок этажа
         let run = Run::new()
@@ -112,7 +103,7 @@ pub async fn create_docx_document_optimized(
         doc = doc.add_paragraph(Paragraph::new().add_run(run));
         
         // Добавляем изображения в документ
-        for (img_index, img) in images.iter().enumerate() {
+        for (_, img) in images.iter().enumerate() {
 
                 
             doc = doc
@@ -129,7 +120,6 @@ pub async fn create_docx_document_optimized(
         }
     }
     
-    let image_time = monitor.end_image_generation();
     monitor.start_docx_creation();
     
     // Создаем буфер и записываем документ
@@ -138,14 +128,6 @@ pub async fn create_docx_document_optimized(
         Ok(_) => web_sys::console::log_1(&"✅ [DOCX-CREATE] DOCX document built successfully".into()),
         Err(e) => web_sys::console::log_1(&format!("❌ [DOCX-CREATE] Error creating document: {}", e).into()),
     }
-    
-    let docx_time = monitor.end_docx_creation();
-    
-    // 🔍 PERFORMANCE: Финальные метрики DOCX создания
-    let total_docx_time = web_sys::window().unwrap().performance().unwrap().now() - docx_start;
-    let buffer_size = buffer.get_ref().len();
-    
-    let metrics = monitor.finish(image_time, docx_time, elements_count, total_images);
     
     buffer.into_inner()
 }
@@ -177,7 +159,6 @@ pub async fn create_docx_document_legacy(
     // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
     use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS, DOCX_PAGE_WIDTH_TWIPS, DOCX_PAGE_HEIGHT_TWIPS};
     
-    let monitor = PerformanceMonitor::new(PerformanceConfig::default());
     
     for (key, item_z) in hash {
         let imgs = item_z.draw_all_images_with_colors(None).await;
@@ -254,10 +235,7 @@ pub async fn create_docx_for_selected_floors(
             .collect()
     } else {
         Vec::new()
-    };
-    
-    web_sys::console::log_1(&format!("Filtered combinations count: {}", filtered_combinations.len()).into());
-    
+    };    
     // Тройной цикл: этажи × as_функции × комбинации
     for selected_floor in selected_floors.iter() {
         let z_key = OrderedFloat(*selected_floor);

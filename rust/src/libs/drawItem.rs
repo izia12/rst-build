@@ -15,31 +15,17 @@ fn generate_color_palette(scale: &str) -> Vec<Rgb<u8>> {
 	let ranges = parse_result_scale_ranges(scale);
 	let num_colors = if ranges.is_empty() { 1 } else { ranges.len() };
 	
-
+	// ОТЛАДКА: Логируем информацию
+	web_sys::console::log_1(&format!("🎨 generate_color_palette: scale='{}', ranges={:?}, num_colors={}", scale, ranges, num_colors).into());
 	
-	// Базовые цвета для интерполяции
-    let base_colors = vec![
-        Rgb([253, 255, 112]), // #fdff70 - светло-желтый
-        Rgb([249, 219, 67]),  // #f9db43 - желтый
-        Rgb([246, 167, 37]),  // #f6a725 - оранжево-желтый
-        Rgb([254, 94, 9]),    // #fe5e09 - оранжевый
-        Rgb([201, 37, 9]),    // #c92509 - темно-оранжевый
-        Rgb([123, 5, 1]),     // #7b0501 - бордовый
-    ];
+	// ИСПОЛЬЗУЕМ НОВУЮ РАСШИРЕННУЮ ПАЛИТРУ из color_palette.rs
+	use crate::libs::generate_documents::color_palette::generate_color_palette as new_generate_color_palette;
+	let palette = new_generate_color_palette(num_colors);
 	
-	// Если нужно меньше цветов, берем первые
-	if num_colors <= base_colors.len() {
-		base_colors.into_iter().take(num_colors).collect()
-	} else {
-		// Если нужно больше цветов, интерполируем
-		let mut result = Vec::new();
-		for i in 0..num_colors {
-			let ratio = i as f32 / (num_colors - 1).max(1) as f32;
-			let index = (ratio * (base_colors.len() - 1) as f32) as usize;
-			result.push(base_colors[index.min(base_colors.len() - 1)]);
-		}
-		result
-	}
+	// ОТЛАДКА: Логируем результат
+	web_sys::console::log_1(&format!("🎨 Generated palette with {} colors: {:?}", palette.len(), palette).into());
+	
+	palette
 }
 
 // Функция получения цвета для значения на основе диапазонов result_scale
@@ -657,11 +643,6 @@ impl DrawItemZ {
         
         // 🔍 PERFORMANCE: Финальные метрики по всем изображениям
         let total_time = web_sys::window().unwrap().performance().unwrap().now() - total_start;
-        let avg_per_image = total_time / 4.0;
-        let total_size: usize = results.iter().map(|r| r.len()).sum();
-        
-
-        
         results
 	}
 
@@ -671,8 +652,7 @@ impl DrawItemZ {
     }
     
     pub async fn draw_image_with_floor(&self, field: &str, result_scale: Option<&str>, floor_level: f32) -> Vec<u8> {
-        // 🔍 PERFORMANCE: Начало генерации изображения
-        let start_time = web_sys::window().unwrap().performance().unwrap().now();
+
         
         // Используем дефолтные настройки для простоты
         let dimensions = self.calculate_image_bounds_with_config(&PerformanceConfig::default());
@@ -708,12 +688,6 @@ impl DrawItemZ {
 		let offset_y = margin_pixels + (available_height_pixels - scaled_content_height) / 2.0;
 		
 		let font_size = 25.0;
-		
-		// === STEP 10: ОПТИМИЗИРОВАННЫЙ РЕНДЕРИНГ ПОЛИГОНОВ ===
-		let mut rendered_count = 0;
-		
-		// 🔍 PERFORMANCE: Начало рендеринга полигонов
-		let polygon_start = web_sys::window().unwrap().performance().unwrap().now();
 		
 		// ОПТИМИЗАЦИЯ 1: Предварительно аллоцируем буферы для переиспользования
 		let mut points_buffer = Vec::with_capacity(4);
@@ -782,7 +756,6 @@ impl DrawItemZ {
 				
 				// Рисуем полигон
 				draw_polygon_mut(&mut img, &quad_points_buffer, fill_color);
-				rendered_count += 1;
 				
 				// ОПТИМИЗАЦИЯ 5: Объединенный цикл контуров без отдельного for
 				let black_color = Rgb([0, 0, 0]);
@@ -844,24 +817,13 @@ impl DrawItemZ {
             }
         }
         
-        // 🔍 PERFORMANCE: Измеряем время полигонов
-        let polygon_time = web_sys::window().unwrap().performance().unwrap().now() - polygon_start;
-        
-        // 🔍 PERFORMANCE: Начало PNG кодирования
-        let png_start = web_sys::window().unwrap().performance().unwrap().now();
         
         // ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения
         let mut buffer = Vec::new();
         let cursor = Cursor::new(&mut buffer);
         let encoder = PngEncoder::new_with_quality(cursor, CompressionType::Fast, image::codecs::png::FilterType::NoFilter);
         combined_img.write_with_encoder(encoder).unwrap();
-        
-        // 🔍 PERFORMANCE: Финальные метрики
-        let png_time = web_sys::window().unwrap().performance().unwrap().now() - png_start;
-        let total_time = web_sys::window().unwrap().performance().unwrap().now() - start_time;
-        
 
-        
         buffer
     }
 
@@ -920,8 +882,13 @@ impl DrawItemZ {
                 // Получаем описания диаметров из квадратных скобок
                 let diameter_descriptions = Self::parse_diameter_descriptions(scale);
                 
+                // НОВАЯ ЛОГИКА: Рисуем "0" в начале, затем площади между прямоугольниками
+                // Рисуем "0" в самом начале
+                draw_text_mut(&mut legend_img, title_color, 20, current_y, area_scale, &CACHED_FONT, "0");
+                
+                // Рисуем площади между прямоугольниками и описания диаметров под прямоугольниками
                 for (i, _range) in scale_ranges.iter().enumerate() {
-                    let x = 20 + (i as u32 * rect_width);
+                    let rect_x = 20 + (i as u32 * rect_width);
                     
                     if let Some(description) = diameter_descriptions.get(i) {
                         // Парсим площадь и описание диаметров из строки вида "24.550см2:Ø25 мм s=200 мм"
@@ -932,20 +899,20 @@ impl DrawItemZ {
                             // Извлекаем только число площади
                             let area_text = area_part.replace("см2", "");
                             
-                            // Рисуем площадь в начале прямоугольника
-                            draw_text_mut(&mut legend_img, title_color, x as i32, current_y, area_scale, &CACHED_FONT, &area_text);
+                            // Рисуем площадь МЕЖДУ прямоугольниками (в конце текущего прямоугольника)
+                            let area_x = rect_x as i32 + rect_width as i32;
+                            draw_text_mut(&mut legend_img, title_color, area_x, current_y, area_scale, &CACHED_FONT, &area_text);
                             
-                            // Рисуем описание диаметров ниже и немного правее
-                            let diameter_x = x as i32 + 10; // Отступ вправо
+                            // Рисуем описание диаметров ПОД прямоугольником
+                            let diameter_x = rect_x as i32 + 10; // Отступ вправо от начала прямоугольника
                             let diameter_y = current_y + 25; // Отступ вниз
                             draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, diameter_part);
                         } else {
-                            // Если нет двоеточия, выводим как есть
-                            draw_text_mut(&mut legend_img, title_color, x as i32, current_y, area_scale, &CACHED_FONT, description);
+                            // Если нет двоеточия, выводим как есть под прямоугольником
+                            let diameter_x = rect_x as i32 + 10;
+                            let diameter_y = current_y + 25;
+                            draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, description);
                         }
-                    } else {
-                        let range_text = format!("Диапазон {}", i + 1);
-                        draw_text_mut(&mut legend_img, title_color, x as i32, current_y, area_scale, &CACHED_FONT, &range_text);
                     }
                 }
                 
@@ -964,10 +931,10 @@ impl DrawItemZ {
           let units_text = "Единицы измерения см2";
           draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
           
-          // Добавляем многоколоночный текст с описанием диаметров на том же уровне
-          if let Some(scale) = result_scale {
-              Self::draw_diameter_descriptions(&mut legend_img, scale, 350, current_y-30, metadata_scale, title_color);
-          }
+          // УБРАНО: Многоколоночный текст с описанием диаметров (дублирует информацию под прямоугольниками)
+          // if let Some(scale) = result_scale {
+          //     Self::draw_diameter_descriptions(&mut legend_img, scale, 350, current_y-30, metadata_scale, title_color);
+          // }
           
           current_y += 60; // Увеличиваем отступ чтобы учесть многоколоночный текст (2 строки * 30px)
           

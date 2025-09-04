@@ -1,14 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export function get_horizontal_elements_object_js(): any;
-/**
- * Создает DOCX документ с изображениями на основе данных
- */
-export function create_enhanced_docx(sli_data: string, txt_data: string, xlsx_data: Uint8Array): Promise<Uint8Array>;
-/**
- * Создает простой DOCX документ с пользовательским содержимым
- */
-export function create_custom_docx(title: string, content: string): Uint8Array;
 export function create_custom_sortament_report(available_diameters: Uint32Array, floors_data_json: string): Uint8Array;
 export function log_data(x: number, y: number): void;
 export function str_log_data(str: string): void;
@@ -36,8 +28,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly get_horizontal_elements_object_js: () => any;
-  readonly create_enhanced_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
-  readonly create_custom_docx: (a: number, b: number, c: number, d: number) => [number, number];
   readonly create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
   readonly log_data: (a: number, b: number) => void;
   readonly str_log_data: (a: number, b: number) => void;
@@ -67,8 +57,8 @@ export interface InitOutput {
   readonly __wbindgen_export_5: WebAssembly.Table;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __externref_table_dealloc: (a: number) => void;
-  readonly closure209_externref_shim: (a: number, b: number, c: any) => void;
-  readonly closure1020_externref_shim: (a: number, b: number, c: any, d: any) => void;
+  readonly closure210_externref_shim: (a: number, b: number, c: any) => void;
+  readonly closure1021_externref_shim: (a: number, b: number, c: any, d: any) => void;
   readonly __wbindgen_start: () => void;
 }
 

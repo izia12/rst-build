@@ -2,8 +2,6 @@
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
 export const get_horizontal_elements_object_js: () => any;
-export const create_enhanced_docx: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
-export const create_custom_docx: (a: number, b: number, c: number, d: number) => [number, number];
 export const create_custom_sortament_report: (a: number, b: number, c: number, d: number) => [number, number, number, number];
 export const log_data: (a: number, b: number) => void;
 export const str_log_data: (a: number, b: number) => void;
@@ -33,6 +31,6 @@ export const __wbindgen_export_4: WebAssembly.Table;
 export const __wbindgen_export_5: WebAssembly.Table;
 export const __wbindgen_free: (a: number, b: number, c: number) => void;
 export const __externref_table_dealloc: (a: number) => void;
-export const closure209_externref_shim: (a: number, b: number, c: any) => void;
-export const closure1020_externref_shim: (a: number, b: number, c: any, d: any) => void;
+export const closure210_externref_shim: (a: number, b: number, c: any) => void;
+export const closure1021_externref_shim: (a: number, b: number, c: any, d: any) => void;
 export const __wbindgen_start: () => void;

@@ -74,8 +74,18 @@ pub fn convert_data_to_js_order_byz() -> String {
 
 #[wasm_bindgen]
 pub async fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
-    // Используем CPU-based генерацию документов
-    crate::libs::docx_generator::create_enhanced_docx(sli_data, txt_data, xlsx_data).await
+    // Используем новый генератор документов
+    let entities = GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .cloned()
+            .expect("Data not parsed! Call parse_and_store_data first!")
+    });
+    
+    process_files(sli_data, txt_data, &xlsx_data);
+    
+    // Используем новый генератор из generate_documents
+    libs::generate_documents::docx_generator::create_docx(entities, None, None, "Документ").await
 }
 
 #[wasm_bindgen]
@@ -149,7 +159,7 @@ pub fn new_draw_polygon(data: Vec<EntityWithXlsx>) -> Vec<u8> {
     img.write_to(&mut Cursor::new(&mut buffer), ImageOutputFormat::Png).unwrap();
     buffer
 }
-// Функция sort_by_z перенесена в модуль libs::docx_generator
+// Функция sort_by_z находится в модуле libs::generate_documents::docx_generator
 
 fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> {
     let mut map: HashMap<OrderedFloat<f32>, Vec<EntityWithXlsx>> = HashMap::new();
@@ -336,7 +346,7 @@ pub fn get_table_data_for_frontend(
 pub async fn create_docx_with_selected_combinations(selected_combinations_json: &str) -> Result<Vec<u8>, JsValue> {
     use serde_json;
     
-    use crate::libs::generate_documents::docx_generator::{SelectedCombination, CombinationItem};
+    use crate::libs::generate_documents::docx_generator::{SelectedCombination};
     
     // === STEP 1: WASM ENTRY POINT ===
     #[derive(serde::Deserialize)]

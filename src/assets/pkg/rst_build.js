@@ -210,47 +210,6 @@ export function get_horizontal_elements_object_js() {
     return ret;
 }
 
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1, 1) >>> 0;
-    getUint8ArrayMemory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
-}
-/**
- * Создает DOCX документ с изображениями на основе данных
- * @param {string} sli_data
- * @param {string} txt_data
- * @param {Uint8Array} xlsx_data
- * @returns {Promise<Uint8Array>}
- */
-export function create_enhanced_docx(sli_data, txt_data, xlsx_data) {
-    const ptr0 = passStringToWasm0(sli_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passStringToWasm0(txt_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ptr2 = passArray8ToWasm0(xlsx_data, wasm.__wbindgen_malloc);
-    const len2 = WASM_VECTOR_LEN;
-    const ret = wasm.create_enhanced_docx(ptr0, len0, ptr1, len1, ptr2, len2);
-    return ret;
-}
-
-/**
- * Создает простой DOCX документ с пользовательским содержимым
- * @param {string} title
- * @param {string} content
- * @returns {Uint8Array}
- */
-export function create_custom_docx(title, content) {
-    const ptr0 = passStringToWasm0(title, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.create_custom_docx(ptr0, len0, ptr1, len1);
-    var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
-    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    return v3;
-}
-
 let cachedUint32ArrayMemory0 = null;
 
 function getUint32ArrayMemory0() {
@@ -308,6 +267,12 @@ export function str_log_data(str) {
     wasm.str_log_data(ptr0, len0);
 }
 
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
 /**
  * @param {string} sli_data
  * @param {string} txt_data
@@ -579,11 +544,11 @@ export function get_canvas_statistics_wasm() {
 }
 
 function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure209_externref_shim(arg0, arg1, arg2);
+    wasm.closure210_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_153(arg0, arg1, arg2, arg3) {
-    wasm.closure1020_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_151(arg0, arg1, arg2, arg3) {
+    wasm.closure1021_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_GpuPowerPreference = ["low-power", "high-performance"];
@@ -747,7 +712,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_153(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_151(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -891,8 +856,8 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper1289 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 210, __wbg_adapter_40);
+    imports.wbg.__wbindgen_closure_wrapper1247 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 211, __wbg_adapter_40);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
