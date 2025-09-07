@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"ms-vscode.vscode-typescript-next",
+		"bradlc.vscode-tailwindcss",
+		"esbenp.prettier-vscode",
+		"ms-vscode.powershell",
+		"rust-lang.rust-analyzer"
+	],
+		"unwantedRecommendations": []
+}

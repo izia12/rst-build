@@ -1,21 +1,21 @@
 pub mod libs;
-use std::{cell::RefCell, collections::HashMap};
-use image::{ImageBuffer, Rgb, ImageOutputFormat};
-use imageproc::drawing::{draw_line_segment_mut};
-use std::io::Cursor;
-use web_sys::console;
-use imageproc::point::Point;
-use wasm_bindgen::prelude::*;
 use docx_rs::{Docx, Paragraph, Pic, Run};
-use serde::{Serialize, Deserialize};
-use ordered_float::OrderedFloat;
-use libs::{ 
-	arm_combination::SORTAMENT,
-	parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex}, 
-	unification_data::unification_data,
-	gpu_renderer::init_gpu_renderer,
+use image::{ImageBuffer, ImageOutputFormat, Rgb, RgbImage};
+use imageproc::drawing::{draw_filled_rect_mut, draw_line_segment_mut};
+use imageproc::point::Point;
+use imageproc::rect::Rect;
+use libs::{
+    arm_combination::SORTAMENT,
+    gpu_renderer::init_gpu_renderer,
+    parse::{convert_sli_xsl_to_json, EntityWithXlsx, Vertex},
+    unification_data::unification_data,
 };
-
+use ordered_float::OrderedFloat;
+use serde::{Deserialize, Serialize};
+use std::io::Cursor;
+use std::{cell::RefCell, collections::HashMap};
+use wasm_bindgen::prelude::*;
+use web_sys::console;
 
 #[wasm_bindgen]
 pub fn log_data(x: f64, y: f64) {
@@ -23,34 +23,33 @@ pub fn log_data(x: f64, y: f64) {
 }
 
 #[wasm_bindgen]
-pub fn str_log_data(str:&str) {
+pub fn str_log_data(str: &str) {
     console::log_1(&format!("Координаты: x = {}", str).into());
 }
 // #[wasm_bindgen]
-pub fn string_log_data(str:&String) {
+pub fn string_log_data(str: &String) {
     console::log_1(&format!("Координаты: x = {}", str).into());
 }
-pub fn string_log_two_params(load:&str, str:&String) {
-    console::log_1(&format!("{} = {}",load,  str).into());
+pub fn string_log_two_params(load: &str, str: &String) {
+    console::log_1(&format!("{} = {}", load, str).into());
 }
-
 
 thread_local! {
-	static GLOBAL_ENTITIES: RefCell<Option<Vec<EntityWithXlsx>>> = RefCell::new(None);
+    static GLOBAL_ENTITIES: RefCell<Option<Vec<EntityWithXlsx>>> = RefCell::new(None);
 }
 
-#[wasm_bindgen]//ТОчка входа в и вызызова с JS
-pub fn parse_data(sli_data: &str,txt_data:&str, xlsx_data: &[u8]) {
+#[wasm_bindgen] //ТОчка входа в и вызызова с JS
+pub fn parse_data(sli_data: &str, txt_data: &str, xlsx_data: &[u8]) {
     let parsed = convert_sli_xsl_to_json(sli_data, txt_data, xlsx_data);
     GLOBAL_ENTITIES.with(|cell| *cell.borrow_mut() = Some(parsed));
 }
 
 #[wasm_bindgen]
 pub async fn initialize_gpu_renderer() -> Result<(), JsValue> {
-    init_gpu_renderer().await
+    init_gpu_renderer()
+        .await
         .map_err(|e| JsValue::from_str(&format!("Failed to initialize GPU: {}", e)))
 }
-
 
 #[wasm_bindgen]
 pub fn convert_sli_xsl_to_json_string() -> String {
@@ -73,7 +72,7 @@ pub fn convert_data_to_js_order_byz() -> String {
 }
 
 #[wasm_bindgen]
-pub async fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
+pub async fn create_docx(sli_data: &str, txt_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
     // Используем новый генератор документов
     let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
@@ -81,43 +80,43 @@ pub async fn create_docx(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Ve
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
+
     process_files(sli_data, txt_data, &xlsx_data);
-    
+
     // Используем новый генератор из generate_documents
     libs::generate_documents::docx_generator::create_docx(entities, None, None, "Документ").await
 }
 
 #[wasm_bindgen]
-pub async fn create_docx_legacy(sli_data: &str, txt_data:&str,  xlsx_data: &[u8]) -> Vec<u8> {
+pub async fn create_docx_legacy(sli_data: &str, txt_data: &str, xlsx_data: &[u8]) -> Vec<u8> {
     let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
             .as_ref()
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
+
     process_files(sli_data, txt_data, &xlsx_data);
-    
+
     // Используем упрощенную функцию создания DOCX
     // Автоматически определяет нужны ли цвета
-    libs::generate_documents::docx_generator::create_docx(entities, None, None, "Hello, world!").await
+    libs::generate_documents::docx_generator::create_docx(entities, None, None, "Hello, world!")
+        .await
 }
 
-pub fn create_docx_with_image(image_data: &[u8], doc: Docx) -> Result<Docx, Box<dyn std::error::Error>> {
+pub fn create_docx_with_image(
+    image_data: &[u8],
+    doc: Docx,
+) -> Result<Docx, Box<dyn std::error::Error>> {
     let mut doc = doc;
-    
+
     // ИСПОЛЬЗУЕМ ЕДИНЫЕ КОНСТАНТЫ - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
-    use crate::libs::drawItem::{DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS};
-    
-	doc = doc.add_paragraph(
-		Paragraph::new().add_run(
-			Run::new().add_image(
-			    Pic::new(image_data)
-			        .size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS)
-			)
-		)
-	);
+    use crate::libs::drawItem::{DOCX_IMAGE_HEIGHT_TWIPS, DOCX_IMAGE_WIDTH_TWIPS};
+
+    doc =
+        doc.add_paragraph(Paragraph::new().add_run(Run::new().add_image(
+            Pic::new(image_data).size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS),
+        )));
     Ok(doc)
 }
 #[derive(Serialize, Deserialize)]
@@ -125,11 +124,13 @@ struct SerializableEntity {
     vertices: Vec<Vertex>,
 }
 #[wasm_bindgen]
-pub fn process_files(sli_data: &str,txt_data:&str,  xlsx_data: &[u8]) -> String {
+pub fn process_files(sli_data: &str, txt_data: &str, xlsx_data: &[u8]) -> String {
     let parsed_data = convert_sli_xsl_to_json(sli_data, txt_data, xlsx_data);
     let serializable: Vec<SerializableEntity> = parsed_data
         .into_iter()
-        .map(|e| SerializableEntity { vertices: e.vertices })
+        .map(|e| SerializableEntity {
+            vertices: e.vertices,
+        })
         .collect();
     serde_json::to_string(&serializable).unwrap()
 }
@@ -139,24 +140,57 @@ pub fn new_draw_polygon(data: Vec<EntityWithXlsx>) -> Vec<u8> {
     let full_height = 900;
     let mut img = ImageBuffer::from_fn(full_width, full_height, |_, _| Rgb([255u8, 255u8, 255u8]));
     data.iter().for_each(|i| {
-		log_data(i.vertices[0].x, i.vertices[0].y);
+        log_data(i.vertices[0].x, i.vertices[0].y);
         if i.vertices.len() == 4 {
             // Масштабируем координаты в 10 раз
-            let point_a = Point::new((i.vertices[0].x * 17.0)+150.0, (i.vertices[0].y * 17.0)+80.0);
-            let point_b = Point::new((i.vertices[1].x * 17.0)+150.0, (i.vertices[1].y * 17.0)+80.0);
-            let point_c = Point::new((i.vertices[2].x * 17.0)+150.0, (i.vertices[2].y * 17.0)+80.0);
-            let point_d = Point::new((i.vertices[3].x * 17.0)+150.0, (i.vertices[3].y * 17.0)+80.0);
+            let point_a = Point::new(
+                (i.vertices[0].x * 17.0) + 150.0,
+                (i.vertices[0].y * 17.0) + 80.0,
+            );
+            let point_b = Point::new(
+                (i.vertices[1].x * 17.0) + 150.0,
+                (i.vertices[1].y * 17.0) + 80.0,
+            );
+            let point_c = Point::new(
+                (i.vertices[2].x * 17.0) + 150.0,
+                (i.vertices[2].y * 17.0) + 80.0,
+            );
+            let point_d = Point::new(
+                (i.vertices[3].x * 17.0) + 150.0,
+                (i.vertices[3].y * 17.0) + 80.0,
+            );
 
             // Рисуем линии между точками четырёхугольника
-            draw_line_segment_mut(&mut img, (point_a.x as f32, point_a.y as f32), (point_b.x as f32, point_b.y as f32), Rgb([255, 0, 0]));
-            draw_line_segment_mut(&mut img, (point_b.x as f32, point_b.y as f32), (point_c.x as f32, point_c.y as f32), Rgb([255, 0, 0]));
-            draw_line_segment_mut(&mut img, (point_c.x as f32, point_c.y as f32), (point_d.x as f32, point_d.y as f32), Rgb([255, 0, 0]));
-            draw_line_segment_mut(&mut img, (point_d.x as f32, point_d.y as f32), (point_a.x as f32, point_a.y as f32), Rgb([255, 0, 0]));
+            draw_line_segment_mut(
+                &mut img,
+                (point_a.x as f32, point_a.y as f32),
+                (point_b.x as f32, point_b.y as f32),
+                Rgb([255, 0, 0]),
+            );
+            draw_line_segment_mut(
+                &mut img,
+                (point_b.x as f32, point_b.y as f32),
+                (point_c.x as f32, point_c.y as f32),
+                Rgb([255, 0, 0]),
+            );
+            draw_line_segment_mut(
+                &mut img,
+                (point_c.x as f32, point_c.y as f32),
+                (point_d.x as f32, point_d.y as f32),
+                Rgb([255, 0, 0]),
+            );
+            draw_line_segment_mut(
+                &mut img,
+                (point_d.x as f32, point_d.y as f32),
+                (point_a.x as f32, point_a.y as f32),
+                Rgb([255, 0, 0]),
+            );
         }
     });
 
     let mut buffer = Vec::new();
-    img.write_to(&mut Cursor::new(&mut buffer), ImageOutputFormat::Png).unwrap();
+    img.write_to(&mut Cursor::new(&mut buffer), ImageOutputFormat::Png)
+        .unwrap();
     buffer
 }
 // Функция sort_by_z находится в модуле libs::generate_documents::docx_generator
@@ -168,9 +202,7 @@ fn sort_by_same_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, Vec<
         let z0 = item.vertices[0].z;
         if item.vertices.iter().all(|v| v.z == z0) {
             let z = OrderedFloat(z0 as f32);
-            map.entry(z)
-                .or_insert_with(Vec::new)
-                .push(item);
+            map.entry(z).or_insert_with(Vec::new).push(item);
         }
     }
     map
@@ -180,7 +212,8 @@ pub fn get_changed_row_data(planes: JsValue) -> Vec<u8> {
     use serde_wasm_bindgen::from_value;
     // Десериализация JsValue в Vec<f32>
     let planes_vec: Vec<f32> = from_value(planes)
-        .map_err(|e| JsValue::from_str(&format!("Ошибка десериализации: {}", e))).expect("msg");
+        .map_err(|e| JsValue::from_str(&format!("Ошибка десериализации: {}", e)))
+        .expect("msg");
     let data = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
             .as_ref()
@@ -193,7 +226,8 @@ pub fn get_changed_row_data(planes: JsValue) -> Vec<u8> {
     let mut combined = Vec::new();
     for as_index in 0..4 {
         // Создаем DXF файл для конкретного параметра as
-        let dxf_file = libs::createDxf::create_dxf_for_specific_as_manual(changed_row_data.clone(), as_index);
+        let dxf_file =
+            libs::createDxf::create_dxf_for_specific_as_manual(changed_row_data.clone(), as_index);
         // Добавляем размер файла и сам файл в общий массив
         combined.extend_from_slice(&(dxf_file.len() as u32).to_le_bytes());
         combined.extend(dxf_file);
@@ -211,10 +245,10 @@ pub fn find_combinations_with_custom_diameters(
     target_area: f32,
     main_step: f32,
     secondary_step: f32,
-    available_diameters: JsValue
+    available_diameters: JsValue,
 ) -> JsValue {
     use serde_wasm_bindgen::from_value;
-    
+
     // Десериализация JsValue в Vec<u32>
     let diameters: Vec<u32> = match from_value(available_diameters) {
         Ok(d) => d,
@@ -223,15 +257,15 @@ pub fn find_combinations_with_custom_diameters(
             return JsValue::NULL;
         }
     };
-    
+
     // Получаем комбинации с пользовательскими диаметрами
     let combinations = SORTAMENT.find_combinations_for_area_with_custom_diameters(
         target_area,
         main_step,
         secondary_step,
-        &diameters
+        &diameters,
     );
-    
+
     // Сериализуем результат обратно в JsValue
     match serde_wasm_bindgen::to_value(&combinations) {
         Ok(js_value) => js_value,
@@ -256,36 +290,50 @@ pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
+
     // Создаем буфер для CSV данных
     let mut csv_content = Vec::new();
-    
+
     // Добавляем заголовок CSV
-    writeln!(&mut csv_content, "Номер,Тип,X,Y,Z,Материал,Номер_материала,Тип_SG,B_или_D,H_или_D,H")
-        .expect("Failed to write CSV header");
-    
+    writeln!(
+        &mut csv_content,
+        "Номер,Тип,X,Y,Z,Материал,Номер_материала,Тип_SG,B_или_D,H_или_D,H"
+    )
+    .expect("Failed to write CSV header");
+
     // Перебираем все элементы и добавляем их в CSV
     for (i, element) in data.iter().enumerate() {
         // Получаем информацию о материале
-        let material_num = element.material.as_ref().and_then(|m| m.material_num).unwrap_or(0);
-        let sg_type = element.material.as_ref().and_then(|m| m.sg_type.clone()).unwrap_or_else(|| String::from("-"));
-        let b_or_d = element.material.as_ref().and_then(|m| m.b_or_d).unwrap_or(0.0);
-        let h_or_d = element.material.as_ref().and_then(|m| m.h_or_d).unwrap_or(0.0);
+        let material_num = element
+            .material
+            .as_ref()
+            .and_then(|m| m.material_num)
+            .unwrap_or(0);
+        let sg_type = element
+            .material
+            .as_ref()
+            .and_then(|m| m.sg_type.clone())
+            .unwrap_or_else(|| String::from("-"));
+        let b_or_d = element
+            .material
+            .as_ref()
+            .and_then(|m| m.b_or_d)
+            .unwrap_or(0.0);
+        let h_or_d = element
+            .material
+            .as_ref()
+            .and_then(|m| m.h_or_d)
+            .unwrap_or(0.0);
         let h = element.material.as_ref().and_then(|m| m.h).unwrap_or(0.0);
-        
+
         if element.vertices.is_empty() {
             // Если у элемента нет координат, записываем строку с нулевыми координатами
             writeln!(
                 &mut csv_content,
                 "{},{},0.0,0.0,0.0,{},{},{},{},{}",
-                i,
-                element.entity_type,
-                material_num,
-                sg_type,
-                b_or_d,
-                h_or_d,
-                h
-            ).expect("Failed to write CSV row");
+                i, element.entity_type, material_num, sg_type, b_or_d, h_or_d, h
+            )
+            .expect("Failed to write CSV row");
         } else {
             // Записываем каждую координату элемента в отдельной строке
             for vertex in &element.vertices {
@@ -302,7 +350,8 @@ pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
                     b_or_d,
                     h_or_d,
                     h
-                ).expect("Failed to write CSV row");
+                )
+                .expect("Failed to write CSV row");
             }
         }
     }
@@ -311,8 +360,9 @@ pub fn create_csv_from_all_parsed_entities() -> Vec<u8> {
 #[wasm_bindgen]
 pub fn get_excell_report_for_arms() -> Vec<u8> {
     use crate::libs::arm_combination::SORTAMENT;
-    
-    SORTAMENT.generate_excel_report_to_wasm()
+
+    SORTAMENT
+        .generate_excel_report_to_wasm()
         .unwrap_or_else(|_| Vec::new())
 }
 
@@ -322,7 +372,7 @@ pub fn get_custom_sortament_report(
     floors_data_json: &str,
 ) -> Result<Vec<u8>, JsValue> {
     use crate::libs::final_report::custom_sortament::create_custom_sortament_report;
-    
+
     create_custom_sortament_report(available_diameters, floors_data_json)
 }
 
@@ -333,59 +383,82 @@ pub fn get_table_data_for_frontend(
 ) -> Result<String, JsValue> {
     let floors_data: Vec<FloorData> = serde_json::from_str(floors_data_json)
         .map_err(|e| JsValue::from_str(&format!("JSON parsing error: {}", e)))?;
-    
+
     let sortament = CustomSortament::from_js_data(available_diameters);
     let excel_data = sortament.generate_excel_data_for_js(floors_data);
-    
+
     serde_json::to_string(&excel_data)
         .map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
 
 // НОВАЯ ФУНКЦИЯ: Генерация DOCX с цветовой палитрой на основе выбранных комбинаций
 #[wasm_bindgen]
-pub async fn create_docx_with_selected_combinations(selected_combinations_json: &str) -> Result<Vec<u8>, JsValue> {
+pub async fn create_docx_with_selected_combinations(
+    selected_combinations_json: &str,
+) -> Result<Vec<u8>, JsValue> {
     use serde_json;
-    
-    use crate::libs::generate_documents::docx_generator::{SelectedCombination};
-    
+
+    use crate::libs::generate_documents::docx_generator::SelectedCombination;
+
     // === STEP 1: WASM ENTRY POINT ===
     #[derive(serde::Deserialize)]
     struct SelectedCombinationsData {
         combinations: Vec<SelectedCombination>,
         floors: Vec<String>,
     }
-    
+
     let selected_data: SelectedCombinationsData = serde_json::from_str(selected_combinations_json)
-        .map_err(|e| JsValue::from_str(&format!("Failed to parse selected combinations: {:?}", e)))?;
-    
+        .map_err(|e| {
+            JsValue::from_str(&format!("Failed to parse selected combinations: {:?}", e))
+        })?;
+
     // 🎯 [BACKEND_DRAWING] Логи данных перед началом рисования фигур
-    web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING] ===== ДАННЫЕ ПЕРЕД РИСОВАНИЕМ ФИГУР =====").into());
-    
+    web_sys::console::log_1(
+        &format!("🎯 [BACKEND_DRAWING] ===== ДАННЫЕ ПЕРЕД РИСОВАНИЕМ ФИГУР =====").into(),
+    );
+
     // Группируем по этажам и AS функциям
-    let mut floor_groups: std::collections::HashMap<String, std::collections::HashMap<String, Vec<&SelectedCombination>>> = std::collections::HashMap::new();
+    let mut floor_groups: std::collections::HashMap<
+        String,
+        std::collections::HashMap<String, Vec<&SelectedCombination>>,
+    > = std::collections::HashMap::new();
     for combo in &selected_data.combinations {
-        floor_groups.entry(combo.floor_level.clone())
+        floor_groups
+            .entry(combo.floor_level.clone())
             .or_insert_with(std::collections::HashMap::new)
             .entry(combo.function_name.clone())
             .or_insert_with(Vec::new)
             .push(combo);
     }
-    
+
     // Логирование структурированных данных
     for (floor, functions) in &floor_groups {
         web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING] Этаж(отметка): {}", floor).into());
         for (function, combinations) in functions {
-            web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING]   AS функция: {}", function).into());
+            web_sys::console::log_1(
+                &format!("🎯 [BACKEND_DRAWING]   AS функция: {}", function).into(),
+            );
             for (index, combo) in combinations.iter().enumerate() {
-                web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING]     Комбинация {}: Итоговая шкала = {}", 
-                    index + 1, combo.combination.result_scale.as_ref().unwrap_or(&"NULL".to_string())).into());
+                web_sys::console::log_1(
+                    &format!(
+                        "🎯 [BACKEND_DRAWING]     Комбинация {}: Итоговая шкала = {}",
+                        index + 1,
+                        combo
+                            .combination
+                            .result_scale
+                            .as_ref()
+                            .unwrap_or(&"NULL".to_string())
+                    )
+                    .into(),
+                );
             }
         }
     }
-    
-    web_sys::console::log_1(&format!("🎯 [BACKEND_DRAWING] ===== КОНЕЦ ДАННЫХ ПЕРЕД РИСОВАНИЕМ =====").into());
-  
-    
+
+    web_sys::console::log_1(
+        &format!("🎯 [BACKEND_DRAWING] ===== КОНЕЦ ДАННЫХ ПЕРЕД РИСОВАНИЕМ =====").into(),
+    );
+
     // Получаем все сущности из глобального хранилища
     let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
@@ -393,21 +466,24 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
+
     // Создаем DOCX с цветовой палитрой
-    let floors: Vec<f32> = selected_data.floors.iter()
+    let floors: Vec<f32> = selected_data
+        .floors
+        .iter()
         .map(|f| f.parse::<f32>().unwrap_or(0.0))
         .collect();
-    
+
     // === STEP 2: CALLING DOCX GENERATOR ===
-    
+
     let docx_data = libs::generate_documents::docx_generator::create_docx(
         entities,
         Some(floors),
         Some(selected_data.combinations),
-        "Документ с цветовой палитрой арматуры"
-    ).await;
-    
+        "Документ с цветовой палитрой арматуры",
+    )
+    .await;
+
     Ok(docx_data)
 }
 
@@ -415,11 +491,11 @@ pub async fn create_docx_with_selected_combinations(selected_combinations_json: 
 #[wasm_bindgen]
 pub async fn create_docx_for_selected_combinations(selected_floors_json: &str) -> Vec<u8> {
     use serde_json;
-    
+
     // Десериализация JSON с выбранными этажами и комбинациями
-    let selected_floors: Vec<f32> = serde_json::from_str(selected_floors_json)
-        .expect("Failed to parse selected floors JSON");
-    
+    let selected_floors: Vec<f32> =
+        serde_json::from_str(selected_floors_json).expect("Failed to parse selected floors JSON");
+
     // Получаем все сущности из глобального хранилища
     let entities = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
@@ -427,20 +503,181 @@ pub async fn create_docx_for_selected_combinations(selected_floors_json: &str) -
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
+
     // Используем новый модуль для создания DOCX
     libs::generate_documents::docx_generator::create_docx_for_selected_floors(
         entities,
         selected_floors,
         None, // Нет combinations для этой функции
-        "Документ с выбранными комбинациями арматуры"
-    ).await
+        "Документ с выбранными комбинациями арматуры",
+    )
+    .await
 }
 
 // ... existing code ...
 
+// 🧪 ТЕСТОВЫЙ МОДУЛЬ ДЛЯ ЭКСПЕРИМЕНТОВ С WEB WORKERS
+// Создает тестовые картинки и DOCX без парсинга файлов
+
+// 🚀 ПАРАЛЛЕЛЬНАЯ ГЕНЕРАЦИЯ: функция для генерации части изображений
+// Генерирует imageCount изображений начиная с startIndex
+#[wasm_bindgen]
+pub async fn create_partial_images(
+    start_index: u32,
+    image_count: u32,
+    complexity: u32,
+) -> js_sys::Array {
+    let start_time = js_sys::Date::now();
+    let result_array = js_sys::Array::new();
+
+    // Генерируем изображения БЕЗ ЛОГОВ
+    for i in 0..image_count {
+        let image_index = start_index + i;
+        let image_data = create_test_image(image_index, complexity);
+        let uint8_array = js_sys::Uint8Array::from(&image_data[..]);
+        result_array.push(&uint8_array.into());
+    }
+
+    let total_time = js_sys::Date::now() - start_time;
+    // ТОЛЬКО время!
+    console::log_1(&format!("{:.0}мс", total_time).into());
+
+    result_array
+}
+
+#[wasm_bindgen]
+pub async fn create_test_docx_with_images(image_count: u32, complexity: u32) -> Vec<u8> {
+    console::log_1(
+        &format!(
+            "🧪 [TEST-MODULE] Создание тестового DOCX с {} изображениями, сложность {}",
+            image_count, complexity
+        )
+        .into(),
+    );
+
+    let start_time = js_sys::Date::now();
+
+    // Создаем базовый DOCX документ
+    let mut doc = Docx::new();
+
+    // Генерируем несколько тестовых изображений
+    for i in 0..image_count {
+        console::log_1(
+            &format!(
+                "🧪 [TEST-MODULE] Генерация изображения {}/{}",
+                i + 1,
+                image_count
+            )
+            .into(),
+        );
+
+        let image_start = js_sys::Date::now();
+
+        // Создаем тестовое изображение
+        let image_data = create_test_image(i, complexity);
+
+        let image_time = js_sys::Date::now() - image_start;
+        console::log_1(
+            &format!(
+                "🧪 [TEST-MODULE] Изображение {} создано за {:.1}мс, размер: {} байт",
+                i + 1,
+                image_time,
+                image_data.len()
+            )
+            .into(),
+        );
+
+        // Добавляем изображение в документ
+        use crate::libs::drawItem::{DOCX_IMAGE_HEIGHT_TWIPS, DOCX_IMAGE_WIDTH_TWIPS};
+
+        doc = doc.add_paragraph(Paragraph::new().add_run(Run::new().add_image(
+            Pic::new(&image_data).size(DOCX_IMAGE_WIDTH_TWIPS, DOCX_IMAGE_HEIGHT_TWIPS),
+        )));
+
+        console::log_1(&format!("🧪 [TEST-MODULE] Изображение {} добавлено в DOCX", i + 1).into());
+    }
+
+    // Сериализуем документ
+    console::log_1(&"🧪 [TEST-MODULE] Сериализация DOCX документа...".into());
+    let docx_start = js_sys::Date::now();
+
+    let mut buf = Vec::new();
+    let _ = doc.build().pack(&mut Cursor::new(&mut buf));
+
+    let docx_time = js_sys::Date::now() - docx_start;
+    let total_time = js_sys::Date::now() - start_time;
+
+    console::log_1(&format!("✅ [TEST-MODULE] DOCX создан успешно!").into());
+    console::log_1(&format!("📊 [TEST-MODULE] Время сериализации: {:.1}мс", docx_time).into());
+    console::log_1(&format!("📊 [TEST-MODULE] Общее время: {:.1}мс", total_time).into());
+    console::log_1(&format!("📊 [TEST-MODULE] Размер DOCX: {} байт", buf.len()).into());
+
+    buf
+}
+
+fn create_test_image(index: u32, complexity: u32) -> Vec<u8> {
+    // Создаем изображение такого же размера как в настоящем коде
+    let width = 680;
+    let height = 900;
+    let mut img = RgbImage::new(width, height);
+
+    // Заливаем белым фоном
+    for pixel in img.pixels_mut() {
+        *pixel = Rgb([255, 255, 255]);
+    }
+
+    // Генерируем тестовые фигуры
+    let shapes_count = (complexity * 10) as usize; // 10, 20, 30... фигур в зависимости от сложности
+
+    for i in 0..shapes_count {
+        let x = ((i * 37 + index as usize * 17) % (width as usize - 100)) as i32;
+        let y = ((i * 23 + index as usize * 13) % (height as usize - 100)) as i32;
+        let w = 50 + (i % 50) as i32;
+        let h = 30 + (i % 30) as i32;
+
+        // Разные цвета для разных фигур
+        let color = match i % 4 {
+            0 => Rgb([255, 0, 0]),   // Красный
+            1 => Rgb([0, 255, 0]),   // Зеленый
+            2 => Rgb([0, 0, 255]),   // Синий
+            _ => Rgb([255, 165, 0]), // Оранжевый
+        };
+
+        // Рисуем прямоугольник
+        draw_filled_rect_mut(&mut img, Rect::at(x, y).of_size(w as u32, h as u32), color);
+
+        // Добавляем линии для сложности (как в настоящем коде)
+        if i % 2 == 0 {
+            draw_line_segment_mut(
+                &mut img,
+                (x as f32, y as f32),
+                ((x + w) as f32, (y + h) as f32),
+                Rgb([0, 0, 0]),
+            );
+        }
+    }
+
+    // Добавляем номер изображения в углу
+    let text_color = Rgb([0, 0, 0]);
+    for dy in 0..20 {
+        for dx in 0..50 {
+            if dx < 5 || dy < 5 || dx > 45 || dy > 15 {
+                if let Some(pixel) = img.get_pixel_mut_checked(10 + dx, 10 + dy) {
+                    *pixel = text_color;
+                }
+            }
+        }
+    }
+
+    // Конвертируем в PNG
+    let mut buffer = Vec::new();
+    let _ = img.write_to(&mut Cursor::new(&mut buffer), ImageOutputFormat::Png);
+
+    buffer
+}
+
 use crate::libs::convas_optimization::canvas_optimization::{
-    get_optimized_canvas_data, get_canvas_statistics
+    get_canvas_statistics, get_optimized_canvas_data,
 };
 
 #[wasm_bindgen]
@@ -448,7 +685,7 @@ pub fn get_optimized_canvas_data_wasm(
     max_shapes_per_level: usize,
     max_total_shapes: usize,
     start_z: Option<f32>,
-    end_z: Option<f32>
+    end_z: Option<f32>,
 ) -> String {
     let data = GLOBAL_ENTITIES.with(|cell| {
         cell.borrow()
@@ -456,15 +693,10 @@ pub fn get_optimized_canvas_data_wasm(
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
-    let canvas_data = get_optimized_canvas_data(
-        data,
-        max_shapes_per_level,
-        max_total_shapes,
-        start_z,
-        end_z
-    );
-    
+
+    let canvas_data =
+        get_optimized_canvas_data(data, max_shapes_per_level, max_total_shapes, start_z, end_z);
+
     serde_json::to_string(&canvas_data)
         .unwrap_or_else(|_| "{\"error\": \"Serialization failed\"}".to_string())
 }
@@ -477,9 +709,9 @@ pub fn get_canvas_statistics_wasm() -> String {
             .cloned()
             .expect("Data not parsed! Call parse_and_store_data first!")
     });
-    
+
     let stats = get_canvas_statistics(data);
-    
+
     serde_json::to_string(&stats)
         .unwrap_or_else(|_| "{\"error\": \"Serialization failed\"}".to_string())
 }

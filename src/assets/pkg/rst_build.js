@@ -508,6 +508,27 @@ export function create_docx_for_selected_combinations(selected_floors_json) {
 }
 
 /**
+ * @param {number} start_index
+ * @param {number} image_count
+ * @param {number} complexity
+ * @returns {Promise<Array<any>>}
+ */
+export function create_partial_images(start_index, image_count, complexity) {
+    const ret = wasm.create_partial_images(start_index, image_count, complexity);
+    return ret;
+}
+
+/**
+ * @param {number} image_count
+ * @param {number} complexity
+ * @returns {Promise<Uint8Array>}
+ */
+export function create_test_docx_with_images(image_count, complexity) {
+    const ret = wasm.create_test_docx_with_images(image_count, complexity);
+    return ret;
+}
+
+/**
  * @param {number} max_shapes_per_level
  * @param {number} max_total_shapes
  * @param {number | null} [start_z]
@@ -544,11 +565,11 @@ export function get_canvas_statistics_wasm() {
 }
 
 function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure210_externref_shim(arg0, arg1, arg2);
+    wasm.closure254_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_151(arg0, arg1, arg2, arg3) {
-    wasm.closure1021_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_153(arg0, arg1, arg2, arg3) {
+    wasm.closure1062_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_GpuPowerPreference = ["low-power", "high-performance"];
@@ -712,7 +733,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_151(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_153(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -737,6 +758,10 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_newnoargs_105ed471475aaf50 = function(arg0, arg1) {
         const ret = new Function(getStringFromWasm0(arg0, arg1));
+        return ret;
+    };
+    imports.wbg.__wbg_newwithbyteoffsetandlength_d97e637ebe145a9a = function(arg0, arg1, arg2) {
+        const ret = new Uint8Array(arg0, arg1 >>> 0, arg2 >>> 0);
         return ret;
     };
     imports.wbg.__wbg_next_25feadfc0913fea9 = function(arg0) {
@@ -856,8 +881,8 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper1247 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 211, __wbg_adapter_40);
+    imports.wbg.__wbindgen_closure_wrapper1373 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 255, __wbg_adapter_40);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
