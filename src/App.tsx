@@ -16,7 +16,7 @@ import { DocumentGenerator } from './components/DocumentGenerator';
 import { ExcelView } from './components/Excel/ExcelView.tsx';
 
 
-function App() {
+function App(): JSX.Element {
 	const dispatch = useAppDispatch();
 	const [sliInput, setSliInput] = useState<string | null>(null);
 	const [textInput, setTextInput] = useState<string | null>(null);
@@ -25,7 +25,7 @@ function App() {
 	const [openForCreateUI, setOpenForCreateUI] = useState(false);
 	const pending = useAppSelector(state => state.wasm.loading)
 	const choosedPlanesFromList = useAppSelector(state=>state.wasm.choosedPlainsFromList);
-	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+	async function onSliInputChange(event: React.ChangeEvent<HTMLInputElement>): Promise<void> {
 
 		const file = event.target?.files?.[0]
 		if (file) {
@@ -39,7 +39,7 @@ function App() {
 			// setSliInput(file)
 		}
 	}
-	async function onLiraInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+	async function onLiraInputChange(event: React.ChangeEvent<HTMLInputElement>): Promise<void> {
 
 		const file = event.target?.files?.[0]
 		if (file) {
@@ -53,7 +53,7 @@ function App() {
 			// setSliInput(file)
 		}
 	}
-	async function onXlsxInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+	async function onXlsxInputChange(event: React.ChangeEvent<HTMLInputElement>): Promise<void> {
 		const file = event.target?.files?.[0]
 		if (file) {
 			const reader = new FileReader();
@@ -89,7 +89,7 @@ function App() {
 			console.error('Ошибка сохранения:', error);
 		}
 	}
-	const saveFile = (data: Uint8Array, filename: string) => {
+	const saveFile = (data: Uint8Array, filename: string): void => {
 		const blob = new Blob([data], { type: 'application/dxf' });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
@@ -241,8 +241,9 @@ function App() {
 						Сохранить DXF
 					</button>
 					
-					<div className="w-full sm:w-auto">
+					<div className="w-full sm:w-auto space-y-2">
 						<DocumentGenerator />
+
 					</div>
 					
 					<div className="w-full sm:w-auto">

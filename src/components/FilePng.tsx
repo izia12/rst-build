@@ -63,7 +63,7 @@ const DiagramGenerator = () => {
                     if(number>=167&&number<=200){
                         color = "#800000"
                     }
-                    // console.log(`Before drawText: (${data1[0].startX + k * 25}, ${data1[0].startY + i * 25}) - Color: ${color}`);
+                    
                     line.drawText(data1[0].startX+k*25, data1[0].startY+i*25, number.toString(), color)
                 }
             }

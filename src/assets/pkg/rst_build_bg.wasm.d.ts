@@ -21,6 +21,8 @@ export const get_custom_sortament_report: (a: number, b: number, c: number, d: n
 export const get_table_data_for_frontend: (a: number, b: number, c: number, d: number) => [number, number, number, number];
 export const create_docx_with_selected_combinations: (a: number, b: number) => any;
 export const create_docx_for_selected_combinations: (a: number, b: number) => any;
+export const get_processed_data_for_frontend: () => [number, number];
+export const create_docx_for_single_floor: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
 export const create_partial_images: (a: number, b: number, c: number) => any;
 export const create_test_docx_with_images: (a: number, b: number) => any;
 export const get_optimized_canvas_data_wasm: (a: number, b: number, c: number, d: number) => [number, number];
@@ -33,6 +35,6 @@ export const __wbindgen_export_4: WebAssembly.Table;
 export const __wbindgen_export_5: WebAssembly.Table;
 export const __wbindgen_free: (a: number, b: number, c: number) => void;
 export const __externref_table_dealloc: (a: number) => void;
-export const closure254_externref_shim: (a: number, b: number, c: any) => void;
-export const closure1062_externref_shim: (a: number, b: number, c: any, d: any) => void;
+export const closure268_externref_shim: (a: number, b: number, c: any) => void;
+export const closure1076_externref_shim: (a: number, b: number, c: any, d: any) => void;
 export const __wbindgen_start: () => void;

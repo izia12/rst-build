@@ -13,14 +13,14 @@ type propsType={
 	openForCreateUI:boolean
 	setOpenForCreateUI:(isOpen:boolean)=>void
 }
-export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenForCreateUI}:propsType) {
+export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenForCreateUI}:propsType): JSX.Element {
 	const {showToast} = useToast();
 	const dispatch = useAppDispatch()
 	const floors1 = useAppSelector(state=>state.wasm.specifiedFitParams)
 	const items = useAppSelector(state=>state.wasm.wasmJsData)
 	const choosedItems  = useAppSelector(state=>state.wasm.choosedPlainsFromList)
 	const choosedUniques = useAppSelector(state=>state.wasm.groupUniqueItems)
-	const checkAllStepsAreEqual = ()=>{
+	const checkAllStepsAreEqual = (): boolean => {
 		const choosedPlains = choosedItems.map(el=>el.plainNumber)
 		const res =  Object.entries(items)
 					.filter(([el]) => {
@@ -45,7 +45,7 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 		availableDiameters: new Uint32Array(fiteredArms.map(el=>el.diameter)),
 		jsonArray:JSON.stringify([...preparedItems, ...preparedUniqes])
 	}
-		async function saveXlsx() {
+		async function saveXlsx(): Promise<void> {
 		try{
 			await init()
 			setTimeout(async()=>{
@@ -64,7 +64,7 @@ export default function CreateNewGroupPlanesButton({ openForCreateUI, setOpenFor
 		}
 	}
 	// const fn = get_custom_sortament_report();
-	const saveFile = (data: Uint8Array,) => {
+	const saveFile = (data: Uint8Array): void => {
 		const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');

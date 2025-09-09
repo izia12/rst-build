@@ -41,7 +41,7 @@ export const UniqeItem = (
 	const [settingSecStep, setSettingSecStep] = useState<"setting" | "wasSet" | "notSet">("notSet");
 	const { showToast } = useToast();
 
-	function handleKeyDown(e:React.KeyboardEvent<HTMLInputElement>, stepKind:"main"|"secondary"){
+	function handleKeyDown(e:React.KeyboardEvent<HTMLInputElement>, stepKind:"main"|"secondary"): void {
 		if(e.key==="Enter" && stepKind==="main"){
 			setMainStep(+e.currentTarget.value);
 			setSettingMainStep("wasSet")
@@ -59,7 +59,7 @@ export const UniqeItem = (
 	}
 	// console.log(parentMainStep, parentSecondaryStep);
 	
-	function onSetDataMainStep(){
+	function onSetDataMainStep(): void {
 		dispatch(setArmStep({plane:checkboxId, mainStep, secondaryStep}))
 	}
 	

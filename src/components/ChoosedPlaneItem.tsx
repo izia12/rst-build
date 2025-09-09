@@ -13,7 +13,7 @@ type propsType={
 	asValues:AsValuesType,
 	steps:StepArmType
 }
-export default function ChoosedPlaneItem({id, planes, color, name, asValues, steps}:propsType) {
+export default function ChoosedPlaneItem({id, planes, color, name, asValues, steps}:propsType): JSX.Element {
 	const [isOpen, setIsOpen] = useState(false);
 	
   return (

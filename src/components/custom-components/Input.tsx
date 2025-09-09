@@ -4,7 +4,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	type?:string
 }
 
-export const Input = ({ label,type, error, ...props }: InputProps) => {
+export const Input = ({ label,type, error, ...props }: InputProps): JSX.Element => {
 	return (
 		<div className="w-full">
 			{label && (

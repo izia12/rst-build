@@ -516,6 +516,104 @@ pub async fn create_docx_for_selected_combinations(selected_floors_json: &str) -
 
 // ... existing code ...
 
+// 🎯 ФУНКЦИЯ ЭКСПОРТА ДАННЫХ ИЗ GLOBAL_ENTITIES ДЛЯ ФРОНТЕНДА
+// Экспортирует обработанные данные для параллелизации по этажам
+#[wasm_bindgen]
+pub fn get_processed_data_for_frontend() -> String {
+    GLOBAL_ENTITIES.with(|cell| {
+        cell.borrow()
+            .as_ref()
+            .map(|data| serde_json::to_string(data).unwrap())
+            .unwrap_or_else(|| "[]".to_string())
+    })
+}
+
+// 🏗️ ФУНКЦИЯ ГЕНЕРАЦИИ ДОКУМЕНТА ДЛЯ ОДНОГО ЭТАЖА (С ОБРАБОТКОЙ ОШИБОК)
+// Принимает готовые данные этажа и генерирует документ
+#[wasm_bindgen]
+pub async fn create_docx_for_single_floor(
+    floor_level: &str,
+    floor_data_json: &str,
+    combinations_json: &str,
+) -> Result<Vec<u8>, JsValue> {
+    use serde_json;
+    use crate::libs::generate_documents::docx_generator::SelectedCombination;
+    use std::panic;
+
+    // Устанавливаем обработчик паники для WASM
+    panic::set_hook(Box::new(|panic_info| {
+        web_sys::console::error_1(&format!("🚨 [WASM-PANIC] {}", panic_info).into());
+    }));
+
+    web_sys::console::log_1(&format!("🔧 [WASM-START] Начинаем генерацию для этажа {}", floor_level).into());
+    
+    // Десериализуем готовые данные этажа
+    let floor_data: Vec<EntityWithXlsx> = match serde_json::from_str::<Vec<EntityWithXlsx>>(floor_data_json) {
+        Ok(data) => {
+            web_sys::console::log_1(&format!("✅ [WASM-DATA] Десериализовано {} элементов", data.len()).into());
+            data
+        },
+        Err(e) => {
+            let error_msg = format!("Failed to parse floor data: {:?}", e);
+            web_sys::console::error_1(&error_msg.clone().into());
+            return Err(JsValue::from_str(&error_msg));
+        }
+    };
+    
+    // Десериализуем комбинации для этажа
+    let combinations: Vec<SelectedCombination> = match serde_json::from_str::<Vec<SelectedCombination>>(combinations_json) {
+        Ok(data) => {
+            web_sys::console::log_1(&format!("✅ [WASM-COMBO] Десериализовано {} комбинаций", data.len()).into());
+            data
+        },
+        Err(e) => {
+            let error_msg = format!("Failed to parse combinations: {:?}", e);
+            web_sys::console::error_1(&error_msg.clone().into());
+            return Err(JsValue::from_str(&error_msg));
+        }
+    };
+    
+    // Парсим уровень этажа
+    let floor_level_f32 = match floor_level.parse::<f32>() {
+        Ok(level) => {
+            web_sys::console::log_1(&format!("✅ [WASM-LEVEL] Этаж: {}", level).into());
+            level
+        },
+        Err(e) => {
+            let error_msg = format!("Failed to parse floor level: {:?}", e);
+            web_sys::console::error_1(&error_msg.clone().into());
+            return Err(JsValue::from_str(&error_msg));
+        }
+    };
+    
+    // Генерируем документ для одного этажа с обработкой ошибок
+    web_sys::console::log_1(&format!("🔧 [WASM-GEN] Вызываем create_docx_for_selected_floors").into());
+    
+    let docx_data = match panic::catch_unwind(panic::AssertUnwindSafe(|| {
+        // Используем блокирующий вызов вместо async для избежания проблем с памятью
+        futures::executor::block_on(
+            crate::libs::generate_documents::docx_generator::create_docx_for_selected_floors(
+                floor_data,
+                vec![floor_level_f32],
+                Some(combinations),
+                &format!("Floor {}", floor_level)
+            )
+        )
+    })) {
+        Ok(data) => {
+            web_sys::console::log_1(&format!("✅ [WASM-SUCCESS] Документ сгенерирован: {} байт", data.len()).into());
+            data
+        },
+        Err(e) => {
+            let error_msg = format!("WASM panic during document generation: {:?}", e);
+            web_sys::console::error_1(&error_msg.clone().into());
+            return Err(JsValue::from_str(&error_msg));
+        }
+    };
+    
+    Ok(docx_data)
+}
+
 // 🧪 ТЕСТОВЫЙ МОДУЛЬ ДЛЯ ЭКСПЕРИМЕНТОВ С WEB WORKERS
 // Создает тестовые картинки и DOCX без парсинга файлов
 

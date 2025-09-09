@@ -16,7 +16,7 @@ interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	},
 	currentStep:{mainStep:number | null, secondaryStep:number|null}
 }
-export const Checkbox = ({ label, ...props }: CheckboxProps) => {
+export const Checkbox = ({ label, ...props }: CheckboxProps): JSX.Element => {
 	const {showToast} = useToast()
 	const dispatch = useAppDispatch();
 	const [checked, setChecked] = useState(false);

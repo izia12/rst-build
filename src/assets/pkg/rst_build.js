@@ -508,6 +508,39 @@ export function create_docx_for_selected_combinations(selected_floors_json) {
 }
 
 /**
+ * @returns {string}
+ */
+export function get_processed_data_for_frontend() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.get_processed_data_for_frontend();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * @param {string} floor_level
+ * @param {string} floor_data_json
+ * @param {string} combinations_json
+ * @returns {Promise<Uint8Array>}
+ */
+export function create_docx_for_single_floor(floor_level, floor_data_json, combinations_json) {
+    const ptr0 = passStringToWasm0(floor_level, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passStringToWasm0(floor_data_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passStringToWasm0(combinations_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ret = wasm.create_docx_for_single_floor(ptr0, len0, ptr1, len1, ptr2, len2);
+    return ret;
+}
+
+/**
  * @param {number} start_index
  * @param {number} image_count
  * @param {number} complexity
@@ -565,11 +598,11 @@ export function get_canvas_statistics_wasm() {
 }
 
 function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure254_externref_shim(arg0, arg1, arg2);
+    wasm.closure268_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_153(arg0, arg1, arg2, arg3) {
-    wasm.closure1062_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_159(arg0, arg1, arg2, arg3) {
+    wasm.closure1076_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_GpuPowerPreference = ["low-power", "high-performance"];
@@ -642,6 +675,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_done_769e5ede4b31c67b = function(arg0) {
         const ret = arg0.done;
         return ret;
+    };
+    imports.wbg.__wbg_error_524f506f44df1645 = function(arg0) {
+        console.error(arg0);
     };
     imports.wbg.__wbg_get_67b2ba62fc30de12 = function() { return handleError(function (arg0, arg1) {
         const ret = Reflect.get(arg0, arg1);
@@ -733,7 +769,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_153(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_159(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -867,6 +903,9 @@ function __wbg_get_imports() {
         const ret = arg0.value;
         return ret;
     };
+    imports.wbg.__wbg_warn_4ca3906c248c47c4 = function(arg0) {
+        console.warn(arg0);
+    };
     imports.wbg.__wbindgen_boolean_get = function(arg0) {
         const v = arg0;
         const ret = typeof(v) === 'boolean' ? (v ? 1 : 0) : 2;
@@ -881,8 +920,8 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper1373 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 255, __wbg_adapter_40);
+    imports.wbg.__wbindgen_closure_wrapper1406 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 269, __wbg_adapter_40);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {

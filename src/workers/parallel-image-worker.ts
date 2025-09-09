@@ -1,7 +1,3 @@
-// 🚀 ПАРАЛЛЕЛЬНЫЙ ВОРКЕР ДЛЯ ГЕНЕРАЦИИ ИЗОБРАЖЕНИЙ
-// Генерирует часть изображений для параллельной обработки
-
-// Убрали логи инициализации
 
 self.onmessage = async (event) => {
 	const { workerId, startIndex, imageCount, complexity } = event.data;
@@ -18,11 +14,7 @@ self.onmessage = async (event) => {
 			const funcStart = performance.now();
 			const imagesArray = await wasmModule.create_partial_images(startIndex, imageCount, complexity);
 			const funcTime = Math.round(performance.now() - funcStart);
-
-			// ТОЛЬКО ВРЕМЯ!
-			console.log(`${funcTime}мс`);
-
-			const images = [];
+			const images: Uint8Array[] = [];
 			let totalSize = 0;
 
 			for (let i = 0; i < imagesArray.length; i++) {

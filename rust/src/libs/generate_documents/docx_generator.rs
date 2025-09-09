@@ -206,7 +206,19 @@ pub async fn create_docx_for_selected_floors(
     web_sys::console::log_1(&format!("[STEP 4] create_docx_for_selected_floors() called with {} entities, {} floors", entities.len(), selected_floors.len()).into());
     web_sys::console::log_1(&format!("[STEP 4] selected_combinations: {:?}", selected_combinations.as_ref().map(|c| c.len())).into());
     
-    let total_start = web_sys::window().unwrap().performance().unwrap().now();
+    let total_start = match web_sys::window() {
+        Some(window) => match window.performance() {
+            Some(performance) => performance.now(),
+            None => {
+                web_sys::console::warn_1(&"Performance API недоступен, используем 0.0".into());
+                0.0
+            }
+        },
+        None => {
+            web_sys::console::warn_1(&"Window объект недоступен в воркере, используем 0.0".into());
+            0.0
+        }
+    };
     
     let mut doc = Docx::new()
         .page_margin(docx_rs::PageMargin {
@@ -317,7 +329,14 @@ pub async fn create_docx_for_selected_floors(
     let mut buffer = Cursor::new(Vec::new());
     match doc.build().pack(&mut buffer) {
         Ok(_) => {
-            let total_time = web_sys::window().unwrap().performance().unwrap().now() - total_start;
+            let total_time = match web_sys::window() {
+        Some(window) => match window.performance() {
+            Some(performance) => performance.now() - total_start,
+            None => 0.0
+        },
+        None => 0.0
+    };
+    web_sys::console::log_1(&format!("⏱️ [DOCX-TIME] Генерация завершена за {:.2}мс", total_time).into());
             web_sys::console::log_1(&format!("Total DOCX generation time: {:.2}ms", total_time).into());
         },
         Err(e) => {
