@@ -284,7 +284,14 @@ pub async fn create_docx_for_selected_floors(
                     doc = doc.add_paragraph(as_title_paragraph);
                     
                     // Цикл по комбинациям
+                    let mut combo_count = 0;
                     for combination in as_combinations {
+                        // Если количество комбинаций превышает 5, добавляем перенос строки
+                        if combo_count > 0 && combo_count % 5 == 0 {
+                            let line_break_paragraph = Paragraph::new();
+                            doc = doc.add_paragraph(line_break_paragraph);
+                        }
+                        combo_count += 1;
                         // Создаем result_scale для конкретной комбинации
                         let result_scale = combination.combination.result_scale.as_deref();
                         let result_scales = vec![result_scale];
@@ -304,10 +311,12 @@ pub async fn create_docx_for_selected_floors(
                             combination.combination.additional_diameter,
                             combination.combination.total_area
                         );
-                        let combo_title_paragraph = Paragraph::new().add_run(
-                            Run::new()
-                                .add_text(combo_title)
-                                .size(24)
+                        let combo_title_paragraph = Paragraph::new()
+                            .indent(Some(720), None, None, None) // Добавляем отступ слева на 1 пункт (720 твипов = 1/2 дюйма)
+                            .add_run(
+                                Run::new()
+                                    .add_text(combo_title)
+                                    .size(24)
                         );
                         doc = doc.add_paragraph(combo_title_paragraph);
                         

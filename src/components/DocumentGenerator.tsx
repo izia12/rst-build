@@ -4,6 +4,7 @@ import { useAppDispatch } from '../store/store';
 import { generateDocumentWithColorPalette } from '../store/slices/thunks/wasmThanks';
 import { Button } from './custom-components/Button';
 import { SelectedCombination, SelectedCombinationsData } from '../types/data.types';
+import JSZip from 'jszip';
 
 export const DocumentGenerator: React.FC = () => {
 	const dispatch = useAppDispatch();
@@ -151,27 +152,34 @@ export const DocumentGenerator: React.FC = () => {
 
 			// Ждем завершения всех воркеров одновременно
 			const results = await Promise.all(allPromises);
-			// Обрабатываем результаты
-			for (const result of results) {
-				if (result.success) {
-
-					// Скачиваем файл для этажа
-					const blob = new Blob([result.docxData], {
-						type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-					});
-					const url = URL.createObjectURL(blob);
-					const link = document.createElement('a');
-					link.href = url;
-					link.download = `floor_${result.floorLevel}_${new Date().toISOString().slice(0, 10)}.docx`;
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
-					URL.revokeObjectURL(url);
-
-					// Небольшая задержка между скачиваниями
-					await new Promise(resolve => setTimeout(resolve, 100));
-				}
+			
+			// Создаем ZIP архив с документами
+			const zip = new JSZip();
+			const successfulResults = results.filter(result => result.success);
+			
+			if (successfulResults.length === 0) {
+				alert('Не удалось сгенерировать ни одного документа');
+				return;
 			}
+			
+			// Добавляем каждый документ в ZIP архив
+			successfulResults.forEach(result => {
+				const filename = `floor_${result.floorLevel}_document.docx`;
+				zip.file(filename, result.docxData!);
+			});
+			
+			// Генерируем ZIP архив и скачиваем
+			const zipBlob = await zip.generateAsync({type: 'blob'});
+			const url = URL.createObjectURL(zipBlob);
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = `documents_${new Date().toISOString().slice(0, 10)}.zip`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(url);
+			
+			console.log(`✅ Создан ZIP архив с ${successfulResults.length} документами`);
 		} catch (error) {
 			alert('Ошибка при параллельной генерации документов: ' + error);
 		}
@@ -196,7 +204,7 @@ export const DocumentGenerator: React.FC = () => {
 					disabled={!excelViewData || excelViewData.length === 0 || documentGeneration.loading}
 					className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
 				>
-					🚀 Параллельно по этажам
+					📦 ZIP архив (параллельно)
 				</Button>
 			</div>
 

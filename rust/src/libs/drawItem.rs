@@ -137,8 +137,8 @@ pub const DOCX_PAGE_HEIGHT_TWIPS: u32 = 16838;  // A4 portrait высота (Б�
 
 // ЕДИНЫЕ РАЗМЕРЫ В EMU - ПРАВИЛЬНЫЕ ПРОПОРЦИИ A4!
 // УВЕЛИЧЕНО: Размеры в EMU для максимального использования пространства
-pub const DOCX_IMAGE_WIDTH_EMU: u32 = 8100000;   // ~22.5 см (увеличено благодаря минимальным отступам)
-pub const DOCX_IMAGE_HEIGHT_EMU: u32 = 11430000;  // ~31.7 см (увеличено пропорционально)
+pub const DOCX_IMAGE_WIDTH_EMU: u32 = 7200000;   // ~20.0 см (уменьшено для соответствия A4)
+pub const DOCX_IMAGE_HEIGHT_EMU: u32 = 10160000;  // ~28.2 см (уменьшено пропорционально)
 
 pub enum AsFunctions  {
 	As1,
@@ -866,7 +866,7 @@ impl DrawItemZ {
                     let x = 20 + (i as u32 * rect_width);
                     let y = current_y as u32;
                     
-                    let color = color_palette.get(i).copied().unwrap_or(color_palette[i]);
+                    let color = color_palette.get(i).copied().unwrap_or(Rgb([128, 128, 128])); // Серый цвет по умолчанию
                     let rect = Rect::at(x as i32, y as i32).of_size(rect_width - 2, rect_height); // -2 для отступа
                     draw_filled_rect_mut(&mut legend_img, rect, color);
                 }
@@ -889,6 +889,7 @@ impl DrawItemZ {
                 // Рисуем площади между прямоугольниками и описания диаметров под прямоугольниками
                 for (i, _range) in scale_ranges.iter().enumerate() {
                     let rect_x = 20 + (i as u32 * rect_width);
+                    let is_last = i == scale_ranges.len() - 1;
                     
                     if let Some(description) = diameter_descriptions.get(i) {
                         // Парсим площадь и описание диаметров из строки вида "24.550см2:Ø25 мм s=200 мм"
@@ -900,17 +901,48 @@ impl DrawItemZ {
                             let area_text = area_part.replace("см2", "");
                             
                             // Рисуем площадь МЕЖДУ прямоугольниками (в конце текущего прямоугольника)
-                            let area_x = rect_x as i32 + rect_width as i32;
+                            let mut area_x = rect_x as i32 + rect_width as i32;
+                            
+                            // Для последнего элемента проверяем границы и корректируем позицию
+                            if is_last {
+                                let img_width = legend_img.width() as i32;
+                                let estimated_text_width = area_text.len() as i32 * 8; // Примерная ширина символа
+                                if area_x + estimated_text_width > img_width - 10 {
+                                    area_x = img_width - estimated_text_width - 10; // Сдвигаем левее
+                                }
+                            }
+                            
                             draw_text_mut(&mut legend_img, title_color, area_x, current_y, area_scale, &CACHED_FONT, &area_text);
                             
-                            // Рисуем описание диаметров ПОД прямоугольником
-                            let diameter_x = rect_x as i32 + 10; // Отступ вправо от начала прямоугольника
-                            let diameter_y = current_y + 25; // Отступ вниз
+                            // Рисуем описание диаметров точно ПОД площадью
+                            let mut diameter_x = area_x; // Та же позиция что и у площади
+                            let diameter_y = current_y + 25; // Отступ вниз от площади
+                            
+                            // Для последнего элемента также проверяем границы для текста диаметров
+                            if is_last {
+                                let img_width = legend_img.width() as i32;
+                                let estimated_diameter_width = diameter_part.len() as i32 * 6; // Примерная ширина символа
+                                if diameter_x + estimated_diameter_width > img_width - 10 {
+                                    diameter_x = img_width - estimated_diameter_width - 10; // Сдвигаем левее
+                                }
+                            }
+                            
                             draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, diameter_part);
                         } else {
-                            // Если нет двоеточия, выводим как есть под прямоугольником
-                            let diameter_x = rect_x as i32 + 10;
+                            // Если нет двоеточия, выводим как есть под площадью (на стыке прямоугольников)
+                            let mut area_x = rect_x as i32 + rect_width as i32; // Позиция на стыке
+                            let mut diameter_x = area_x;
                             let diameter_y = current_y + 25;
+                            
+                            // Для последнего элемента проверяем границы
+                            if is_last {
+                                let img_width = legend_img.width() as i32;
+                                let estimated_text_width = description.len() as i32 * 6;
+                                if diameter_x + estimated_text_width > img_width - 10 {
+                                    diameter_x = img_width - estimated_text_width - 10;
+                                }
+                            }
+                            
                             draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, description);
                         }
                     }
@@ -1124,30 +1156,6 @@ impl DrawItemZ {
 		// Выполняем рендеринг с автоматическим выбором метода
 		// ПРИНУДИТЕЛЬНО используем CPU для быстрой генерации
 		return self.draw_all_images_cpu_batch(config).await;
-
-		// PNG кодирование
-		let mut results = Vec::with_capacity(4); // 4 результата для полей
-		for img in images {
-			let mut png_data = Vec::new();
-			{
-				// ОПТИМИЗИРОВАННОЕ PNG кодирование для ускорения
-			let encoder = image::codecs::png::PngEncoder::new_with_quality(
-				&mut png_data,
-				CompressionType::Fast,
-				image::codecs::png::FilterType::NoFilter
-			);
-				let _ = encoder.write_image(
-					img.as_raw(),
-					img.width(),
-					img.height(),
-					image::ColorType::Rgba8,
-				);
-			}
-			results.push(png_data);
-		}
-		// PNG кодирование завершено
-
-		results
 	}
 
 
@@ -1170,20 +1178,20 @@ impl DrawItemZ {
 		results
 	}
 
-	/// Генерирует одно изображение для конкретной комбинации
-	pub async fn draw_single_image_with_combination(
-		&self,
-		result_scales: &[Option<&str>],
-		floor_level: f32,
-		as_function: &str,
-		combination: &crate::libs::generate_documents::docx_generator::CombinationItem
-	) -> Vec<u8> {
-		// Используем result_scale из комбинации
-		let result_scale = combination.result_scale.as_deref();
-		
-		// Генерируем изображение для указанной as_функции с конкретной шкалой
-		self.draw_image_with_floor(as_function, result_scale, floor_level).await
-	}
+    /// Генерирует одно изображение для конкретной комбинации
+    pub async fn draw_single_image_with_combination(
+        &self,
+        result_scales: &[Option<&str>],
+        floor_level: f32,
+        as_function: &str,
+        combination: &crate::libs::generate_documents::docx_generator::CombinationItem
+    ) -> Vec<u8> {
+        // Используем result_scale из комбинации
+        let result_scale = combination.result_scale.as_deref();
+        
+        // Генерируем изображение для указанной as_функции с конкретной шкалой
+        self.draw_image_with_floor(as_function, result_scale, floor_level).await
+    }
 }
 
 

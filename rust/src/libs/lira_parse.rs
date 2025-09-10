@@ -6,8 +6,8 @@ use std::path::Path;
 
 // use crate::libs::parse::{get_indexes, SerializableEntity1};
 use rst_build::libs::{
-    types::{ Element, LiraFile},
-    parse::{get_indexes, SerializableEntity1}
+    parse::{get_indexes, SerializableEntity1},
+    types::{Element, LiraFile},
 };
 // Пример использования
 pub fn parse_lira_file(file_path: &str) -> io::Result<LiraFile> {
@@ -16,7 +16,7 @@ pub fn parse_lira_file(file_path: &str) -> io::Result<LiraFile> {
     Ok(lira_file)
 }
 pub fn main() {
-    let _=verify_element_indices("src/cafe_muslim04.txt", "src/cafe_muslim04.sli");
+    let _ = verify_element_indices("src/cafe_muslim04.txt", "src/cafe_muslim04.sli");
     // let lira_file = parse_lira_file("src/cafe_muslim04.txt").unwrap();
 
     // // Создаем CSV файл
