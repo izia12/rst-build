@@ -907,9 +907,16 @@ impl DrawItemZ {
                                 if row == 0 {
                                     // Первая строка начинается с 0
                                     draw_text_mut(&mut legend_img, title_color, boundary_x, boundary_y, area_scale, &CACHED_FONT, "0");
+                                    // Для первого элемента нет диаметра
                                 } else {
                                     // Последующие строки начинаются с последнего значения предыдущей строки
                                     draw_text_mut(&mut legend_img, title_color, boundary_x, boundary_y, area_scale, &CACHED_FONT, &last_area_text);
+                                    
+                                    // Рисуем диаметр под площадью для левой границы
+                                    if !last_diameter_text.is_empty() {
+                                        let diameter_y = boundary_y + 25;
+                                        draw_text_mut(&mut legend_img, title_color, boundary_x, diameter_y, diameter_scale, &CACHED_FONT, &last_diameter_text);
+                                    }
                                 }
                             }
                             
@@ -936,9 +943,25 @@ impl DrawItemZ {
                                     
                                     draw_text_mut(&mut legend_img, title_color, final_x, boundary_y, area_scale, &CACHED_FONT, &current_area_text);
                                     
+                                    // Рисуем текст диаметров под площадью
+                                    let diameter_part = &description[colon_pos + 1..];
+                                    let diameter_y = boundary_y + 25;
+                                    let mut diameter_x = final_x;
+                                    
+                                    if is_last_in_row {
+                                        let img_width = legend_img.width() as i32;
+                                        let estimated_diameter_width = diameter_part.len() as i32 * 6;
+                                        if diameter_x + estimated_diameter_width > img_width - 10 {
+                                            diameter_x = img_width - estimated_diameter_width - 10;
+                                        }
+                                    }
+                                    
+                                    draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, diameter_part);
+                                    
                                     // Сохраняем последнее значение для следующей строки
                                     if is_last_in_row {
                                         last_area_text = current_area_text;
+                                        last_diameter_text = diameter_part.to_string();
                                     }
                                 }
                                 rect_index += 1;
