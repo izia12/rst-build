@@ -334,6 +334,17 @@ pub async fn create_docx_for_selected_floors(
                             );
                             doc = doc.add_paragraph(combo_title_paragraph);
                             
+                            // Добавляем параграф с требуемой площадью
+                            let target_area_text = format!("Требуемая площадь {:.3} см²", combination.as_target_value);
+                            let target_area_paragraph = Paragraph::new()
+                                .indent(Some(720), None, None, None) // Тот же отступ что и у заголовка
+                                .add_run(
+                                    Run::new()
+                                        .add_text(target_area_text)
+                                        .size(20) // Немного меньший размер шрифта
+                            );
+                            doc = doc.add_paragraph(target_area_paragraph);
+                            
                             // Добавляем изображение
                             let image_paragraph = Paragraph::new().add_run(
                                 Run::new().add_image(
