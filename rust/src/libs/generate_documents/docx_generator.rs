@@ -283,51 +283,72 @@ pub async fn create_docx_for_selected_floors(
                     );
                     doc = doc.add_paragraph(as_title_paragraph);
                     
-                    // Цикл по комбинациям
-                    let mut combo_count = 0;
-                    for combination in as_combinations {
-                        // Если количество комбинаций превышает 5, добавляем перенос строки
-                        if combo_count > 0 && combo_count % 5 == 0 {
+                    // Цикл по комбинациям с многострочным размещением
+                    let total_combinations = as_combinations.len();
+                    
+                    // Рассчитываем количество строк и комбинаций на строку
+                    let (rows, combinations_per_row) = calculate_layout(total_combinations);
+                    
+                    let mut combo_index = 0;
+                    for row in 0..rows {
+                        let combinations_in_this_row = if row < rows - 1 {
+                            combinations_per_row
+                        } else {
+                            total_combinations - (combinations_per_row * (rows - 1))
+                        };
+                        
+                        // Обрабатываем комбинации в текущей строке
+                        for _ in 0..combinations_in_this_row {
+                            if combo_index >= total_combinations {
+                                break;
+                            }
+                            
+                            let combination = &as_combinations[combo_index];
+                            combo_index += 1;
+                            // Создаем result_scale для конкретной комбинации
+                            let result_scale = combination.combination.result_scale.as_deref();
+                            let result_scales = vec![result_scale];
+                            
+                            // Генерируем изображение для данной комбинации
+                            let img = item_z.draw_single_image_with_combination(
+                                &result_scales, 
+                                *selected_floor, 
+                                as_function,
+                                &combination.combination
+                            ).await;
+                            
+                            // Добавляем заголовок комбинации
+                            let combo_title = format!(
+                                "Комбинация: Ø{} мм + Ø{} мм, Площадь: {:.3} см²",
+                                combination.combination.main_diameter,
+                                combination.combination.additional_diameter,
+                                combination.combination.total_area
+                            );
+                            
+                            let combo_title_paragraph = Paragraph::new()
+                                .indent(Some(720), None, None, None) // Добавляем отступ слева на 1 пункт (720 твипов = 1/2 дюйма)
+                                .add_run(
+                                    Run::new()
+                                        .add_text(combo_title)
+                                        .size(24)
+                            );
+                            doc = doc.add_paragraph(combo_title_paragraph);
+                            
+                            // Добавляем изображение
+                            let image_paragraph = Paragraph::new().add_run(
+                                Run::new().add_image(
+                                    Pic::new(img.as_slice())
+                                        .size(DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU)
+                                )
+                            );
+                            doc = doc.add_paragraph(image_paragraph);
+                        }
+                        
+                        // Добавляем перенос строки между строками комбинаций (кроме последней)
+                        if row < rows - 1 {
                             let line_break_paragraph = Paragraph::new();
                             doc = doc.add_paragraph(line_break_paragraph);
                         }
-                        combo_count += 1;
-                        // Создаем result_scale для конкретной комбинации
-                        let result_scale = combination.combination.result_scale.as_deref();
-                        let result_scales = vec![result_scale];
-                        
-                        // Генерируем изображение для данной комбинации
-                        let img = item_z.draw_single_image_with_combination(
-                            &result_scales, 
-                            *selected_floor, 
-                            as_function,
-                            &combination.combination
-                        ).await;
-                        
-                        // Добавляем заголовок комбинации
-                        let combo_title = format!(
-                            "Комбинация: Ø{} мм + Ø{} мм, Площадь: {:.3} см²",
-                            combination.combination.main_diameter,
-                            combination.combination.additional_diameter,
-                            combination.combination.total_area
-                        );
-                        let combo_title_paragraph = Paragraph::new()
-                            .indent(Some(720), None, None, None) // Добавляем отступ слева на 1 пункт (720 твипов = 1/2 дюйма)
-                            .add_run(
-                                Run::new()
-                                    .add_text(combo_title)
-                                    .size(24)
-                        );
-                        doc = doc.add_paragraph(combo_title_paragraph);
-                        
-                        // Добавляем изображение
-                        let image_paragraph = Paragraph::new().add_run(
-                            Run::new().add_image(
-                                Pic::new(img.as_slice())
-                                    .size(DOCX_IMAGE_WIDTH_EMU, DOCX_IMAGE_HEIGHT_EMU)
-                            )
-                        );
-                        doc = doc.add_paragraph(image_paragraph);
                     }
                 }
             }
@@ -371,4 +392,30 @@ pub fn sort_by_z(data1: Vec<EntityWithXlsx>) -> HashMap<OrderedFloat<f32>, DrawI
     }
     
     map
+}
+
+/// Рассчитывает оптимальное размещение комбинаций по строкам
+/// Максимум 5 комбинаций на строку
+fn calculate_layout(total_combinations: usize) -> (usize, usize) {
+    if total_combinations <= 5 {
+        // Если комбинаций 5 или меньше - одна строка
+        (1, total_combinations)
+    } else if total_combinations <= 10 {
+        // 6-10 комбинаций: делим пополам
+        let combinations_per_row = (total_combinations + 1) / 2;
+        (2, combinations_per_row)
+    } else {
+        // Более 10 комбинаций: максимум 5 на строку, остальные распределяем
+        let max_per_row = 5;
+        let rows = (total_combinations + max_per_row - 1) / max_per_row;
+        
+        if total_combinations <= 15 {
+            // 11-15: распределяем равномерно на 3 строки
+            let combinations_per_row = (total_combinations + 2) / 3;
+            (3, combinations_per_row)
+        } else {
+            // Более 15: используем максимум 5 на строку
+            (rows, max_per_row)
+        }
+    }
 }

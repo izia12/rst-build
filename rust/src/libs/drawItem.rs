@@ -784,7 +784,8 @@ impl DrawItemZ {
 		
 		// === STEP 11: СОЗДАНИЕ ЛЕГЕНДЫ ===
          let legend_width = dimensions.img_width;
-         let legend_height = 200; // Уменьшена высота для меньших шрифтов
+         // Динамически рассчитываем высоту легенды на основе количества строк шкалы
+         let legend_height = Self::calculate_legend_height(result_scale);
         
         let legend_img = Self::create_legend_image(
              floor_level,
@@ -857,98 +858,100 @@ impl DrawItemZ {
             let rect_count = scale_ranges.len();
             
             if rect_count > 0 {
-                let total_scale_width = legend_width - 40; // Отступы по 20px с каждой стороны
-                let rect_width = total_scale_width / rect_count as u32;
                 let rect_height = 20;
+                let text_height = 50; // Высота для площади + текста шкалы под каждым прямоугольником
+                let row_spacing = 10; // Отступ между строками
                 
-                // Рисуем прямоугольники с цветами
-                for (i, _range) in scale_ranges.iter().enumerate() {
-                    let x = 20 + (i as u32 * rect_width);
-                    let y = current_y as u32;
-                    
-                    let color = color_palette.get(i).copied().unwrap_or(Rgb([128, 128, 128])); // Серый цвет по умолчанию
-                    let rect = Rect::at(x as i32, y as i32).of_size(rect_width - 2, rect_height); // -2 для отступа
-                    draw_filled_rect_mut(&mut legend_img, rect, color);
-                }
-                
-                current_y += rect_height as i32 + 10; // Уменьшен отступ
-                
-                // Подписи диапазонов - новая логика согласно требованиям
-                let area_font_size = 25.0; // Размер шрифта для площади
-                let diameter_font_size = 20.0; // Размер шрифта для описания диаметров
-                let area_scale = Scale::uniform(area_font_size);
-                let diameter_scale = Scale::uniform(diameter_font_size);
+                // Равномерное распределение прямоугольников по строкам
+                let distribution = Self::calculate_optimal_distribution(rect_count);
+                let rows = distribution.len();
                 
                 // Получаем описания диаметров из квадратных скобок
                 let diameter_descriptions = Self::parse_diameter_descriptions(scale);
                 
-                // НОВАЯ ЛОГИКА: Рисуем "0" в начале, затем площади между прямоугольниками
-                // Рисуем "0" в самом начале
-                draw_text_mut(&mut legend_img, title_color, 20, current_y, area_scale, &CACHED_FONT, "0");
+                // Настройка шрифтов для текста
+                let area_font_size = 25.0;
+                let diameter_font_size = 20.0;
+                let area_scale = Scale::uniform(area_font_size);
+                let diameter_scale = Scale::uniform(diameter_font_size);
                 
-                // Рисуем площади между прямоугольниками и описания диаметров под прямоугольниками
-                for (i, _range) in scale_ranges.iter().enumerate() {
-                    let rect_x = 20 + (i as u32 * rect_width);
-                    let is_last = i == scale_ranges.len() - 1;
+                let mut rect_index = 0; // Индекс для данных (не увеличивается при дублировании)
+                let mut color_index = 0; // Индекс для цветов (всегда увеличивается)
+                let mut last_area_text = String::new();
+                let mut last_diameter_text = String::new();
+                
+                for (row, &rects_in_row) in distribution.iter().enumerate() {
+                    let total_row_width = legend_width - 40; // Отступы по 20px с каждой стороны
+                    let rect_width = total_row_width / rects_in_row as u32;
+                    let row_y = current_y + (row as i32 * (rect_height as i32 + text_height as i32 + row_spacing));
                     
-                    if let Some(description) = diameter_descriptions.get(i) {
-                        // Парсим площадь и описание диаметров из строки вида "24.550см2:Ø25 мм s=200 мм"
-                        if let Some(colon_pos) = description.find(':') {
-                            let area_part = &description[..colon_pos]; // "24.550см2"
-                            let diameter_part = &description[colon_pos + 1..]; // "Ø25 мм s=200 мм"
+                    for col in 0..rects_in_row {
+                        if rect_index < rect_count {
+                            let x = 20 + (col as u32 * rect_width);
+                            let y = row_y as u32;
                             
-                            // Извлекаем только число площади
-                            let area_text = area_part.replace("см2", "");
+                            // Рисуем прямоугольник
+                            let color = color_palette.get(color_index).copied().unwrap_or(Rgb([128, 128, 128]));
+                            let rect = Rect::at(x as i32, y as i32).of_size(rect_width - 2, rect_height);
+                            draw_filled_rect_mut(&mut legend_img, rect, color);
                             
-                            // Рисуем площадь МЕЖДУ прямоугольниками (в конце текущего прямоугольника)
-                            let mut area_x = rect_x as i32 + rect_width as i32;
+                            // Увеличиваем color_index для каждого прямоугольника
+                            color_index += 1;
                             
-                            // Для последнего элемента проверяем границы и корректируем позицию
-                            if is_last {
-                                let img_width = legend_img.width() as i32;
-                                let estimated_text_width = area_text.len() as i32 * 8; // Примерная ширина символа
-                                if area_x + estimated_text_width > img_width - 10 {
-                                    area_x = img_width - estimated_text_width - 10; // Сдвигаем левее
+                            // Рисуем текст на границах прямоугольников (показывает диапазоны)
+                            // Для первого прямоугольника в строке рисуем левую границу
+                            if col == 0 {
+                                let boundary_x = x as i32;
+                                let boundary_y = y as i32 + rect_height as i32 + 5;
+                                
+                                if row == 0 {
+                                    // Первая строка начинается с 0
+                                    draw_text_mut(&mut legend_img, title_color, boundary_x, boundary_y, area_scale, &CACHED_FONT, "0");
+                                } else {
+                                    // Последующие строки начинаются с последнего значения предыдущей строки
+                                    draw_text_mut(&mut legend_img, title_color, boundary_x, boundary_y, area_scale, &CACHED_FONT, &last_area_text);
                                 }
                             }
                             
-                            draw_text_mut(&mut legend_img, title_color, area_x, current_y, area_scale, &CACHED_FONT, &area_text);
-                            
-                            // Рисуем описание диаметров точно ПОД площадью
-                            let mut diameter_x = area_x; // Та же позиция что и у площади
-                            let diameter_y = current_y + 25; // Отступ вниз от площади
-                            
-                            // Для последнего элемента также проверяем границы для текста диаметров
-                            if is_last {
-                                let img_width = legend_img.width() as i32;
-                                let estimated_diameter_width = diameter_part.len() as i32 * 6; // Примерная ширина символа
-                                if diameter_x + estimated_diameter_width > img_width - 10 {
-                                    diameter_x = img_width - estimated_diameter_width - 10; // Сдвигаем левее
+                            // Рисуем правую границу для каждого прямоугольника
+                            if let Some(description) = diameter_descriptions.get(rect_index) {
+                                if let Some(colon_pos) = description.find(':') {
+                                    let area_part = &description[..colon_pos];
+                                    let current_area_text = area_part.replace("см2", "");
+                                    
+                                    let boundary_x = x as i32 + rect_width as i32;
+                                    let boundary_y = y as i32 + rect_height as i32 + 5;
+                                    
+                                    // Проверяем границы для последнего элемента в строке
+                                    let is_last_in_row = col == rects_in_row - 1;
+                                    let mut final_x = boundary_x;
+                                    
+                                    if is_last_in_row {
+                                        let img_width = legend_img.width() as i32;
+                                        let estimated_width = current_area_text.len() as i32 * 8;
+                                        if final_x + estimated_width > img_width - 10 {
+                                            final_x = img_width - estimated_width - 10;
+                                        }
+                                    }
+                                    
+                                    draw_text_mut(&mut legend_img, title_color, final_x, boundary_y, area_scale, &CACHED_FONT, &current_area_text);
+                                    
+                                    // Сохраняем последнее значение для следующей строки
+                                    if is_last_in_row {
+                                        last_area_text = current_area_text;
+                                    }
                                 }
+                                rect_index += 1;
                             }
-                            
-                            draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, diameter_part);
-                        } else {
-                            // Если нет двоеточия, выводим как есть под площадью (на стыке прямоугольников)
-                            let mut area_x = rect_x as i32 + rect_width as i32; // Позиция на стыке
-                            let mut diameter_x = area_x;
-                            let diameter_y = current_y + 25;
-                            
-                            // Для последнего элемента проверяем границы
-                            if is_last {
-                                let img_width = legend_img.width() as i32;
-                                let estimated_text_width = description.len() as i32 * 6;
-                                if diameter_x + estimated_text_width > img_width - 10 {
-                                    diameter_x = img_width - estimated_text_width - 10;
-                                }
-                            }
-                            
-                            draw_text_mut(&mut legend_img, title_color, diameter_x, diameter_y, diameter_scale, &CACHED_FONT, description);
                         }
                     }
                 }
                 
-                current_y += 60; // Увеличен отступ после диапазонов для учета двух строк текста
+                current_y += (rows as i32 * (rect_height as i32 + text_height as i32 + row_spacing)) + 10;
+                
+                // Подписи уже нарисованы под каждым прямоугольником
+                // Увеличиваем current_y для следующих элементов
+                current_y += 30; // Дополнительный отступ
             }
         }
         
@@ -960,8 +963,9 @@ impl DrawItemZ {
         draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, &calculation_method);
           current_y += 30; // Уменьшено в 4 раза
           
-          let units_text = "Единицы измерения см2";
-          draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
+          // Убрано: "Единицы измерения см2" по требованию
+          // let units_text = "Единицы измерения см2";
+          // draw_text_mut(&mut legend_img, title_color, 20, current_y, metadata_scale, &CACHED_FONT, units_text);
           
           // УБРАНО: Многоколоночный текст с описанием диаметров (дублирует информацию под прямоугольниками)
           // if let Some(scale) = result_scale {
@@ -981,9 +985,9 @@ impl DrawItemZ {
          parse_result_scale_ranges(scale)
      }
     
-    /// Возвращает метод расчета (выносим в отдельную функцию для будущих изменений)
+    /// Возвращает метод расчета (убрано по требованию)
     fn get_calculation_method() -> String {
-        "Расчет по усилиям СНиП 2.03.01-84".to_string()
+        "".to_string() // Убрано: "Расчет по усилиям СНиП 2.03.01-84"
     }
     
     /// Рисует многоколоночный текст с описанием диаметров арматуры
@@ -1192,6 +1196,56 @@ impl DrawItemZ {
         // Генерируем изображение для указанной as_функции с конкретной шкалой
         self.draw_image_with_floor(as_function, result_scale, floor_level).await
     }
+    
+    /// Рассчитывает оптимальное распределение прямоугольников по строкам
+    /// Максимум 5 на строку, равномерное распределение
+    fn calculate_optimal_distribution(total_count: usize) -> Vec<usize> {
+        if total_count <= 5 {
+            vec![total_count]
+        } else {
+            let max_per_row = 5;
+            let rows = (total_count + max_per_row - 1) / max_per_row;
+            let base_per_row = total_count / rows;
+            let remainder = total_count % rows;
+            
+            let mut distribution = Vec::new();
+            for i in 0..rows {
+                if i < remainder {
+                    distribution.push(base_per_row + 1);
+                } else {
+                    distribution.push(base_per_row);
+                }
+            }
+            
+            // Сортируем по убыванию для лучшего визуального распределения
+            distribution.sort_by(|a, b| b.cmp(a));
+            distribution
+        }
+     }
+     
+     /// Рассчитывает необходимую высоту легенды на основе количества строк шкалы
+     fn calculate_legend_height(result_scale: Option<&str>) -> u32 {
+         let base_height = 100; // Заголовок + отступы
+         
+         if let Some(scale) = result_scale {
+             let scale_ranges = Self::parse_result_scale_ranges(scale);
+             let rect_count = scale_ranges.len();
+             
+             if rect_count > 0 {
+                 let distribution = Self::calculate_optimal_distribution(rect_count);
+                 let rows = distribution.len();
+                 
+                 let rect_height = 20;
+                 let text_height = 50; // Площадь + текст шкалы
+                 let row_spacing = 10;
+                 
+                 let scale_height = rows as u32 * (rect_height + text_height + row_spacing) + 40; // +40 для дополнительных отступов
+                 return base_height + scale_height;
+             }
+         }
+         
+         base_height + 50 // Минимальная высота если нет шкалы
+     }
 }
 
 
