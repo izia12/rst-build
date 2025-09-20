@@ -1,0 +1,46 @@
+[package]
+name = "lira-analyzer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Для работы с изображениями
+image = "0.25"
+imageproc = "0.25"
+
+# Для создания DOCX документов
+docx-rs = "0.4"
+
+# Для работы с графами и алгоритмами
+petgraph = "0.6"
+
+# Для парсинга и сериализации
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Для работы с файлами и строками
+regex = "1.0"
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Для CLI интерфейса
+clap = { version = "4.0", features = ["derive"] }
+
+# Для логирования
+log = "0.4"
+env_logger = "0.11"
+
+# Для математических операций
+glam = { version = "0.29", features = ["serde"] }
+
+# Для работы с цветами
+palette = "0.7"
+
+# Для генерации случайных чисел
+rand = "0.8"
+# Для парсинга XML (SLI файлы)
+xml = "0.8"
+
+[[bin]]
+name = "lira-analyzer"
+path = "src/main.rs"
