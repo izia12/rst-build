@@ -103,7 +103,7 @@ impl Visualizer {
             let filename = format!("floor_{}_z{:.1}.png", floor_index + 1, z_level);
             let path = output_dir.join(&filename);
             
-            let image_data = self.render_floor_image(floor_elements, *z_level, floor_index + 1)?;
+            let image_data = self.render_floor_image(floor_elements, elements, *z_level, floor_index + 1)?;
             std::fs::write(&path, image_data)?;
             image_paths.push(path.clone());
             
@@ -208,6 +208,7 @@ impl Visualizer {
     fn render_floor_image(
         &self,
         elements: &[&LiraElement],
+        all_elements: &[LiraElement],
         z_level: f32,
         floor_number: usize,
     ) -> Result<Vec<u8>> {
@@ -246,9 +247,10 @@ impl Visualizer {
         let floor_elements_vec: Vec<_> = elements.iter().cloned().cloned().collect();
         let projection = self.calculate_projection(&floor_elements_vec)?;
         
-        // Рендерим элементы с новой цветовой схемой
+        // Рендерим элементы с проверкой прилегания к стержням среди всех элементов конструкции
+         let all_elements_refs: Vec<&LiraElement> = all_elements.iter().collect();
          for element in elements {
-             self.render_element_with_adjacency(&mut image, element, &projection, elements)?;
+             self.render_element_with_adjacency(&mut image, element, &projection, &all_elements_refs)?;
          }
         
         // Добавляем заголовок с отладочной информацией для третьего этажа
@@ -512,6 +514,45 @@ impl Visualizer {
         
         Ok(())
     }
+
+    /// Рендерит элемент для этажей с использованием цветов групп
+    fn render_element_for_floor(
+        &self,
+        image: &mut RgbImage,
+        element: &LiraElement,
+        projection: &Projection,
+    ) -> Result<()> {
+        // Для этажей используем цвета по типу элемента
+        let color = match element.element_type {
+            ElementType::Shell => self.settings.default_shell_color,
+            ElementType::Beam => self.settings.default_beam_color,
+            ElementType::Column => self.settings.default_column_color,
+            ElementType::Unknown => Rgb([128, 128, 128]), // Серый цвет для неизвестных
+        };
+        
+        match element.element_type {
+            ElementType::Beam | ElementType::Column => {
+                // Стержневые элементы - толстые линии
+                self.render_thick_line_element(image, element, projection, color)?;
+            }
+            ElementType::Shell => {
+                // Пластинчатые элементы - заливка
+                self.render_shell_element_filled(image, element, projection, color)?;
+            }
+            ElementType::Unknown => {
+                // Рендерим как точку
+                if let Some(coord) = element.coordinates.first() {
+                    let point_2d = self.project_point(*coord, projection);
+                    if point_2d.x >= 0 && point_2d.x < image.width() as i32 && 
+                       point_2d.y >= 0 && point_2d.y < image.height() as i32 {
+                        image.put_pixel(point_2d.x as u32, point_2d.y as u32, color);
+                    }
+                }
+            }
+        }
+        
+        Ok(())
+    }
     
     /// Определяет цвет элемента по прилеганию к стержневым как в рабочем проекте
       fn get_element_color_by_adjacency(&self, element: &LiraElement, all_elements: &[&LiraElement]) -> Rgb<u8> {
@@ -520,13 +561,20 @@ impl Visualizer {
                   // Проверяем, прилегает ли пластинчатый элемент к стержневому
                   let is_adjacent_to_beam = self.is_adjacent_to_beam_by_nodes(element, all_elements);
                   
-                  // Отладочный вывод для третьего этажа (z=6.6)
+                  // Отладочный вывод для третьего этажа (z=6.6) и первого этажа (z=0.0)
                   if !element.coordinates.is_empty() {
                       let z_coord = element.coordinates[0].z;
                       if (z_coord - 6.6).abs() < 0.1 {
                           let debug_line = format!("🔍 ОТЛАДКА ЭТАЖ 3: Элемент {} (z={:.1}), узлы: {:?}, прилегает к стержню: {}\n", 
                                    element.id, z_coord, element.nodes, is_adjacent_to_beam);
                           if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open("output/floor3_adjacency_debug.txt") {
+                              use std::io::Write;
+                              let _ = file.write_all(debug_line.as_bytes());
+                          }
+                      } else if z_coord.abs() < 0.1 {
+                          let debug_line = format!("🔍 ОТЛАДКА ЭТАЖ 1: Элемент {} (z={:.1}), узлы: {:?}, прилегает к стержню: {}\n", 
+                                   element.id, z_coord, element.nodes, is_adjacent_to_beam);
+                          if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open("output/floor1_adjacency_debug.txt") {
                               use std::io::Write;
                               let _ = file.write_all(debug_line.as_bytes());
                           }
